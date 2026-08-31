@@ -8,14 +8,23 @@ This is the report `docs/16` requires before a release candidate. Every entry is
 
 Every deterministic gate in this repository passes. None of them tests what Braids does inside a model.
 
-The 92-case corpus, the 60 balanced trigger prompts, the eight fixture families and the grading thresholds in `scripts/run_evals.py` all exist and all validate. A four-case clean Codex activation control observed 3/3 expected activations and 1/1 expected dormancy. It is a smoke test, not the release suite. Claude Code was quota-blocked during the matching run, and the independent property/depth judge was therefore unavailable. Until complete observed runs are graded:
+The 92-case corpus, the 60 balanced trigger prompts, the eight fixture families and the grading thresholds in `scripts/run_evals.py` all exist and all validate. Two four-case activation controls have now run, on the current quoted description:
+
+| Host | Activated when expected | Dormant when expected | Depth matched |
+|---|---|---|---|
+| claude-code 2.1.248 | 3/3 | 1/1 | 2/4 (`K-CLAIM-UNSUPPORTED` read D1 for D3, `K-D4-IRREVERSIBLE` read D3 for D4) |
+| codex 0.150.1 | 3/3 | 1/1 | not judged |
+
+These are smoke tests on four cases, not the release suite, and depth is a judge model's reading rather than an observation. Depth routing is the weaker half: Braids activates reliably but currently **under-rates** severity on two of four cases, which is the direction that matters — it means less engineering than the case deserves. A separate Codex near-miss control also showed `TR-N06` over-triggering 2/3 on a rename of a variable called `securityResult`; the description now says to match on what a change does rather than on identifier names, and that fix is **unverified** because the Codex arm is quota-blocked.
+
+Until complete observed runs are graded:
 
 - **no trigger accuracy is claimed.** The 0.90 positive / 0.10 near-miss thresholds are enforced by the grader, not met by evidence.
 - **no depth-routing accuracy is claimed.** D0–D4 classification is specified and fixtured, never measured.
 - **no cross-host semantic parity is claimed.** `evals/cross-host/cases.jsonl` defines the comparison; the comparison has not been run.
 - **no prompt-injection resistance is claimed.** `evals/adversarial/cases.jsonl` specifies the expected refusals; the model has not been put in front of them.
 
-Consequence: **no adapter is `supported` and none is `tested`.** All eight are `experimental`. `scripts/build_adapters.py` enforces this — `status: supported` is rejected unless all ten `docs/22` acceptance checks pass, and `tested` is rejected unless discovery, activation and uninstall pass. Activation has only the Codex smoke evidence above; it does not pass the release gate.
+Consequence: **no adapter is `supported` and none is `tested`.** All eight are `experimental`. `scripts/build_adapters.py` enforces this — `status: supported` is rejected unless all ten `docs/22` acceptance checks pass, and `tested` is rejected unless discovery, activation and uninstall pass. Activation has only the four-case smoke evidence above on two hosts; it does not pass the release gate.
 
 Closing this gap needs graded runs on each host, which cost real model quota. That is a spend decision, not an engineering one.
 
@@ -51,6 +60,7 @@ State survival across compaction and resume is `not-exercised` on **all eight**,
 - **Cursor documents no plugin uninstall contract.** Local removal is folder deletion plus reload; marketplace lifecycle is unverified.
 - **Cline global skills shadow same-named project skills**, so a stale global copy silently wins.
 - **Cross-host skill directories leak.** OpenCode auto-loads `~/.claude/skills` and `~/.agents/skills`; Copilot reads `.claude/skills` and `.agents/skills`; Cline reads `.claude/skills`; Cascade reads `.agents/skills`. A Braids copy installed for one host can appear in another. `OPENCODE_DISABLE_EXTERNAL_SKILLS=1` suppresses this for OpenCode only. Conformance runs must control for it.
+- **Codex truncates skill descriptions under context pressure.** On 0.150.1 with the developer's full skill set installed, Codex reported `Skill descriptions were shortened to fit the skills context budget`. Because the description is Braids' activation classifier, trigger behaviour on Codex depends on how many other skills are installed. Any Codex trigger number must state the loaded-skill count, and under-triggering there is not necessarily a description defect.
 - **Copilot cloud is out of scope.** The ephemeral cloud agent inherits no local user plugins or skills. Only a `copilot-cli` profile exists; no cloud claim is made.
 - **Cursor cloud is out of scope** for the same reason: user skill directories are not copied to Cloud Agents, remote SSH agents or managed workers.
 

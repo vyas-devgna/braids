@@ -21,8 +21,11 @@ Codex supports Agent Skills, project/user instruction discovery through `AGENTS.
 
 Codex uses progressive skill disclosure: skill metadata is available for discovery, then full skill instructions are loaded when selected. Current Codex documentation also constrains the initial skill-list contribution to avoid crowding the model context.
 
+**Observed 2026-08-31 on 0.150.1**, emitted as a turn item: `Skill descriptions were shortened to fit the skills context budget. Codex can still see every skill, but some descriptions are shorter. Disable unused skills or plugins to leave more room for the rest.` The description *is* Braids' activation classifier, so on a machine with many installed skills Codex may be selecting against a truncated version of it. Trigger measurements must therefore record how many skills were loaded, and a user seeing Braids under-trigger on Codex should disable unused plugins before concluding the description is wrong.
+
 Braids consequence:
 - keep the discovery description precise;
+- keep the discovery description *short enough to survive truncation*, front-loading the decisive clauses;
 - keep the core SKILL.md small;
 - put architecture/security/performance/dependency/UX material in references;
 - only load a reference when a routed task requires it.
