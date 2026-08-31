@@ -1,0 +1,56 @@
+name: release
+
+# Publishes on a version tag. Every gate must pass first: a release that skips
+# validation is exactly the unevidenced claim Braids exists to prevent.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Create isolated validation environment
+        run: |
+          python3 -m venv .ci-venv
+          .ci-venv/bin/python -m pip install --disable-pip-version-check -r requirements-dev.txt
+      - name: Gate the release
+        run: |
+          python3 scripts/validate.py
+          python3 scripts/build_adapters.py --dist dist
+          python3 scripts/run_evals.py --fixture-tests
+          python3 scripts/measure_budget.py
+          python3 -m unittest discover -s tests
+          .ci-venv/bin/agentskills validate skills/braids
+      - name: Tag must match the package version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg=$(python3 -c "import json;print(json.load(open('plugin.json'))['version'])")
+          npm=$(node -p "require('./package.json').version")
+          test "$tag" = "$pkg" || { echo "tag $tag != plugin.json $pkg"; exit 1; }
+          test "$tag" = "$npm" || { echo "tag $tag != package.json $npm"; exit 1; }
+
+  npm:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+      - name: Publish
+        # Requires NPM_TOKEN in repository secrets. Absent it, the job fails
+        # loudly rather than publishing a partial release.
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

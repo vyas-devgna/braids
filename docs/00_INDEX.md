@@ -90,6 +90,7 @@ This dossier is the source of truth for Braids: product requirements, frozen arc
 
 ### User documentation
 - `docs/30_SKILLS_REFERENCE.md`
+- `docs/31_DISTRIBUTION.md`
 
 ### Implementation records
 - `docs/29_KNOWN_LIMITATIONS.md`

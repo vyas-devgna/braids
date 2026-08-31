@@ -138,6 +138,7 @@ The repository contains 92 evaluation cases, eight fixture families, Draft 2020-
 ## Documentation
 
 - [Skills reference](docs/30_SKILLS_REFERENCE.md) — what each skill does and what it costs
+- [Distribution](docs/31_DISTRIBUTION.md) — installing, releasing, and why Braids is not in a marketplace yet
 - [Documentation map](docs/00_INDEX.md)
 - [Product requirements](docs/03_PRODUCT_REQUIREMENTS_PRD.md)
 - [Architecture](docs/04_ARCHITECTURE_FREEZE.md)

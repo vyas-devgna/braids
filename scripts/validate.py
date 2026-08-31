@@ -56,6 +56,13 @@ def validate() -> list[str]:
         if plugin.get("license") != metadata.get("license"):
             errors.append("plugin and package licenses differ")
 
+    npm = load_json(ROOT / "package.json", errors)
+    if isinstance(npm, dict) and isinstance(plugin, dict):
+        if npm.get("version") != plugin.get("version"):
+            errors.append("package.json and plugin.json versions differ")
+        if npm.get("license") != plugin.get("license"):
+            errors.append("package.json and plugin.json licenses differ")
+
     validator = ROOT / "skills/braids/scripts/validate_braids.py"
     for skill in sorted(p for p in (ROOT / "skills").iterdir() if (p / "SKILL.md").is_file()):
         result = subprocess.run([sys.executable, str(validator), str(skill)], text=True, capture_output=True)

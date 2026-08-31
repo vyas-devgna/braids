@@ -5,6 +5,11 @@ All notable changes will be recorded here.
 ## [Unreleased]
 
 ### Added
+- Six skills beside the core method — `braids-review`, `braids-audit`, `braids-risk`, `braids-claims`, `braids-depth`, `braids-help` — each a lens onto the same decision procedure, with matching `commands/*.toml` for slash invocation.
+- Implementation threshold `low` / `high` / `ultra`. Threshold caps effort; risk sets the floor on care; neither changes what may be claimed.
+- npm package `braids-skill` and `npx braids-skill <host>` for hosts with no plugin system, plus `--user` and `--uninstall`.
+- Tag-gated release workflow that re-runs every gate and refuses to publish if the tag, `plugin.json` and `package.json` disagree.
+- `docs/30_SKILLS_REFERENCE.md`, `docs/31_DISTRIBUTION.md`, issue templates and a PR template that asks what a change claims.
 - Portable Agent Skill kernel, routed references, and dependency-free validation scripts.
 - Machine-readable contracts, the 92-case evaluation corpus, and eight repository fixture families.
 - Eight host adapters — Claude Code, Codex, Cursor, Antigravity, GitHub Copilot, OpenCode, Cline, Windsurf — generated from a single metadata source by `scripts/build_adapters.py`. No adapter carries Braids methodology or a second copy of the kernel.
