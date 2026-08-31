@@ -69,6 +69,10 @@ def validate() -> list[str]:
         if result.returncode:
             errors.extend(f"{skill.name}: {line}" for line in result.stderr.splitlines() if line)
 
+    diagrams = subprocess.run([sys.executable, str(ROOT / "scripts/embed_diagrams.py")], text=True, capture_output=True)
+    if diagrams.returncode:
+        errors.extend(line for line in diagrams.stderr.splitlines() if line.startswith("ERROR: "))
+
     adapters = subprocess.run([sys.executable, str(ROOT / "scripts/build_adapters.py")], text=True, capture_output=True)
     if adapters.returncode:
         errors.extend(line for line in adapters.stderr.splitlines() if line.startswith("ERROR: "))
@@ -115,7 +119,9 @@ def validate() -> list[str]:
         if not path.is_file() or path.suffix.lower() not in IMAGE_SUFFIXES:
             continue
         relative = path.relative_to(ROOT)
-        if relative.parts[0] == "assets":
+        # assets/ is the brand source; site/ is the published landing page. Neither
+        # reaches model context, which is what the docs/07 rule actually protects.
+        if relative.parts[0] in {"assets", "site"}:
             continue
         # An adapter may stage one asset for a host manifest that documents a logo field.
         if relative.parts[:2] == ("adapters", relative.parts[1]) and relative.parts[2:3] == ("files",):

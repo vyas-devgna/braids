@@ -4,7 +4,65 @@
 
 Braids will use a **host-neutral adaptive engineering kernel + ports/adapters integration architecture**.
 
-Canonical diagram: `../diagrams/01-braids-system-architecture.mmd`
+<!-- diagram:01-braids-system-architecture -->
+```mermaid
+flowchart TB
+    U["User task / idea / review / implementation"] --> HC
+
+    subgraph PORT["Host integration layer"]
+      HC["M0 Capability Negotiator<br/>detect actual host capabilities"]
+      GA["Optional Guard Adapter<br/>persistent rule / hook only where supported"]
+      HA["Thin Host Adapter<br/>maps portable roles to native features"]
+    end
+
+    HC --> EC
+    HC --> HA
+    HA --> GA
+
+    subgraph CORE["Portable Braids Kernel"]
+      EC["M1 Engineering Contract<br/>goal • authority • scope • scale • environments • success criteria"]
+      CA["M2 Progressive Context Acquisition<br/>retrieve only decision-changing context"]
+      SM["M3 System & Change-Surface Model<br/>modules • callers • state • trust • process/network/deploy boundaries"]
+      QS["M4 Quality Scenario Compiler<br/>stimulus • environment • artifact • response • measurable criterion"]
+      RR["M5 Risk / Engineering-Depth Router<br/>blast radius • severity • uncertainty • recoverability • reversibility"]
+      EM["M6 Evidence Manager<br/>local evidence first; targeted external research"]
+      DG["M7 Reuse / Dependency Gate<br/>existing → stdlib → platform → installed → proven OSS → custom"]
+      CS["M8 Candidate Synthesizer<br/>baseline + genuinely distinct viable alternatives"]
+      HG["M9 Hard Constraint / User-Harm Gate<br/>security • privacy • integrity • destructive safety • explicit compatibility"]
+      TA["M10 Trade-off & Lifecycle Analysis<br/>quality value vs implementation/runtime/ops/maintenance burden"]
+      DR["M11 Engineering Decision Record"]
+      AUTH{"Implementation authorized?"}
+      EX["M12 Controlled Execution<br/>smallest justified blast radius"]
+      VE["M13 Claim-Driven Verification<br/>every material claim maps to evidence"]
+      SC{"M14 Stop Controller<br/>requirements + evidence + acceptable residual risk?"}
+      RP["M15 Concise Braids Verdict"]
+    end
+
+    EC --> CA --> SM --> QS --> RR --> EM --> DG --> CS --> HG --> TA --> DR --> AUTH
+    AUTH -->|"no"| RP
+    AUTH -->|"yes"| EX --> VE --> SC
+    SC -->|"context missing"| CA
+    SC -->|"evidence missing"| EM
+    SC -->|"done"| RP
+
+    subgraph STATE["Session Decision State"]
+      ST["EngineeringContract • AssumptionRegister • HostCapabilities<br/>SystemModel • QualityScenarios • RiskRegister • EvidenceLedger<br/>CandidateSet • DecisionRecord • VerificationClaims • ResidualRiskRegister"]
+    end
+
+    ST -.-> EC
+    ST -.-> SM
+    ST -.-> EM
+    ST -.-> TA
+    ST -.-> VE
+
+    subgraph TOOL["Existing host/dev tools"]
+      TL["filesystem • git • grep/search • compiler • tests • LSP • debugger<br/>profiler • browser • CI • web • scanners • optional MCP"]
+    end
+
+    TL --> CA
+    TL --> EM
+    TL --> VE
+```
 
 ## Layer 1 — Portable methodology
 
@@ -55,6 +113,34 @@ Only added when justified:
 - possibly an MCP server in a later release if a concrete cross-host deterministic need emerges.
 
 ## Runtime lifecycle
+
+<!-- diagram:03-runtime-decision-flow -->
+```mermaid
+flowchart TD
+    A["Task"] --> B{"Material requirement unknown?"}
+    B -->|"yes, discoverable"| C["Inspect / research / test"]
+    B -->|"yes, not discoverable"| D["Ask user"]
+    B -->|"no"| E["Build minimum sufficient system model"]
+    C --> E
+    D --> E
+    E --> F["Compile relevant quality scenarios"]
+    F --> G["Classify engineering depth D0-D4"]
+    G --> H{"Would external evidence materially change decision?"}
+    H -->|"yes"| I["Targeted research"]
+    H -->|"no"| J["Reuse/dependency gate"]
+    I --> J
+    J --> K["Generate baseline + viable candidates"]
+    K --> L["Eliminate hard-constraint violations"]
+    L --> M["Compare trade-offs / lifecycle burden"]
+    M --> N["Decision"]
+    N --> O{"Authorized to implement?"}
+    O -->|"no"| P["Report"]
+    O -->|"yes"| Q["Implement"]
+    Q --> R["Verify material claims"]
+    R --> S{"Stop criteria satisfied?"}
+    S -->|"no"| E
+    S -->|"yes"| P
+```
 
 1. Capability negotiation
 2. Engineering contract

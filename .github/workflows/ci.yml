@@ -33,6 +33,8 @@ jobs:
           .ci-venv/bin/check-jsonschema --check-metaschema schemas/*.json
           python3 scripts/run_evals.py --fixture-tests
           PATH="$PWD/.ci-venv/bin:$PATH" python3 scripts/run_evals.py --full-schema
+      - name: Check embedded diagrams
+        run: python3 scripts/embed_diagrams.py
       - name: Measure context budget
         run: python3 scripts/measure_budget.py
       - name: Test deterministic scripts

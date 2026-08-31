@@ -4,7 +4,7 @@ Research freeze date: **2026-08-31**
 
 This dossier is the source of truth for Braids: product requirements, frozen architecture, module contracts, host integration, security, evidence policy, evaluation, release gates, and implementation records.
 
-> Looking for installation and everyday use? Start with the [project README](../README.md). Looking for what is not yet proven? Read [Known Limitations](29_KNOWN_LIMITATIONS.md).
+> Looking for installation and everyday use? Start with **[braids.vyasdevgna.online](https://braids.vyasdevgna.online)** or the [project README](../README.md). Looking for what is not yet proven? Read [Known Limitations](29_KNOWN_LIMITATIONS.md).
 
 ## Choose your path
 
@@ -16,6 +16,7 @@ This dossier is the source of truth for Braids: product requirements, frozen arc
 | Evaluate behavior | [Evaluation strategy](12_EVALUATION_STRATEGY.md) → [Trigger evals](23_SKILL_TRIGGER_EVAL_SPEC.md) |
 | Review security | [Threat model](10_SECURITY_THREAT_MODEL.md) → [Enforcement coverage](25_SECURITY_ENFORCEMENT_COVERAGE.md) |
 | Check release readiness | [Freeze checklist](26_PREDEVELOPMENT_FREEZE_CHECKLIST.md) → [Traceability](28_REQUIREMENTS_TRACEABILITY_MATRIX.md) → [Known limitations](29_KNOWN_LIMITATIONS.md) |
+| See how it fits together | [System architecture](04_ARCHITECTURE_FREEZE.md) and [host handshake](06_HOST_PLATFORM_INTEGRATION_SPEC.md) — both render their diagrams inline |
 | Trace a design decision | [Decision records](decisions/) → [Implementation map](development/IMPLEMENTATION_MAP.md) |
 
 ## Start here

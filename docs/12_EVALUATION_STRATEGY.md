@@ -9,6 +9,22 @@ Testing Braids requires two separate questions:
 
 Do not mix them.
 
+<!-- diagram:04-evaluation-loop -->
+```mermaid
+flowchart LR
+    A["Eval fixture"] --> B["Run without Braids"]
+    A --> C["Run with Braids"]
+    B --> D["Independent graders"]
+    C --> D
+    D --> E["Compare correctness • risk detection • complexity • scope • evidence • tokens • latency"]
+    E --> F{"Regression?"}
+    F -->|"yes"| G["Diagnose: trigger / kernel / reference / adapter / host limitation"]
+    G --> H["Change one layer"]
+    H --> A
+    F -->|"no"| I["Cross-host conformance run"]
+    I --> J["Release gate"]
+```
+
 ## Eval Layer A — Triggering
 
 Positive prompts:

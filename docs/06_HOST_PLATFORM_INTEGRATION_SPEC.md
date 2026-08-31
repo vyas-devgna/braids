@@ -4,6 +4,42 @@
 
 The portable kernel is authoritative. Adapters may add capability but must not redefine Braids' engineering philosophy.
 
+<!-- diagram:02-host-adapter-sequence -->
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant H as Host
+    participant A as Braids Adapter
+    participant K as Portable Braids Kernel
+    participant T as Host/Dev Tools
+    participant X as Optional Challenger/Verifier
+
+    U->>H: engineering task
+    H->>A: invoke skill/plugin
+    A->>A: detect capabilities and constraints
+    A->>K: HostCapabilities + user request
+    K->>T: inspect project / gather evidence
+    T-->>K: code, tests, configuration, runtime facts
+    K->>K: engineering contract + system model + risk depth
+    alt external evidence can change decision
+        K->>T: targeted docs/source/issues/research
+        T-->>K: evidence
+    end
+    K->>K: candidate + trade-off decision
+    alt depth requires independent challenge and host supports delegation
+        K->>X: decision + evidence + challenge mandate
+        X-->>K: falsification findings
+    end
+    K-->>U: concise decision / request authorization if needed
+    alt implementation authorized
+        K->>T: controlled edits
+        T-->>K: build/test/profiling/security evidence
+        K->>X: optional independent verification
+        X-->>K: verification findings
+        K-->>U: verdict + residual risk
+    end
+```
+
 ## Capability classes
 
 P0 Instruction only: reasoning/reporting.

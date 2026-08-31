@@ -2,6 +2,9 @@
 
 Version: 0.1.0-dev.2 · Date: 2026-08-31
 
+> [!WARNING]
+> Braids is **advisory on every host**. It reasons about unsafe changes; it does not block a tool call. No adapter is `supported` or `tested` — all eight are `experimental`.
+
 This is the report `docs/16` requires before a release candidate. Every entry is something Braids does **not** currently support or has **not** currently proven. Nothing here is aspirational.
 
 ## The blocking gap: no complete graded model run

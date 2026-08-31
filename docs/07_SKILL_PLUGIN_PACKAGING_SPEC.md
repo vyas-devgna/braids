@@ -73,7 +73,8 @@ Do not turn Braids into a CLI framework prematurely.
 No decorative assets in the runtime skill.
 Brand assets may exist at repository root/distribution metadata but should not enter model context.
 
-**Implemented 2026-08-31.** The asset pack lives at `assets/` and is enforced, not merely documented: `scripts/validate.py` fails on any image outside `assets/`, apart from a single file an adapter may stage under `adapters/<host>/files/` for a host manifest that documents a logo field.
+> [!NOTE]
+> **Implemented 2026-08-31.** The asset pack lives at `assets/` and is enforced, not merely documented: `scripts/validate.py` fails on any image outside `assets/`, apart from a single file an adapter may stage under `adapters/<host>/files/` for a host manifest that documents a logo field.
 
 Only one host qualifies. Cursor documents a `logo` field taking a relative path, so its package carries the 256 px icon (59 KB). Claude Code 2.1.248 rejects both `icon` and `logo` as unknown fields under `plugin validate --strict`, in the plugin manifest and the marketplace manifest alike, so no asset is added there. Codex, Antigravity, OpenCode, Copilot, Cline and Windsurf packages carry no asset.
 

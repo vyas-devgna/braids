@@ -30,7 +30,8 @@ Package name `braids-skill`. It exists to serve `npx braids-skill <host>` for ho
 
 ## Marketplace submission
 
-Braids is **not** submitted to any curated marketplace yet, and should not be until the behavioural evidence exists. `docs/22` fails an adapter that claims support it has not demonstrated, and every adapter is currently `experimental`. Submitting now would publish exactly the unevidenced claim the methodology forbids.
+> [!IMPORTANT]
+> Braids is **not** submitted to any curated marketplace yet, and should not be until the behavioural evidence exists. `docs/22` fails an adapter that claims support it has not demonstrated, and every adapter is currently `experimental`. Submitting now would publish exactly the unevidenced claim the methodology forbids.
 
 The order to follow, from `docs/07`:
 

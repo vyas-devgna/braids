@@ -2,6 +2,9 @@
 
 Seven skills. One method. Each skill is a lens onto the same decision procedure in `skills/braids/SKILL.md`; none of them redefines it.
 
+> [!NOTE]
+> On Claude Code, name `braids-review` explicitly — the built-in `code-review` skill wins generic "review this" phrasing. The core `braids` skill is unaffected: no built-in claims risk routing.
+
 ## Choosing one
 
 | You have | Use |
