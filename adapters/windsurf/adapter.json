@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "id": "windsurf",
+  "adapter_version": "0.1.0-dev.1",
+  "methodology_version": "3.0.0",
+  "status": "experimental",
+  "tested_host_versions": [],
+  "surfaces": [
+    "desktop"
+  ],
+  "capabilities_file": "./capabilities.json",
+  "guard_mode_default": false,
+  "install": [
+    "python3 scripts/build_adapters.py --dist dist --only windsurf",
+    "project scope: cp -r dist/windsurf/.windsurf/skills/braids <project>/.windsurf/skills/braids",
+    "global scope: cp -r dist/windsurf/.windsurf/skills/braids ~/.codeium/windsurf/skills/braids"
+  ],
+  "disable": [
+    "remove or rename the installed braids skill directory and reload Cascade"
+  ],
+  "uninstall": [
+    "rm -rf <project>/.windsurf/skills/braids ~/.codeium/windsurf/skills/braids dist/windsurf",
+    "reload Cascade and confirm braids is no longer offered"
+  ],
+  "conformance": [
+    "discovery: not-exercised \u2014 the host is not installed in this environment, so packaging is validated statically only",
+    "activation: not-exercised \u2014 model-invoked skill selection needs graded runs on the host",
+    "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
+    "progressive-disclosure: pass \u2014 the package ships one SKILL.md plus one level of references and no persistent instruction file, which is what the host's documented three-stage discovery/activation/execution loading consumes",
+    "authority: pass \u2014 adapter ships no rules, hooks, agents, commands, variables or MCP, so it cannot widen the host permission model",
+    "degradation: pass \u2014 no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour",
+    "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
+    "state-survival: not-exercised \u2014 compaction and resume behaviour was not measured",
+    "isolation: not-applicable \u2014 no subagents or worktrees are shipped",
+    "uninstall: not-exercised \u2014 the host is not installed in this environment, so packaging is validated statically only"
+  ],
+  "source_revalidated_at": "2026-08-31",
+  "limitations": [
+    "Windsurf documentation now redirects to docs.devin.ai; the product surface is moving and must be revalidated before any release claim.",
+    "No plugin manifest format is documented, so the adapter ships a skill directory only.",
+    "Enterprise system-level skill directories are read-only and are not written by this adapter.",
+    "Cascade also reads .agents/skills and, when Claude Code config reading is enabled, .claude/skills, so a Braids copy installed for another host can appear here.",
+    "No workflow alias, rule, hook or enforcement claim is shipped."
+  ],
+  "package": {
+    "skill_target": ".windsurf/skills/braids",
+    "manifests": []
+  }
+}

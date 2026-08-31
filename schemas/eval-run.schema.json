@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids Evaluation Run",
+  "type": "object",
+  "required": ["case_id", "fixture_hash", "host", "host_version", "model", "model_version", "core_version", "adapter_version", "available_tools", "started_at", "result", "triggered", "observed_depth", "observed_properties", "violations", "claim_evidence_coverage", "telemetry"],
+  "properties": {
+    "case_id": {"type": "string", "minLength": 1},
+    "fixture_hash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "host": {"type": "string", "minLength": 1},
+    "host_version": {"type": ["string", "null"]},
+    "model": {"type": "string", "minLength": 1},
+    "model_version": {"type": ["string", "null"]},
+    "core_version": {"type": "string", "minLength": 1},
+    "adapter_version": {"type": ["string", "null"]},
+    "available_tools": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "started_at": {"type": "string", "format": "date-time"},
+    "result": {"enum": ["pass", "fail", "blocked", "not-run"]},
+    "triggered": {"type": ["boolean", "null"]},
+    "observed_depth": {"enum": ["D0", "D1", "D2", "D3", "D4", "not-applicable", "unknown"]},
+    "observed_properties": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "violations": {"type": "array", "items": {"type": "string"}},
+    "claim_evidence_coverage": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "telemetry": {"$ref": "telemetry.schema.json"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids SystemModel",
+  "type": "object",
+  "required": ["modules", "callers", "callees", "public_contracts", "state", "boundaries", "deployment_flows", "user_flows", "blast_radius", "unknowns"],
+  "properties": {
+    "modules": {"type": "array", "items": {"type": "string"}},
+    "callers": {"type": "array", "items": {"type": "string"}},
+    "callees": {"type": "array", "items": {"type": "string"}},
+    "public_contracts": {"type": "array", "items": {"type": "string"}},
+    "state": {"type": "array", "items": {"type": "string"}},
+    "boundaries": {"type": "array", "items": {"type": "string"}},
+    "deployment_flows": {"type": "array", "items": {"type": "string"}},
+    "user_flows": {"type": "array", "items": {"type": "string"}},
+    "blast_radius": {"type": "string"},
+    "unknowns": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

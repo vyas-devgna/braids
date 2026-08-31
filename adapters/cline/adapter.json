@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "id": "cline",
+  "adapter_version": "0.1.0-dev.1",
+  "methodology_version": "3.0.0",
+  "status": "experimental",
+  "tested_host_versions": [],
+  "surfaces": [
+    "ide-extension"
+  ],
+  "capabilities_file": "./capabilities.json",
+  "guard_mode_default": false,
+  "install": [
+    "python3 scripts/build_adapters.py --dist dist --only cline",
+    "project scope: cp -r dist/cline/.cline/skills/braids <project>/.cline/skills/braids",
+    "global scope: cp -r dist/cline/.cline/skills/braids ~/.cline/skills/braids",
+    "verify in the Cline panel Skills tab"
+  ],
+  "disable": [
+    "toggle braids off in the Cline panel Skills tab"
+  ],
+  "uninstall": [
+    "rm -rf <project>/.cline/skills/braids ~/.cline/skills/braids dist/cline",
+    "confirm the Skills tab no longer lists braids"
+  ],
+  "conformance": [
+    "discovery: not-exercised \u2014 the host is not installed in this environment, so packaging is validated statically only",
+    "activation: not-exercised \u2014 model-invoked skill selection needs graded runs on the host",
+    "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
+    "progressive-disclosure: pass \u2014 the package ships one SKILL.md plus one level of references and no persistent instruction file, which is what the host's documented three-stage discovery/activation/execution loading consumes",
+    "authority: pass \u2014 adapter ships no rules, hooks, agents, commands, variables or MCP, so it cannot widen the host permission model",
+    "degradation: pass \u2014 no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour",
+    "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
+    "state-survival: not-exercised \u2014 compaction and resume behaviour was not measured",
+    "isolation: not-applicable \u2014 no subagents or worktrees are shipped",
+    "uninstall: not-exercised \u2014 the host is not installed in this environment, so packaging is validated statically only"
+  ],
+  "source_revalidated_at": "2026-08-31",
+  "limitations": [
+    "Cline documents no plugin manifest format, so the adapter ships a skill directory only.",
+    "A global skill of the same name takes precedence over a project skill, so a stale global copy silently shadows a project install.",
+    "Cline also reads .clinerules/skills and .claude/skills, so a Braids copy installed for another host can appear here.",
+    "Compaction and resume must preserve material assumptions, decisions and unverified claims; that behaviour was not measured.",
+    "PreToolUse cancellation and lifecycle hooks are not shipped and their coverage is not claimed."
+  ],
+  "package": {
+    "skill_target": ".cline/skills/braids",
+    "manifests": []
+  }
+}

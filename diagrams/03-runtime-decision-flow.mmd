@@ -1,0 +1,24 @@
+flowchart TD
+    A["Task"] --> B{"Material requirement unknown?"}
+    B -->|"yes, discoverable"| C["Inspect / research / test"]
+    B -->|"yes, not discoverable"| D["Ask user"]
+    B -->|"no"| E["Build minimum sufficient system model"]
+    C --> E
+    D --> E
+    E --> F["Compile relevant quality scenarios"]
+    F --> G["Classify engineering depth D0-D4"]
+    G --> H{"Would external evidence materially change decision?"}
+    H -->|"yes"| I["Targeted research"]
+    H -->|"no"| J["Reuse/dependency gate"]
+    I --> J
+    J --> K["Generate baseline + viable candidates"]
+    K --> L["Eliminate hard-constraint violations"]
+    L --> M["Compare trade-offs / lifecycle burden"]
+    M --> N["Decision"]
+    N --> O{"Authorized to implement?"}
+    O -->|"no"| P["Report"]
+    O -->|"yes"| Q["Implement"]
+    Q --> R["Verify material claims"]
+    R --> S{"Stop criteria satisfied?"}
+    S -->|"no"| E
+    S -->|"yes"| P

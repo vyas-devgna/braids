@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids EngineeringContract",
+  "type": "object",
+  "required": ["objective", "scope", "decision_authority", "implementation_authority", "maturity", "supported_environments", "expected_scale", "distribution_model", "hard_constraints", "success_criteria"],
+  "properties": {
+    "objective": {"type": "string", "minLength": 1},
+    "scope": {
+      "type": "object",
+      "required": ["included", "excluded"],
+      "properties": {
+        "included": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "excluded": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "decision_authority": {"enum": ["review", "advise", "recommend-and-wait", "delegated"]},
+    "implementation_authority": {"enum": ["none", "constrained", "full"]},
+    "maturity": {"enum": ["idea", "prototype", "development", "pre-release", "production", "legacy", "unknown"]},
+    "supported_environments": {"type": "array", "items": {"type": "string"}},
+    "expected_scale": {"type": "string"},
+    "distribution_model": {"type": "string"},
+    "hard_constraints": {"type": "array", "items": {"type": "string"}},
+    "success_criteria": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+  },
+  "additionalProperties": false
+}

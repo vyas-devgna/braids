@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids HostCapabilities",
+  "$defs": {
+    "availability": {"enum": ["available", "unavailable", "unknown"]},
+    "enforcementStatus": {"enum": ["enforced", "advisory", "unobserved", "unsupported", "unknown"]}
+  },
+  "type": "object",
+  "required": ["schema_version", "host", "host_version", "surface", "observed_at", "skill_loading", "persistent_instruction", "execution", "network", "code_intelligence", "delegation", "isolation", "permissions", "mcp", "hooks", "enforcement"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "host": {"type": "string", "minLength": 1},
+    "host_version": {"type": ["string", "null"]},
+    "surface": {"enum": ["local", "cloud", "mixed", "unknown"]},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "skill_loading": {"enum": ["none", "manual", "implicit", "manual-and-implicit", "unknown"]},
+    "persistent_instruction": {"enum": ["none", "project", "user", "organization", "multiple", "unknown"]},
+    "execution": {
+      "type": "object",
+      "required": ["read", "write", "shell", "browser"],
+      "properties": {
+        "read": {"$ref": "#/$defs/availability"},
+        "write": {"$ref": "#/$defs/availability"},
+        "shell": {"$ref": "#/$defs/availability"},
+        "browser": {"$ref": "#/$defs/availability"}
+      },
+      "additionalProperties": false
+    },
+    "network": {"enum": ["none", "restricted", "available", "unknown"]},
+    "code_intelligence": {
+      "type": "object",
+      "required": ["text_search", "lsp", "ast", "static_analysis", "compiler", "tests", "profiler"],
+      "properties": {
+        "text_search": {"$ref": "#/$defs/availability"},
+        "lsp": {"$ref": "#/$defs/availability"},
+        "ast": {"$ref": "#/$defs/availability"},
+        "static_analysis": {"$ref": "#/$defs/availability"},
+        "compiler": {"$ref": "#/$defs/availability"},
+        "tests": {"$ref": "#/$defs/availability"},
+        "profiler": {"$ref": "#/$defs/availability"}
+      },
+      "additionalProperties": false
+    },
+    "delegation": {"enum": ["none", "sequential-role", "subagent", "parallel-subagent", "unknown"]},
+    "isolation": {"enum": ["none", "worktree", "sandbox", "vm", "unknown"]},
+    "permissions": {"enum": ["advisory", "interactive", "deterministic-policy", "managed-policy", "unknown"]},
+    "mcp": {"$ref": "#/$defs/availability"},
+    "hooks": {
+      "type": "object",
+      "required": ["availability", "events"],
+      "properties": {
+        "availability": {"$ref": "#/$defs/availability"},
+        "events": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "enforcement": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["operation", "status", "surface", "evidence"],
+        "properties": {
+          "operation": {"type": "string", "minLength": 1},
+          "status": {"$ref": "#/$defs/enforcementStatus"},
+          "surface": {"type": "string", "minLength": 1},
+          "evidence": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

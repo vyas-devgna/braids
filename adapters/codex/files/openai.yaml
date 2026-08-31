@@ -1,0 +1,4 @@
+interface:
+  display_name: "Braids"
+  short_description: "Right-size engineering decisions and implementation"
+  default_prompt: "Use $braids to choose a justified engineering approach and verify only evidence-supported claims."

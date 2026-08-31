@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids VerificationClaims",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "claim", "required_evidence", "status", "evidence_ids", "applicability", "uncertainty"],
+    "properties": {
+      "id": {"type": "string", "minLength": 1},
+      "claim": {"type": "string", "minLength": 1},
+      "required_evidence": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+      "status": {"enum": ["unverified", "supported", "contradicted", "not-applicable"]},
+      "evidence_ids": {"type": "array", "items": {"type": "string"}},
+      "applicability": {"type": "string", "minLength": 1},
+      "uncertainty": {"type": "string"}
+    },
+    "additionalProperties": false
+  }
+}

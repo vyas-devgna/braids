@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids Host Adapter",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "adapter_version",
+    "methodology_version",
+    "status",
+    "tested_host_versions",
+    "surfaces",
+    "capabilities_file",
+    "guard_mode_default",
+    "install",
+    "disable",
+    "uninstall",
+    "conformance",
+    "source_revalidated_at",
+    "limitations",
+    "package"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "adapter_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "methodology_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "experimental",
+        "tested",
+        "supported",
+        "blocked"
+      ]
+    },
+    "tested_host_versions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "surfaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "capabilities_file": {
+      "type": "string",
+      "pattern": "^\\./"
+    },
+    "guard_mode_default": {
+      "const": false
+    },
+    "install": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "disable": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "uninstall": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "conformance": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "string",
+        "pattern": "^(discovery|activation|semantic-parity|progressive-disclosure|authority|degradation|enforcement-truthfulness|state-survival|isolation|uninstall): (pass|fail|not-exercised|not-applicable) \u2014 .+$"
+      }
+    },
+    "source_revalidated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "package": {
+      "type": "object",
+      "required": [
+        "skill_target",
+        "manifests"
+      ],
+      "properties": {
+        "skill_target": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.\\-/]+$"
+        },
+        "manifests": {
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "content"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.\\-/]+\\.json$"
+              },
+              "content": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "extra_files": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

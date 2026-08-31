@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "host": "opencode",
+  "host_version": "1.18.23",
+  "surface": "local",
+  "observed_at": "2026-08-31T00:00:00+00:00",
+  "skill_loading": "manual-and-implicit",
+  "persistent_instruction": "multiple",
+  "execution": {
+    "read": "available",
+    "write": "available",
+    "shell": "available",
+    "browser": "unknown"
+  },
+  "network": "unknown",
+  "code_intelligence": {
+    "text_search": "available",
+    "lsp": "available",
+    "ast": "unknown",
+    "static_analysis": "unknown",
+    "compiler": "unknown",
+    "tests": "unknown",
+    "profiler": "unknown"
+  },
+  "delegation": "subagent",
+  "isolation": "none",
+  "permissions": "deterministic-policy",
+  "mcp": "available",
+  "hooks": {
+    "availability": "unknown",
+    "events": []
+  },
+  "enforcement": []
+}

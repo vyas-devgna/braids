@@ -1,0 +1,3 @@
+# Development/CI only; the portable Braids skill has no runtime dependencies.
+check-jsonschema==0.38.0
+skills-ref==0.1.1

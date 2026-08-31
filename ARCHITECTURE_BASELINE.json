@@ -1,0 +1,30 @@
+{
+  "name": "Braids",
+  "baseline": "v3-predev-0.1",
+  "research_date": "2026-08-31",
+  "portable_core": "Agent Skills compatible skill",
+  "portable_plugin": "Agent Plugins v1 where supported",
+  "mandatory_mcp": false,
+  "mandatory_subagents": false,
+  "persistent_state_default": false,
+  "engineering_depths": [
+    "D0",
+    "D1",
+    "D2",
+    "D3",
+    "D4"
+  ],
+  "tier1_hosts": [
+    "Claude Code",
+    "Codex",
+    "Cursor",
+    "Google Antigravity"
+  ],
+  "tier2_hosts": [
+    "GitHub Copilot",
+    "Windsurf",
+    "OpenCode",
+    "Cline"
+  ],
+  "status": "pre-development architecture freeze candidate"
+}

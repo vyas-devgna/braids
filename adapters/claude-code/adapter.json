@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "id": "claude-code",
+  "adapter_version": "0.1.0-dev.1",
+  "methodology_version": "3.0.0",
+  "status": "experimental",
+  "tested_host_versions": [
+    "2.1.248"
+  ],
+  "surfaces": [
+    "local-cli"
+  ],
+  "capabilities_file": "./capabilities.json",
+  "guard_mode_default": false,
+  "install": [
+    "python3 scripts/build_adapters.py --dist dist --only claude-code",
+    "claude plugin validate <abs>/dist/claude-code/.claude-plugin/plugin.json --strict",
+    "claude plugin marketplace add <abs>/dist/claude-code",
+    "claude plugin install braids@braids-local",
+    "alternative development path: claude --plugin-dir <abs>/dist/claude-code, then /reload-plugins after edits"
+  ],
+  "disable": [
+    "claude plugin disable braids",
+    "or stop passing --plugin-dir and start a new session"
+  ],
+  "uninstall": [
+    "claude plugin uninstall braids",
+    "claude plugin marketplace remove braids-local",
+    "rm -rf dist/claude-code",
+    "confirm with claude plugin list that no braids entry remains"
+  ],
+  "conformance": [
+    "discovery: pass \u2014 on 2.1.248 claude plugin validate --strict exits 0 for both generated manifests, marketplace add plus plugin install succeed, and claude plugin details reports Skills(1) braids with Agents/Hooks/MCP/LSP all 0",
+    "activation: not-exercised \u2014 model-invoked skill selection needs graded runs; claude plugin eval is the identified harness and has not been run",
+    "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
+    "progressive-disclosure: pass \u2014 claude plugin details measured ~192 always-on tokens against ~2.8k on-invoke, and the package ships one SKILL.md plus one level of references with no persistent instruction file",
+    "authority: pass \u2014 the component inventory confirms zero agents, hooks, MCP and LSP servers, so the adapter cannot escalate beyond the session permission mode",
+    "degradation: pass \u2014 no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour",
+    "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
+    "state-survival: not-exercised \u2014 compaction and resume behaviour was not measured",
+    "isolation: not-applicable \u2014 no worktrees or subagents are shipped; worktrees share .git, plugins and approvals",
+    "uninstall: pass \u2014 disable then uninstall then marketplace remove left no entry in claude plugin list, no braids key in ~/.claude/settings.json and no directory under ~/.claude/plugins"
+  ],
+  "source_revalidated_at": "2026-08-31",
+  "limitations": [
+    "PreToolUse can deny only matched, directly tested tool paths; EndConversation skips Pre/PostToolUse and asynchronous events are not blocking.",
+    "Plugin-declared agents do not own session hook, MCP or permission-mode configuration, so no adapter component can be treated as a security boundary.",
+    "Worktrees isolate working files but share .git, project plugins and approvals.",
+    "claude plugin validate resolves the marketplace manifest first when both live in .claude-plugin/, so the plugin manifest must be validated by explicit path.",
+    "Uninstall was clean here, but upstream documents that inert cache versions can persist for about 14 days.",
+    "Guard hooks, custom agents and LSP configuration are deliberately absent until their coverage is measured."
+  ],
+  "package": {
+    "skill_target": "skills/braids",
+    "manifests": [
+      {
+        "path": ".claude-plugin/plugin.json",
+        "content": {
+          "name": "@name",
+          "version": "@version",
+          "description": "@description",
+          "keywords": "@keywords",
+          "author": "@author",
+          "license": "@license",
+          "homepage": "@homepage",
+          "repository": "@repository"
+        }
+      },
+      {
+        "path": ".claude-plugin/marketplace.json",
+        "content": {
+          "name": "braids-local",
+          "description": "Local development marketplace for the Braids adapter.",
+          "plugins": [
+            {
+              "name": "@name",
+              "description": "@description",
+              "source": "./"
+            }
+          ],
+          "owner": "@author"
+        }
+      }
+    ]
+  }
+}

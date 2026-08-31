@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids Local Evaluation Telemetry",
+  "type": "object",
+  "required": ["input_tokens", "output_tokens", "activations", "references_loaded", "files_read", "tool_calls", "research_calls", "subagents", "retries", "verification_iterations", "clarifications", "rework_attempts", "wall_time_ms"],
+  "properties": {
+    "input_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "output_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "activations": {"type": "integer", "minimum": 0},
+    "references_loaded": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "files_read": {"type": "integer", "minimum": 0},
+    "tool_calls": {"type": "integer", "minimum": 0},
+    "research_calls": {"type": "integer", "minimum": 0},
+    "subagents": {"type": "integer", "minimum": 0},
+    "retries": {"type": "integer", "minimum": 0},
+    "verification_iterations": {"type": "integer", "minimum": 0},
+    "clarifications": {"type": "integer", "minimum": 0},
+    "rework_attempts": {"type": "integer", "minimum": 0},
+    "wall_time_ms": {"type": ["integer", "null"], "minimum": 0}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "./schemas/project-metadata.schema.json",
+  "name": "braids",
+  "methodology_version": "3.0.0",
+  "package_version": "0.1.0-dev.1",
+  "agent_plugins_specification": "1.0.0",
+  "guard_mode_default": false,
+  "production_telemetry": false,
+  "persistent_state_default": false,
+  "license": "MIT"
+}

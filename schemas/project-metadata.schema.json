@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids Project Metadata",
+  "type": "object",
+  "required": ["$schema", "name", "methodology_version", "package_version", "agent_plugins_specification", "guard_mode_default", "production_telemetry", "persistent_state_default", "license"],
+  "properties": {
+    "$schema": {"const": "./schemas/project-metadata.schema.json"},
+    "name": {"const": "braids"},
+    "methodology_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "package_version": {"type": "string", "minLength": 1},
+    "agent_plugins_specification": {"const": "1.0.0"},
+    "guard_mode_default": {"const": false},
+    "production_telemetry": {"const": false},
+    "persistent_state_default": {"const": false},
+    "license": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

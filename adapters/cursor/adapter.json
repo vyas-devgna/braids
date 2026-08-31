@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "id": "cursor",
+  "adapter_version": "0.1.0-dev.1",
+  "methodology_version": "3.0.0",
+  "status": "experimental",
+  "tested_host_versions": [],
+  "surfaces": [
+    "desktop",
+    "cli",
+    "cloud"
+  ],
+  "capabilities_file": "./capabilities.json",
+  "guard_mode_default": false,
+  "install": [
+    "python3 scripts/build_adapters.py --dist dist --only cursor",
+    "local testing: cp -r dist/cursor ~/.cursor/plugins/local/braids",
+    "direct skill, project scope: cp -r skills/braids <project>/.cursor/skills/braids or <project>/.agents/skills/braids",
+    "reload Cursor so the plugin directory is rescanned"
+  ],
+  "disable": [
+    "remove the plugin from ~/.cursor/plugins/local and reload",
+    "or remove the direct skill directory and reload"
+  ],
+  "uninstall": [
+    "rm -rf ~/.cursor/plugins/local/braids",
+    "rm -rf <project>/.cursor/skills/braids <project>/.agents/skills/braids dist/cursor",
+    "reload Cursor and confirm braids no longer appears in the plugin list"
+  ],
+  "conformance": [
+    "discovery: not-exercised \u2014 the host is not installed in this environment, so packaging is validated statically only",
+    "activation: not-exercised \u2014 model-invoked skill selection needs graded runs on the host",
+    "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
+    "progressive-disclosure: pass \u2014 the package ships one SKILL.md plus one level of references and no persistent instruction file, which is what the host's documented three-stage discovery/activation/execution loading consumes",
+    "authority: pass \u2014 adapter ships no rules, hooks, agents, commands, variables or MCP, so it cannot widen the host permission model",
+    "degradation: pass \u2014 no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour",
+    "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
+    "state-survival: not-exercised \u2014 compaction and resume behaviour was not measured",
+    "isolation: not-applicable \u2014 no subagents or worktrees are shipped",
+    "uninstall: not-exercised \u2014 the host is not installed in this environment, so packaging is validated statically only"
+  ],
+  "source_revalidated_at": "2026-08-31",
+  "limitations": [
+    "Cursor documents no plugin disable or uninstall contract; local removal is folder deletion plus reload, and marketplace lifecycle is unverified.",
+    "User-level skill directories are not copied to Cloud Agents, remote SSH agents or managed workers, so cloud execution needs its own capability profile.",
+    "Cloud supports command hooks only, omits several local lifecycle events, excludes user hooks, and runs no hooks during initial read-only exploration.",
+    "Third-party Claude hook compatibility runs all matching sources by precedence, so a Braids registration could execute twice if that mode is ever enabled.",
+    "Two manifests are generated because Cursor reads both the portable Agent Plugin root plugin.json and the enhanced .cursor-plugin/plugin.json; neither carries Braids methodology.",
+    "Cursor is the only supported host with a documented manifest logo field, so it is the only package that carries a brand asset; the 256 px icon is 59 KB. Claude Code 2.1.248 rejects both icon and logo as unknown fields under --strict."
+  ],
+  "package": {
+    "skill_target": "skills/braids",
+    "manifests": [
+      {
+        "path": "plugin.json",
+        "content": {
+          "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+          "name": "@name",
+          "version": "@version",
+          "description": "@description",
+          "keywords": "@keywords",
+          "author": "@author",
+          "license": "@license",
+          "homepage": "@homepage",
+          "repository": "@repository"
+        }
+      },
+      {
+        "path": ".cursor-plugin/plugin.json",
+        "content": {
+          "name": "@name",
+          "version": "@version",
+          "description": "@description",
+          "keywords": "@keywords",
+          "author": "@author",
+          "license": "@license",
+          "homepage": "@homepage",
+          "repository": "@repository",
+          "skills": "skills",
+          "logo": "assets/braids-icon-256.png"
+        }
+      }
+    ],
+    "extra_files": {
+      "assets/braids-icon-256.png": "files/braids-icon-256.png"
+    }
+  }
+}

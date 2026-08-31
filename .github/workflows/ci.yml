@@ -1,0 +1,39 @@
+name: conformance
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Create isolated validation environment
+        run: |
+          python3 -m venv .ci-venv
+          .ci-venv/bin/python -m pip install --disable-pip-version-check -r requirements-dev.txt
+      - name: Validate portable package and skill
+        run: |
+          python3 scripts/validate.py
+          .ci-venv/bin/agentskills validate skills/braids
+          .ci-venv/bin/check-jsonschema --schemafile https://agent-plugins.org/schemas/1.0.0/plugin.schema.json plugin.json
+      - name: Validate host adapters
+        run: |
+          python3 scripts/build_adapters.py --dist dist
+          .ci-venv/bin/check-jsonschema --schemafile schemas/adapter.schema.json adapters/*/adapter.json
+          .ci-venv/bin/check-jsonschema --schemafile schemas/host-capabilities.schema.json adapters/*/capabilities.json
+          .ci-venv/bin/agentskills validate dist/claude-code/skills/braids
+      - name: Validate contracts and evals
+        run: |
+          .ci-venv/bin/check-jsonschema --check-metaschema schemas/*.json
+          python3 scripts/run_evals.py --fixture-tests
+          PATH="$PWD/.ci-venv/bin:$PATH" python3 scripts/run_evals.py --full-schema
+      - name: Measure context budget
+        run: python3 scripts/measure_budget.py
+      - name: Test deterministic scripts
+        run: python3 -m unittest discover -s tests -v

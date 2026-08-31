@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "antigravity",
+  "adapter_version": "0.1.0-dev.1",
+  "methodology_version": "3.0.0",
+  "status": "experimental",
+  "tested_host_versions": [],
+  "surfaces": [
+    "ide",
+    "cli"
+  ],
+  "capabilities_file": "./capabilities.json",
+  "guard_mode_default": false,
+  "install": [
+    "python3 scripts/build_adapters.py --dist dist --only antigravity",
+    "CLI: agy plugin install <abs>/dist/antigravity, then agy plugin list",
+    "IDE workspace plugin: cp -r dist/antigravity <project>/.agents/plugins/braids",
+    "direct workspace skill: cp -r skills/braids <project>/.agents/skills/braids"
+  ],
+  "disable": [
+    "agy plugin disable braids",
+    "or remove the workspace plugin directory and reload the IDE"
+  ],
+  "uninstall": [
+    "agy plugin uninstall braids",
+    "rm -rf <project>/.agents/plugins/braids <project>/.agents/skills/braids dist/antigravity",
+    "confirm with agy plugin list that no braids entry remains"
+  ],
+  "conformance": [
+    "discovery: not-exercised \u2014 the host is not installed in this environment, so packaging is validated statically only",
+    "activation: not-exercised \u2014 model-invoked skill selection needs graded runs on the host",
+    "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
+    "progressive-disclosure: pass \u2014 the package ships one SKILL.md plus one level of references and no persistent instruction file, which is what the host's documented three-stage discovery/activation/execution loading consumes",
+    "authority: pass \u2014 adapter ships no rules, hooks, agents, commands, variables or MCP, so it cannot widen the host permission model",
+    "degradation: pass \u2014 no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour",
+    "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
+    "state-survival: not-exercised \u2014 compaction and resume behaviour was not measured",
+    "isolation: not-applicable \u2014 no subagents or worktrees are shipped",
+    "uninstall: not-exercised \u2014 the host is not installed in this environment, so packaging is validated statically only"
+  ],
+  "source_revalidated_at": "2026-08-31",
+  "limitations": [
+    "Official global locations conflict across pages: the IDE documents ~/.gemini/antigravity/skills, the plugins page documents ~/.gemini/config/plugins, and the CLI documents ~/.gemini/antigravity-cli/plugins, so no global installer is claimed and only the workspace path is documented as stable.",
+    "The manifest is Antigravity's own, not the portable Agent Plugins manifest; only name is mandatory, with $schema and description optional.",
+    "Hooks are command-only and operation-specific, and Web or extension parity is not documented, so those surfaces stay unknown.",
+    "Braids is shipped as a skill, never as a Workflow: its path is adaptive rather than a fixed slash-invoked step list.",
+    "No rules, hooks, agents or MCP configuration are shipped."
+  ],
+  "package": {
+    "skill_target": "skills/braids",
+    "manifests": [
+      {
+        "path": "plugin.json",
+        "content": {
+          "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+          "name": "@name",
+          "description": "@description"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids Session Decision State",
+  "type": "object",
+  "required": ["schema_version", "session_id", "phase", "host_capabilities", "engineering_contract", "assumptions", "system_model", "quality_scenarios", "risk_register", "evidence_ledger", "candidate_set", "decision_record", "verification_claims", "residual_risks"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "session_id": {"type": "string", "minLength": 1},
+    "phase": {"enum": ["contract", "context", "decision", "execution", "verification", "complete"]},
+    "host_capabilities": {"$ref": "host-capabilities.schema.json"},
+    "engineering_contract": {"$ref": "engineering-contract.schema.json"},
+    "assumptions": {"$ref": "assumption-register.schema.json"},
+    "system_model": {"$ref": "system-model.schema.json"},
+    "quality_scenarios": {"$ref": "quality-scenarios.schema.json"},
+    "risk_register": {"$ref": "risk-register.schema.json"},
+    "evidence_ledger": {"$ref": "evidence-ledger.schema.json"},
+    "candidate_set": {"$ref": "candidate-set.schema.json"},
+    "decision_record": {"anyOf": [{"$ref": "decision-record.schema.json"}, {"type": "null"}]},
+    "verification_claims": {"$ref": "verification-claims.schema.json"},
+    "residual_risks": {"$ref": "residual-risk-register.schema.json"}
+  },
+  "additionalProperties": false
+}

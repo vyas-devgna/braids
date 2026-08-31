@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids AssumptionRegister",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "statement", "status", "material_if_false", "resolution", "evidence", "decision_effect"],
+    "properties": {
+      "id": {"type": "string", "minLength": 1},
+      "statement": {"type": "string", "minLength": 1},
+      "status": {"enum": ["stated", "observed", "documented", "inferred", "accepted", "unknown"]},
+      "material_if_false": {"type": "boolean"},
+      "resolution": {"type": ["string", "null"]},
+      "evidence": {"type": "array", "items": {"type": "string"}},
+      "decision_effect": {"type": "string"}
+    },
+    "additionalProperties": false
+  }
+}

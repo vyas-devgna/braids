@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "host": "unknown",
+  "host_version": null,
+  "surface": "unknown",
+  "observed_at": "2026-08-31T00:00:00Z",
+  "skill_loading": "unknown",
+  "persistent_instruction": "unknown",
+  "execution": {
+    "read": "unknown",
+    "write": "unknown",
+    "shell": "unknown",
+    "browser": "unknown"
+  },
+  "network": "unknown",
+  "code_intelligence": {
+    "text_search": "unknown",
+    "lsp": "unknown",
+    "ast": "unknown",
+    "static_analysis": "unknown",
+    "compiler": "unknown",
+    "tests": "unknown",
+    "profiler": "unknown"
+  },
+  "delegation": "unknown",
+  "isolation": "unknown",
+  "permissions": "unknown",
+  "mcp": "unknown",
+  "hooks": {
+    "availability": "unknown",
+    "events": []
+  },
+  "enforcement": []
+}

@@ -1,0 +1,29 @@
+Source,Class,URL,Evidence used,Braids decision affected,Confidence
+Agent Skills specification,Primary standard,https://agentskills.io/specification,SKILL.md structure; references/scripts/assets; progressive disclosure; current metadata/instruction guidance,"Portable core, token policy, packaging",High
+Agent Skills description optimization,Primary standard guide,https://agentskills.io/skill-creation/optimizing-descriptions,Description is primary trigger signal; positive/negative evals; repeated runs; train/validation split,Trigger eval plan,High
+Agent Plugins v1.0.0,Primary standard,https://agent-plugins.org/specification,Portable plugin manifest; v1 portable components are skills and MCP; client extensions remain vendor-specific,Portability architecture,High
+Claude Code plugins,Primary vendor,https://code.claude.com/docs/en/plugins,Plugin layout; skill/agent/hook/MCP/LSP; local development; validation/distribution,Claude adapter,High
+Claude Code hooks,Primary vendor,https://code.claude.com/docs/en/hooks-guide,Deterministic lifecycle hooks,Claude enforcement adapter,High
+Claude Code subagents,Primary vendor,https://code.claude.com/docs/en/sub-agents,Subagent specialization/isolation behavior,Optional roles,High
+Codex skills,Primary vendor,https://learn.chatgpt.com/docs/build-skills,Skill authoring/progressive disclosure,Codex adapter and token design,High
+Codex hooks,Primary vendor,https://learn.chatgpt.com/docs/hooks,Hook lifecycle; coverage limitations; context implications,Enforcement coverage,High
+Codex subagents,Primary vendor,https://learn.chatgpt.com/docs/agent-configuration/subagents,Parallel read-heavy benefits; write conflict/token costs,Subagent policy,High
+Codex AGENTS.md,Primary vendor,https://learn.chatgpt.com/docs/agent-configuration/agents-md,Hierarchical project instructions,Guard Mode adapter,High
+Cursor plugins,Primary vendor,https://prod.cursor.com/docs/reference/plugins,Agent Plugin vs Cursor Plugin; rules/agents/commands/hooks/variables,Cursor adapter,High
+Cursor hooks,Primary vendor,https://prod.cursor.com/docs/hooks,Observe/block/modify lifecycle behavior,Cursor enforcement,High
+Antigravity skills,Primary vendor,https://www.antigravity.google/docs/ide/skills/,Skill locations and progressive behavior,Antigravity adapter,High
+Antigravity plugins,Primary vendor,https://antigravity.google/docs/plugins/,plugin.json; skills/rules/MCP/hooks,Antigravity packaging,High
+Copilot plugins,Primary vendor,https://docs.github.com/en/copilot/concepts/agents/about-plugins,Agents/skills/hooks/MCP/LSP plugin components,Copilot adapter,High
+Copilot hooks,Primary vendor,https://docs.github.com/en/copilot/reference/hooks-reference,CLI/cloud hook behavior differs,Copilot capability split,High
+Windsurf/Cascade skills,Primary vendor surface,https://docs.devin.ai/desktop/cascade/skills,Cascade skill mechanics,Windsurf adapter; freshness recheck required,Medium
+OpenCode skills v2,Primary vendor,https://opencode.ai/v2/docs/skills,Lazy skill body/reference loading,OpenCode adapter,High
+OpenCode permissions v2,Primary vendor,https://opencode.ai/v2/docs/permissions,Version-sensitive granular permissions,OpenCode policy adapter,High
+Cline skills,Primary vendor,https://docs.cline.bot/customization/skills,Progressive skill loading,Cline adapter,High
+Cline hooks,Primary vendor,https://docs.cline.bot/customization/hooks,Lifecycle hooks including PreToolUse/compaction,Cline enforcement/state,High
+CMU SEI ATAM,Primary research/SEI,https://www.sei.cmu.edu/library/the-architecture-tradeoff-analysis-method/,Quality-attribute tradeoff analysis,Braids engineering decision method,High
+NIST SSDF 1.1,Primary standard,https://csrc.nist.gov/pubs/sp/800/218/final,Security integrated into SDLC,Security invariants,High
+OpenSSF OSS evaluation,Primary industry guidance,https://best.openssf.org/Concise-Guide-for-Evaluating-Open-Source-Software.html,Dependency necessity/security/maintenance/authenticity,Reuse/dependency gate,High
+SLSA provenance,Primary specification,https://slsa.dev/spec/v1.2/provenance,Artifact/source provenance semantics,High-assurance dependency/release checks,High
+MCP specification,Primary specification,https://modelcontextprotocol.io/specification/2025-03-26,Trust/authorization/tool execution model,MCP optionality/security,High
+Ponytail,Public implementation precedent,https://github.com/DietrichGebert/ponytail,Cross-host methodology packaging precedent,Structural precedent only,Medium
+Superpowers,Public implementation precedent,https://github.com/obra/superpowers,Multi-skill methodology packaging,Modularity/orchestration precedent,Medium

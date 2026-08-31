@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids DecisionRecord",
+  "type": "object",
+  "required": ["selected_candidate_id", "rationale", "rejected_alternatives", "assumption_ids", "evidence_ids", "interfaces", "fallbacks", "migration", "rollback", "recovery", "resource_expectations", "verification_claim_ids", "residual_risk_ids"],
+  "properties": {
+    "selected_candidate_id": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1},
+    "rejected_alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["candidate_id", "reason"],
+        "properties": {
+          "candidate_id": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "assumption_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence_ids": {"type": "array", "items": {"type": "string"}},
+    "interfaces": {"type": "array", "items": {"type": "string"}},
+    "fallbacks": {"type": "array", "items": {"type": "string"}},
+    "migration": {"type": ["string", "null"]},
+    "rollback": {"type": ["string", "null"]},
+    "recovery": {"type": ["string", "null"]},
+    "resource_expectations": {"type": "array", "items": {"type": "string"}},
+    "verification_claim_ids": {"type": "array", "items": {"type": "string"}},
+    "residual_risk_ids": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

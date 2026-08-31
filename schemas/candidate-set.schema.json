@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids CandidateSet",
+  "type": "object",
+  "required": ["baseline_candidate_id", "candidates"],
+  "properties": {
+    "baseline_candidate_id": {"type": ["string", "null"]},
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "summary", "viable", "hard_constraint_failures", "scenario_value", "lifecycle_burden", "residual_risks"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "summary": {"type": "string", "minLength": 1},
+          "viable": {"type": "boolean"},
+          "hard_constraint_failures": {"type": "array", "items": {"type": "string"}},
+          "scenario_value": {"type": "array", "items": {"type": "string"}},
+          "lifecycle_burden": {"type": "array", "items": {"type": "string"}},
+          "residual_risks": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

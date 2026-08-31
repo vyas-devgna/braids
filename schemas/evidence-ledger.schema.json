@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids EvidenceLedger",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "claim", "evidence_type", "source", "version_or_date", "applicability", "confidence", "contradicting_evidence", "unknowns", "decision_effect"],
+    "properties": {
+      "id": {"type": "string", "minLength": 1},
+      "claim": {"type": "string", "minLength": 1},
+      "evidence_type": {"enum": ["measured", "observed", "primary-documented", "upstream-source", "incident-issue", "mature-comparable", "standard-research", "secondary", "inferred", "unknown"]},
+      "source": {"type": "string", "minLength": 1},
+      "version_or_date": {"type": ["string", "null"]},
+      "applicability": {"type": "string", "minLength": 1},
+      "confidence": {"enum": ["high", "medium", "low", "unknown"]},
+      "contradicting_evidence": {"type": "array", "items": {"type": "string"}},
+      "unknowns": {"type": "array", "items": {"type": "string"}},
+      "decision_effect": {"type": "string", "minLength": 1}
+    },
+    "additionalProperties": false
+  }
+}

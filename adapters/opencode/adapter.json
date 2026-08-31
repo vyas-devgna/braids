@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "id": "opencode",
+  "adapter_version": "0.1.0-dev.1",
+  "methodology_version": "3.0.0",
+  "status": "experimental",
+  "tested_host_versions": [
+    "1.18.23"
+  ],
+  "surfaces": [
+    "local-cli",
+    "local-tui"
+  ],
+  "capabilities_file": "./capabilities.json",
+  "guard_mode_default": false,
+  "install": [
+    "python3 scripts/build_adapters.py --dist dist --only opencode",
+    "project scope: cp -r dist/opencode/.opencode/skill/braids <project>/.opencode/skill/braids",
+    "user scope: cp -r dist/opencode/.opencode/skill/braids ~/.config/opencode/skill/braids",
+    "verify with opencode debug skill"
+  ],
+  "disable": [
+    "remove or rename the installed braids skill directory",
+    "or run opencode with --pure to exclude external plugins for one session"
+  ],
+  "uninstall": [
+    "rm -rf <project>/.opencode/skill/braids ~/.config/opencode/skill/braids",
+    "confirm with opencode debug skill that braids is no longer listed"
+  ],
+  "conformance": [
+    "discovery: pass \u2014 on 1.18.23 opencode debug skill listed braids with its location resolved to the installed <project>/.opencode/skill/braids/SKILL.md",
+    "activation: not-exercised \u2014 model-invoked skill selection needs graded runs, not a discovery listing",
+    "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
+    "progressive-disclosure: pass \u2014 OpenCode advertises skill metadata and loads the body on invocation; supporting files stay unread until the model opens them",
+    "authority: pass \u2014 the adapter installs a skill directory only and declares no permission, agent or tool policy, so it cannot widen the host permission model",
+    "degradation: pass \u2014 no MCP, LSP or permission dependency is declared, so absent optional tools remove no adapter behaviour",
+    "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
+    "state-survival: not-exercised \u2014 compaction and resume behaviour was not measured",
+    "isolation: not-applicable \u2014 no subagents are shipped",
+    "uninstall: pass \u2014 deleting the skill directory removed braids from opencode debug skill and left no opencode.json entry, because the adapter writes no configuration"
+  ],
+  "source_revalidated_at": "2026-08-31",
+  "limitations": [
+    "OpenCode has no plugin manifest for skills; opencode plugin installs JavaScript modules, which is a different extension surface that this adapter does not use.",
+    "Global skills resolve under ~/.config/opencode/skill(s)/<name>/SKILL.md, not ~/.opencode/; installing to the wrong path silently loads nothing.",
+    "Permission policy differs between V1 and V2 configuration, so no permission file is shipped; Guard Mode stays off and any policy must be authored against the installed version.",
+    "Subagent recursion and capability limits are version-specific and were not exercised.",
+    "OpenCode also auto-loads external skills from ~/.claude/skills and ~/.agents/skills, so a Braids copy installed for another host can appear here; OPENCODE_DISABLE_EXTERNAL_SKILLS=1 suppresses that scan."
+  ],
+  "package": {
+    "skill_target": ".opencode/skill/braids",
+    "manifests": []
+  }
+}

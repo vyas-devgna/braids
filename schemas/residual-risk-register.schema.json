@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids ResidualRiskRegister",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "description", "impact", "evidence", "owner", "accepted", "next_action"],
+    "properties": {
+      "id": {"type": "string", "minLength": 1},
+      "description": {"type": "string", "minLength": 1},
+      "impact": {"type": "string", "minLength": 1},
+      "evidence": {"type": "array", "items": {"type": "string"}},
+      "owner": {"type": ["string", "null"]},
+      "accepted": {"type": "boolean"},
+      "next_action": {"type": ["string", "null"]}
+    },
+    "additionalProperties": false
+  }
+}

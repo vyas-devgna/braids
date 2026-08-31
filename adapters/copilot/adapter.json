@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "id": "copilot",
+  "adapter_version": "0.1.0-dev.1",
+  "methodology_version": "3.0.0",
+  "status": "experimental",
+  "tested_host_versions": [
+    "1.0.82"
+  ],
+  "surfaces": [
+    "local-cli"
+  ],
+  "capabilities_file": "./capabilities.json",
+  "guard_mode_default": false,
+  "install": [
+    "python3 scripts/build_adapters.py --dist dist --only copilot",
+    "plugin form: copilot --plugin-dir <abs>/dist/copilot, or copilot plugin install <owner>/<repo>:adapters/copilot once published",
+    "skill form: copilot skill add <abs>/dist/copilot/skills/braids",
+    "repository form: cp -r skills/braids <project>/.github/skills/braids",
+    "verify with copilot skill list or copilot plugins list"
+  ],
+  "disable": [
+    "copilot plugins disable braids --plugin",
+    "or stop passing --plugin-dir and start a new session"
+  ],
+  "uninstall": [
+    "copilot skill remove <abs>/dist/copilot/skills/braids (the directory path is required; the bare name braids is rejected)",
+    "copilot plugin uninstall braids, for a marketplace or repository install",
+    "rm -rf <project>/.github/skills/braids dist/copilot",
+    "confirm with copilot skill list and copilot plugin list that no braids entry remains"
+  ],
+  "conformance": [
+    "discovery: pass \u2014 on 1.0.82 copilot skill add registered the skill and copilot skill list showed it under Custom skills, and copilot plugin list --plugin-dir listed braids as an external plugin from the generated root plugin.json",
+    "activation: not-exercised \u2014 model-invoked skill selection needs graded runs",
+    "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
+    "progressive-disclosure: pass \u2014 the package ships one SKILL.md plus one level of references and no repository instruction file",
+    "authority: pass \u2014 adapter ships no hooks, agents, MCP or LSP configuration, so it cannot widen the CLI permission flags",
+    "degradation: pass \u2014 no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour",
+    "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
+    "state-survival: not-exercised \u2014 compaction and resume behaviour was not measured",
+    "isolation: not-applicable \u2014 no custom agents are shipped",
+    "uninstall: pass \u2014 copilot skill remove <directory> cleared the entry and emptied skillDirectories in ~/.copilot/settings.json; removal by bare skill name is rejected"
+  ],
+  "source_revalidated_at": "2026-08-31",
+  "limitations": [
+    "Copilot CLI 1.0.82 discovers skills from .github/skills, .agents/skills and .claude/skills in a project, from ~/.copilot/skills and ~/.agents/skills for a user, from installed plugins, and from directories added with copilot skill add; only the local CLI surface is addressed here.",
+    "The Copilot cloud agent runs in an ephemeral environment that does not inherit local user plugins or skills, so a separate copilot-cloud profile is required before any cloud claim is made.",
+    "Hook availability and pre-tool denial semantics differ between CLI and cloud, so no blanket hook capability is declared.",
+    "--add-dir loads a directory's .github/skills and .github/agents as trusted configuration, which is a trust decision the installer must make deliberately.",
+    "copilot skill remove requires the directory path that was added, not the skill name; using the name fails with a no-matching-skill error.",
+    "Adding a skill directory writes an absolute path into ~/.copilot/settings.json skillDirectories; removal clears the entry but leaves the empty array."
+  ],
+  "package": {
+    "skill_target": "skills/braids",
+    "manifests": [
+      {
+        "path": "plugin.json",
+        "content": {
+          "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+          "name": "@name",
+          "version": "@version",
+          "description": "@description",
+          "keywords": "@keywords",
+          "author": "@author",
+          "license": "@license",
+          "homepage": "@homepage",
+          "repository": "@repository"
+        }
+      }
+    ]
+  }
+}

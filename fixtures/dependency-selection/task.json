@@ -1,0 +1,19 @@
+{
+  "objective": "Validate a small fixed configuration object during local package checks.",
+  "existing_capabilities": [
+    "Python standard library",
+    "JSON Schemas already maintained for interchange",
+    "isolated development-only check-jsonschema command"
+  ],
+  "candidate_dependency": {
+    "name": "example-validator-framework",
+    "runtime_transitive_dependencies": 12,
+    "license": "compatible",
+    "maintenance": "active",
+    "platforms": ["Linux", "macOS", "Windows"]
+  },
+  "constraints": [
+    "portable skill has no runtime dependencies",
+    "schema conformance remains testable"
+  ]
+}

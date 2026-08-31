@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Braids Evaluation Case",
+  "type": "object",
+  "required": ["id", "category", "partition", "requirement_ids", "module_owners", "fixture", "fixture_hash", "prompt", "expected_trigger", "expected_depth", "expected_properties", "forbidden_properties", "hidden_checks", "cost_budget_class"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]*$"},
+    "category": {"type": "string", "minLength": 1},
+    "partition": {"enum": ["train", "validation", "holdout", "host-regression"]},
+    "requirement_ids": {"type": "array", "items": {"type": "string", "pattern": "^(R-[0-9]{3}|NFR-10)$"}, "minItems": 1, "uniqueItems": true},
+    "module_owners": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "fixture": {"type": ["string", "null"]},
+    "fixture_hash": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "prompt": {"type": "string", "minLength": 1},
+    "expected_trigger": {"enum": ["yes", "no", "conditional"]},
+    "host_constraints": {"type": "object"},
+    "expected_depth": {"enum": ["D0", "D1", "D2", "D3", "D4", "variable", "not-applicable"]},
+    "expected_properties": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+    "forbidden_properties": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "hidden_checks": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "cost_budget_class": {"enum": ["tiny", "small", "medium", "high", "scenario-dependent"]}
+  },
+  "additionalProperties": false
+}
