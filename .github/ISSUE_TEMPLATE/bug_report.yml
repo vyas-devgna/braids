@@ -1,0 +1,31 @@
+name: Bug report
+description: Braids behaved wrongly on a real task
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Braids is advisory and experimental. If it failed to *block* something, that is expected — it ships no hooks. See docs/29_KNOWN_LIMITATIONS.md.
+  - type: input
+    id: host
+    attributes:
+      label: Host and version
+      placeholder: "claude-code 2.1.248 / codex 0.150.1 / opencode 1.18.23"
+    validations: { required: true }
+  - type: textarea
+    id: prompt
+    attributes:
+      label: What you asked
+      description: The prompt or task, as close to verbatim as you can share.
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected versus what happened
+      description: If Braids did not activate, say so — that is a trigger bug and worth reporting.
+    validations: { required: true }
+  - type: input
+    id: skills
+    attributes:
+      label: How many skills are installed?
+      description: "Codex truncates skill descriptions under context pressure, which affects triggering. `claude plugin list` or `opencode debug skill` will tell you."

@@ -7,8 +7,8 @@ marginal value) need graded host runs and are not produced here.
 
 Token counts are a chars/4 ESTIMATE, not a tokenizer result. The estimator is
 calibrated against the one host-authoritative measurement available:
-`claude plugin details braids` on Claude Code 2.1.248 reported ~280 always-on and
-~2.8k on-invoke tokens.
+`claude plugin details braids` on Claude Code 2.1.248 reported ~778 always-on
+across the seven skills and ~3.1k when the core skill fires.
 """
 
 from __future__ import annotations
@@ -37,8 +37,11 @@ CEILINGS = {
 }
 # Host-measured, not estimated. Recorded so drift is visible when the kernel changes.
 OBSERVED = {
-    # `claude plugin details braids`, methodology 3.0.0 with the widened description.
-    "claude-code@2.1.248": {"always_on_tokens": 280, "on_invoke_tokens": 2800},
+    # `claude plugin details braids` on the seven-skill set, methodology 3.0.0.
+    # Per-component always-on: braids 310, review 90, audit 80, depth 80, risk 80,
+    # claims 70, help 60. On-invoke: braids 3.1k, depth 1.2k, help 960, audit 810,
+    # review 800, claims 760, risk 700.
+    "claude-code@2.1.248": {"always_on_tokens": 778, "on_invoke_tokens": 3100},
 }
 
 

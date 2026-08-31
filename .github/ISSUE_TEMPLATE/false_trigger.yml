@@ -1,0 +1,23 @@
+name: Trigger problem
+description: Braids fired when it should not have, or stayed silent when it should have fired
+labels: [trigger]
+body:
+  - type: dropdown
+    id: direction
+    attributes:
+      label: Which way
+      options:
+        - Fired on something trivial (over-trigger)
+        - Stayed silent on something risky (under-trigger)
+    validations: { required: true }
+  - type: input
+    id: host
+    attributes:
+      label: Host and version
+    validations: { required: true }
+  - type: textarea
+    id: prompt
+    attributes:
+      label: The prompt
+      description: Trigger behaviour is decided by the skill description, so the exact wording matters.
+    validations: { required: true }
