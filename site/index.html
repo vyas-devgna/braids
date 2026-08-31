@@ -1,32 +1,484 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en" data-slide="what">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Braids — safer AI coding without the ceremony</title>
-<meta name="description" content="Braids helps AI coding agents keep simple changes simple and treat risky changes with the care they deserve.">
-<meta name="theme-color" content="#0c0d10"><meta property="og:title" content="Braids"><meta property="og:description" content="Safer AI coding without unnecessary ceremony."><meta property="og:image" content="https://braids.vyasdevgna.online/braids-mascot.png"><link rel="icon" href="braids-icon-256.png">
+<meta name="description" content="Braids keeps simple code changes simple and gives risky changes the care they deserve.">
+<link rel="icon" href="braids-icon-256.png">
+<meta property="og:title" content="Braids">
+<meta property="og:description" content="Safer AI coding without unnecessary ceremony.">
+<meta property="og:image" content="https://braids.vyasdevgna.online/braids-mascot.png">
+<meta name="theme-color" content="#0a0b0d">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <style>
-:root{--bg:#0c0d10;--panel:#15171c;--ink:#f2efe9;--muted:#a2a6ae;--dim:#737983;--line:#2a2e36;--amber:#e4a448;--green:#77bea0;--red:#e17463;--max:1160px;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit}.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:9;background:var(--ink);color:var(--bg);padding:8px}
-header{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center}.nav{display:flex;align-items:center;gap:25px}.brand{font-weight:750;text-decoration:none;display:flex;align-items:center;gap:10px}.brand:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--amber);box-shadow:0 0 16px var(--amber)}nav{margin-left:auto;display:flex;gap:24px}nav a,.github{color:var(--muted);font-size:14px;text-decoration:none}.github{border:1px solid var(--line);border-radius:9px;padding:8px 13px}
-.hero{min-height:720px;display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:50px;overflow:hidden}.hero-copy{z-index:1}.kicker{color:var(--amber);font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}.hero h1{font-size:clamp(54px,7vw,92px);line-height:.93;letter-spacing:-.06em;margin:24px 0 28px}.hero h1 span{color:var(--dim)}.lede{font-size:clamp(18px,2vw,22px);color:var(--muted);max-width:620px}.actions{display:flex;gap:12px;margin:32px 0 24px}.btn{padding:12px 17px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px}.primary{background:var(--ink);color:var(--bg)}.secondary{border:1px solid var(--line);color:var(--muted)}.truth{color:var(--dim);font:12px/1.4 var(--mono)}.figure{height:650px;position:relative;align-self:end}.figure img{position:absolute;right:-90px;bottom:-15px;width:min(700px,55vw);max-width:none;filter:brightness(.9);mask-image:linear-gradient(90deg,transparent,#000 25%,#000 88%,transparent)}
-section{padding:105px 0;border-top:1px solid var(--line)}.head{display:grid;grid-template-columns:.55fr 1.45fr;gap:40px;margin-bottom:48px}.head h2{font-size:clamp(36px,4.5vw,58px);line-height:1.02;letter-spacing:-.045em;margin:0}.head p{color:var(--muted);font-size:18px;max-width:680px;margin:8px 0 0}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px}
-.example{display:grid;grid-template-columns:1fr 1fr;gap:16px}.codebar{padding:12px 16px;border-bottom:1px solid var(--line);color:var(--dim);font:12px/1 var(--mono)}pre{margin:0;padding:24px;overflow:auto;font:14px/1.75 var(--mono)}.minus{color:var(--red)}.plus{color:var(--green)}.finding{padding:21px 24px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:72px 1fr;gap:14px}.finding:last-child{border:0}.finding b{font:700 11px/1.5 var(--mono);text-transform:uppercase}.finding p{color:var(--muted);margin:0}.bad b{color:var(--red)}.risk b{color:var(--amber)}.good b{color:var(--green)}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.step,.skill{padding:25px}.step small,.skill code{color:var(--amber);font:600 12px/1 var(--mono)}.step h3,.skill h3{margin:25px 0 9px}.step p,.skill p{color:var(--muted);margin:0}.depths{display:grid;grid-template-columns:repeat(5,1fr);margin-top:16px;overflow:hidden}.depth{padding:19px;border-right:1px solid var(--line)}.depth:last-child{border:0}.depth b{color:var(--amber);font:700 13px/1 var(--mono)}.depth span{display:block;color:var(--muted);font-size:13px;margin-top:9px}
-.skills{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.skill:first-child{grid-column:span 2}.skill h3{margin:18px 0 8px}.skill p{font-size:14px}.install{display:grid;grid-template-columns:.72fr 1.28fr;gap:55px}.install h2{font-size:clamp(40px,5vw,64px);line-height:1;margin:18px 0}.install p{color:var(--muted)}.commands{display:grid;gap:12px}.command{position:relative;text-align:left;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px 50px 17px 18px;cursor:pointer}.command:hover{border-color:#464b55}.command b{display:block;color:var(--dim);font:10px/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}.command code{font:13px/1.65 var(--mono);white-space:pre-wrap}.copy{position:absolute;right:14px;top:14px;color:var(--dim);font:11px/1 var(--mono)}
-.honest{display:grid;grid-template-columns:1fr 1fr;gap:16px}.honest article{padding:27px}.honest h3{font-size:21px;margin:13px 0}.honest ul{color:var(--muted);padding-left:20px}.honest li+li{margin-top:8px}.status{color:var(--amber);font:11px/1 var(--mono);border:1px solid #64481f;border-radius:20px;padding:5px 9px}footer{padding:38px 0 58px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}.foot{display:flex;gap:20px}.foot a{color:var(--muted);text-decoration:none}.push{margin-left:auto}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,12px);opacity:0;background:var(--ink);color:var(--bg);padding:9px 13px;border-radius:20px;font:700 11px/1 var(--mono);transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:800px){nav{display:none}.hero{grid-template-columns:1fr;min-height:auto}.hero-copy{padding-top:80px}.figure{height:410px}.figure img{right:50%;transform:translateX(50%);width:600px}.head,.example,.install,.honest{grid-template-columns:1fr}.grid3,.skills{grid-template-columns:1fr 1fr}.depths{grid-template-columns:1fr}.depth{border-right:0;border-bottom:1px solid var(--line)}section{padding:75px 0}}
-@media(max-width:520px){.hero h1{font-size:48px}.figure{height:320px}.figure img{width:500px}.grid3,.skills{grid-template-columns:1fr}.skill:first-child{grid-column:auto}.finding{grid-template-columns:1fr}.foot{flex-wrap:wrap}.push{margin-left:0;width:100%}.github{margin-left:auto}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-</style></head><body>
-<a class="skip" href="#main">Skip to content</a><header><div class="wrap nav"><a class="brand" href="#">Braids</a><nav><a href="#why">Why</a><a href="#how">How it works</a><a href="#skills">Skills</a><a href="#install">Install</a></nav><a class="github" href="https://github.com/vyas-devgna/braids">GitHub ↗</a></div></header>
-<main id="main"><div class="wrap hero"><div class="hero-copy"><div class="kicker">Engineering judgement for coding agents</div><h1>Safer changes.<br><span>Less ceremony.</span></h1><p class="lede">Braids helps AI coding agents keep simple work simple—and slow down when a tiny change could break security, data, or production.</p><div class="actions"><a class="btn primary" href="#install">Install Braids</a><a class="btn secondary" href="https://github.com/vyas-devgna/braids">Read the source</a></div><div class="truth">Open source · MIT · No remote service · No telemetry</div></div><div class="figure" aria-hidden="true"><picture><source srcset="braids-mascot.webp" type="image/webp"><img src="braids-mascot.png" alt="" width="860" height="864"></picture></div></div>
-<section id="why"><div class="wrap"><div class="head"><div class="kicker">Why Braids</div><div><h2>Line count is a bad measure of risk.</h2><p>A one-line rename is usually harmless. A one-line authentication shortcut can become an incident. Braids looks at consequences, not diff size.</p></div></div><div class="example"><div class="card"><div class="codebar">auth.py · “simplify token check”</div><pre><span class="minus">- if not token or not expected: return False</span>
-<span class="minus">- return secrets.compare_digest(token, expected)</span>
-<span class="plus">+ return token == expected</span></pre></div><div class="card"><div class="finding bad"><b>Bug</b><p>Two missing values now authenticate because <code>None == None</code>.</p></div><div class="finding risk"><b>Risk</b><p>A normal equality check can leak information through response timing.</p></div><div class="finding good"><b>Decision</b><p>Do not merge. Restore the guard and constant-time comparison.</p></div></div></div></div></section>
-<section id="how"><div class="wrap"><div class="head"><div class="kicker">How it works</div><div><h2>Enough care for the consequence.</h2><p>Braids adds only the work that can change the outcome. It can also decide that the right answer is no change.</p></div></div><div class="grid3"><article class="card step"><small>01</small><h3>Understand the surface</h3><p>Find callers, constraints, trust boundaries, and failure paths before touching code.</p></article><article class="card step"><small>02</small><h3>Match effort to risk</h3><p>Routine work stays direct. Risky work gets deeper treatment.</p></article><article class="card step"><small>03</small><h3>Prove what matters</h3><p>Tests and measurements must match the claim being made.</p></article></div><div class="card depths"><div class="depth"><b>D0</b><span>Mechanical</span></div><div class="depth"><b>D1</b><span>Routine</span></div><div class="depth"><b>D2</b><span>Cross-module</span></div><div class="depth"><b>D3</b><span>High consequence</span></div><div class="depth"><b>D4</b><span>Hard to recover</span></div></div></div></section>
-<section id="skills"><div class="wrap"><div class="head"><div class="kicker">Seven skills</div><div><h2>Use the method—or one focused lens.</h2><p>Braids can step in for risky work, or you can call exactly the skill you need.</p></div></div><div class="skills"><article class="card skill"><code>/braids</code><h3>Right-size the work</h3><p>Understand, decide, implement, verify, and stop.</p></article><article class="card skill"><code>/braids-review</code><h3>Review a change</h3><p>Find bugs, risks, waste, and unproven claims.</p></article><article class="card skill"><code>/braids-audit</code><h3>Audit a repository</h3><p>Rank risk across a whole codebase.</p></article><article class="card skill"><code>/braids-risk</code><h3>Run a pre-mortem</h3><p>Assume it shipped and broke. Work backwards.</p></article><article class="card skill"><code>/braids-claims</code><h3>Check the claims</h3><p>Map “faster” and “secure” to evidence.</p></article><article class="card skill"><code>/braids-depth</code><h3>Set the effort</h3><p>Choose low, high, or ultra.</p></article><article class="card skill"><code>/braids-help</code><h3>See the reference</h3><p>Get the short command guide.</p></article></div></div></section>
-<section id="install"><div class="wrap install"><div><div class="kicker">Install</div><h2>Start in two commands.</h2><p>Choose your agent. Click a block to copy it.</p></div><div class="commands"><button class="command" data-copy="claude plugin marketplace add vyas-devgna/braids&#10;claude plugin install braids@braids"><b>Claude Code</b><code>claude plugin marketplace add vyas-devgna/braids
-claude plugin install braids@braids</code><span class="copy">copy</span></button><button class="command" data-copy="codex plugin marketplace add https://github.com/vyas-devgna/braids&#10;codex plugin add braids@braids --json"><b>Codex CLI and desktop</b><code>codex plugin marketplace add https://github.com/vyas-devgna/braids
-codex plugin add braids@braids --json</code><span class="copy">copy</span></button><button class="command" data-copy="npx github:vyas-devgna/braids opencode"><b>Other Agent Skills hosts</b><code>npx github:vyas-devgna/braids &lt;host&gt;</code><span class="copy">copy</span></button></div></div></section>
-<section><div class="wrap"><div class="head"><div class="kicker">Honest status</div><div><h2>Useful now. Still experimental.</h2><p>Braids is clear about its current limits.</p></div></div><div class="honest"><article class="card"><span class="status">available today</span><h3>What you get</h3><ul><li>Seven open-source Agent Skills</li><li>Install paths for eight hosts</li><li>No remote service or telemetry</li></ul></article><article class="card"><span class="status">current limits</span><h3>What you do not get</h3><ul><li>No enforcement hooks: Braids advises</li><li>Adapters remain experimental</li><li>The full 99-case suite is not graded yet</li></ul></article></div></div></section></main>
-<footer><div class="wrap foot"><span>MIT © 2026 Vyas Devgna</span><a href="https://github.com/vyas-devgna/braids/blob/main/docs/30_SKILLS_REFERENCE.md">Skills</a><a href="https://github.com/vyas-devgna/braids/blob/main/docs/29_KNOWN_LIMITATIONS.md">Limitations</a><a class="push" href="https://github.com/vyas-devgna/braids">GitHub ↗</a></div></footer><div class="toast" role="status" aria-live="polite">Copied</div>
-<script>const t=document.querySelector('.toast');document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy)}catch{const a=document.createElement('textarea');a.value=b.dataset.copy;document.body.append(a);a.select();document.execCommand('copy');a.remove()}t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1200)});</script></body></html>
+:root{
+  --bg:#0a0b0d; --panel:#101216; --panel-2:#14171d; --line:#1e2228; --line-2:#2b3138;
+  --ink:#eceae5; --mid:#98a0a9; --dim:#697079;
+  --amber:#d99b3f; --amber-dim:#7d5a22; --red:#d9614f; --green:#5fa88a;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --e:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column;height:100dvh;
+  padding:clamp(13px,2vh,24px) clamp(15px,3vw,42px);gap:clamp(8px,1.4vh,16px)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
+  background:radial-gradient(125% 95% at 50% 42%,transparent 40%,rgba(0,0,0,.6) 100%)}
+body::before{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:59;opacity:.03;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+  animation:grain 6s steps(6) infinite}
+@keyframes grain{0%,100%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}
+  50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-2%)}}
+canvas#weave{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.62}
+.mascot{position:fixed;right:2vw;bottom:-5vh;width:min(34vw,470px);height:68vh;
+  object-fit:contain;object-position:right bottom;z-index:1;opacity:.2;pointer-events:none;
+  filter:contrast(1.04) brightness(.86);display:none}
+html[data-slide=what] .mascot{display:block}
+
+/* ── chrome ─────────────────────────────────────────── */
+header{display:flex;align-items:center;gap:14px;z-index:10;flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.brand img{width:27px;height:27px;filter:invert(1) grayscale(1) contrast(1.5) brightness(1.12);opacity:.92}
+.brand b{font-size:15.5px;letter-spacing:-.015em;font-weight:600}
+nav{margin-left:auto;display:flex;gap:2px;background:rgba(16,18,22,.75);backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:999px;padding:4px;position:relative}
+nav .pill{position:absolute;top:4px;bottom:4px;background:var(--ink);border-radius:999px;z-index:0;
+  left:0;width:0;opacity:0}
+nav button{position:relative;z-index:1;font:500 12.5px/1 var(--mono);color:var(--mid);background:none;
+  border:0;cursor:pointer;padding:8px 15px;border-radius:999px;transition:color .3s var(--e)}
+nav button:hover{color:var(--ink)}
+nav button[aria-selected=true]{color:var(--bg)}
+nav button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+
+/* ── slides ─────────────────────────────────────────── */
+main{flex:1 1 auto;min-height:0;position:relative;z-index:10}
+.slide{position:absolute;inset:0;display:none;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);
+  gap:clamp(18px,3.6vw,54px);align-items:center}
+.slide[data-on]{display:grid}
+
+h1{font-size:clamp(31px,5.6vw,68px);line-height:.95;letter-spacing:-.045em;font-weight:600;
+  text-shadow:0 8px 40px rgba(10,11,13,.9)}
+h1 em{font-style:normal;color:var(--dim)}
+h2{font-size:clamp(21px,2.5vw,31px);line-height:1.08;letter-spacing:-.03em;font-weight:600}
+.sub{font-size:clamp(13.5px,1.45vw,17px);line-height:1.5;color:var(--mid);max-width:36ch}
+.sub strong{color:var(--ink);font-weight:500}
+.eyebrow{font:500 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.col{display:flex;flex-direction:column;gap:clamp(9px,1.5vh,16px);min-width:0}
+
+/* ── code ───────────────────────────────────────────── */
+.code{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;box-shadow:0 22px 60px -24px rgba(0,0,0,.95);cursor:pointer}
+.code .bar{display:flex;align-items:center;gap:8px;padding:9px 13px;border-bottom:1px solid var(--line);
+  font:11px/1 var(--mono);color:var(--dim)}
+.code .bar i{width:8px;height:8px;border-radius:50%;background:var(--line-2);flex:0 0 auto}
+.code .bar .who{margin-left:auto}
+.code pre{margin:0;padding:12px 14px;font:12.5px/1.65 var(--mono);overflow:auto}
+.code pre::-webkit-scrollbar{height:6px;width:6px}
+.code pre::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
+.del{color:var(--red)}.add{color:var(--green)}.cm{color:var(--dim)}
+.kw{color:var(--amber)}.pl{color:var(--mid)}
+
+.copyrow{display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:11px 12px;font:12.5px/1 var(--mono);
+  box-shadow:0 16px 44px -20px rgba(0,0,0,.9);cursor:pointer;transition:border-color .25s var(--e)}
+.copyrow:hover{border-color:var(--line-2)}
+.copyrow .p{color:var(--amber)}
+.copyrow code{color:var(--ink);flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.copyrow .ic{width:14px;height:14px;color:var(--dim);flex:0 0 auto}
+
+/* ── verdict ────────────────────────────────────────── */
+.verdict{display:flex;flex-direction:column;gap:7px}
+.v{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;
+  background:rgba(16,18,22,.9);border:1px solid var(--line);border-left:2px solid var(--tone,var(--line-2));
+  border-radius:9px;padding:9px 12px;backdrop-filter:blur(6px)}
+.v b{font:600 10.5px/1.4 var(--mono);color:var(--tone,var(--mid));text-transform:uppercase;letter-spacing:.06em}
+.v span{font-size:12.8px;line-height:1.45;color:var(--mid)}
+.v span i{color:var(--ink);font-style:normal;font-weight:500}
+.v.bug{--tone:var(--red)}.v.risk{--tone:var(--amber)}.v.ok{--tone:var(--green)}
+
+/* ── depth scale ────────────────────────────────────── */
+.scale{display:flex;gap:5px}
+.scale button{flex:1 1 0;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+  padding:11px 6px;cursor:pointer;font:600 12px/1 var(--mono);color:var(--dim);
+  transition:color .25s var(--e),border-color .25s var(--e),background .25s var(--e)}
+.scale button:hover{color:var(--mid);border-color:var(--line-2)}
+.scale button[aria-pressed=true]{color:var(--bg);background:var(--amber);border-color:var(--amber)}
+.scale button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+.dbody{background:rgba(16,18,22,.9);border:1px solid var(--line);border-radius:11px;padding:14px 16px;
+  min-height:112px;backdrop-filter:blur(6px)}
+.dbody h3{font:600 13px/1.3 var(--mono);color:var(--amber);margin-bottom:6px}
+.dbody p{font-size:13.2px;line-height:1.5;color:var(--mid)}
+.dbody p + p{margin-top:7px;color:var(--dim);font-size:12.5px}
+
+/* ── skills ─────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sk{background:rgba(16,18,22,.9);border:1px solid var(--line);border-radius:10px;padding:11px 13px;
+  backdrop-filter:blur(6px);transition:border-color .25s var(--e),transform .25s var(--e)}
+.sk:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.sk b{display:block;font:600 12px/1 var(--mono);color:var(--amber);margin-bottom:5px}
+.sk span{font-size:12.3px;line-height:1.45;color:var(--dim)}
+
+.note{font-size:12.2px;line-height:1.55;color:var(--dim);max-width:62ch}
+.note b{color:var(--mid);font-weight:500}
+
+footer{flex:0 0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;z-index:10;
+  font:11.5px/1 var(--mono);color:var(--dim)}
+footer a{color:var(--mid);text-decoration:none;border-bottom:1px solid transparent;transition:.22s var(--e)}
+footer a:hover{color:var(--ink);border-bottom-color:var(--amber)}
+.tag{border:1px solid var(--line-2);border-radius:999px;padding:4px 9px}
+.tag.warn{color:var(--amber);border-color:var(--amber-dim)}
+.sp{margin-left:auto}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);z-index:70;opacity:0;
+  background:var(--ink);color:var(--bg);font:600 12px/1 var(--mono);padding:10px 15px;border-radius:999px;
+  pointer-events:none}
+
+@media (max-width:980px){
+  .mascot{display:none!important}
+  .slide{grid-template-columns:1fr;align-content:center;gap:12px}
+  .grid{grid-template-columns:1fr}
+  h1{font-size:clamp(27px,8.4vw,42px)}
+  .code pre{max-height:26vh}
+  .hide-sm{display:none}
+}
+@media (max-width:560px){
+  .brand b{display:none}
+  nav button{padding:7px 10px;font-size:11.5px}
+  .scale button{padding:9px 3px;font-size:11px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;
+    animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+}
+</style>
+</head>
+<body>
+<canvas id="weave" aria-hidden="true"></canvas>
+<picture><source srcset="braids-mascot.webp" type="image/webp"><img class="mascot" src="braids-mascot.png" alt="" width="860" height="864" aria-hidden="true"></picture>
+
+<header>
+  <a class="brand" href="https://github.com/vyas-devgna/braids">
+    <img src="braids-icon-256.png" alt=""><b>braids</b>
+  </a>
+  <nav id="nav" role="tablist" aria-label="Sections">
+    <span class="pill" aria-hidden="true"></span>
+    <button role="tab" data-s="what"    aria-selected="true">why</button>
+    <button role="tab" data-s="depth"   aria-selected="false">how</button>
+    <button role="tab" data-s="use"     aria-selected="false">skills</button>
+    <button role="tab" data-s="install" aria-selected="false">install</button>
+  </nav>
+</header>
+
+<main>
+  <section class="slide" data-slide="what" data-on>
+    <div class="col">
+      <h1 id="hl">Safer changes. <em>Less ceremony.</em></h1>
+      <p class="sub">A rename and an authentication change should not get the same treatment.
+        Braids keeps simple work simple and slows down when mistakes get expensive.</p>
+      <div class="copyrow" data-copy="claude plugin marketplace add vyas-devgna/braids">
+        <span class="p">$</span><code>claude plugin marketplace add vyas-devgna/braids</code>
+        <i class="ic" data-lucide="copy"></i>
+      </div>
+    </div>
+    <div class="col">
+      <div class="code">
+        <div class="bar"><i></i><i></i><i></i><span>auth.py</span><span class="who">commit: “simplify auth”</span></div>
+<pre><span class="del">- if not token or not expected: return False</span>
+<span class="del">- return secrets.compare_digest(token, expected)</span>
+<span class="add">+ return token == expected</span></pre>
+      </div>
+      <div class="verdict">
+        <div class="v bug"><b>bug</b><span>Two falsy values authenticate. <i>None == None</i> is <i>True</i>.</span></div>
+        <div class="v risk"><b>risk</b><span><i>==</i> short-circuits — response time leaks the token prefix.</span></div>
+        <div class="v ok"><b>verdict</b><span><i>Do not merge.</i> Restore the guard and the constant-time compare.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="depth">
+    <div class="col">
+      <p class="eyebrow">Braids chooses the depth</p>
+      <h2>More risk means<br>more care.</h2>
+      <div class="scale" id="scale" role="group" aria-label="Engineering depth">
+        <button data-d="0" aria-pressed="false">D0</button>
+        <button data-d="1" aria-pressed="false">D1</button>
+        <button data-d="2" aria-pressed="false">D2</button>
+        <button data-d="3" aria-pressed="true">D3</button>
+        <button data-d="4" aria-pressed="false">D4</button>
+      </div>
+      <div class="dbody" id="dbody" aria-live="polite"></div>
+    </div>
+    <div class="col">
+      <p class="eyebrow">You choose the effort limit</p>
+      <div class="code">
+        <div class="bar"><i></i><i></i><i></i><span>threshold</span></div>
+<pre><span class="cm"># smallest change that works, obvious check only</span>
+<span class="kw">braids low</span>    <span class="pl">fix the test, don't redesign</span>
+
+<span class="cm"># production shape: failure paths, callers, tests</span>
+<span class="kw">braids high</span>   <span class="pl">(default)</span>
+
+<span class="cm"># hostile cases: retry, concurrency, upgrade, scale</span>
+<span class="kw">braids ultra</span>  <span class="pl">migration, rollback, evidence per claim</span></pre>
+      </div>
+      <div class="verdict">
+        <div class="v risk"><b>the floor</b><span><i>low</i> never silently weakens auth, privacy, or data
+          integrity. Braids names what it skipped and does the smallest <i>safe</i> version.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="use">
+    <div class="col">
+      <p class="eyebrow">seven focused skills</p>
+      <h2>Ask directly, or let<br>Braids step in.</h2>
+      <div class="code">
+        <div class="bar"><i></i><i></i><i></i><span>session</span></div>
+<pre><span class="pl">&gt;</span> <span class="kw">/braids-review</span>
+<span class="cm">  do not merge · 2 findings · residual risk stated</span>
+
+<span class="pl">&gt;</span> <span class="kw">braids ultra</span> <span class="pl">— I'm changing how sessions authorize</span>
+<span class="cm">  D4 · migration + rollback · 6 claims to evidence</span></pre>
+      </div>
+    </div>
+    <div class="col">
+      <div class="grid">
+        <div class="sk"><b>/braids</b><span>Right-size and implement, claims held to evidence.</span></div>
+        <div class="sk"><b>/braids-review</b><span>A diff or PR: what breaks, what is unproven.</span></div>
+        <div class="sk"><b>/braids-audit</b><span>Whole repo, ranked consequence × exposure.</span></div>
+        <div class="sk"><b>/braids-risk</b><span>Pre-mortem. Assume it shipped and broke.</span></div>
+        <div class="sk"><b>/braids-claims</b><span>Every “faster” mapped to its evidence.</span></div>
+        <div class="sk"><b>/braids-depth</b><span>Set the threshold, or ask why.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="install">
+    <div class="col">
+      <p class="eyebrow">start here</p>
+      <h2>Install Braids.</h2>
+      <p class="sub">Runs inside your coding agent. No remote service, MCP server,
+        telemetry, or hidden project state.</p>
+      <p class="note"><b>Experimental and advisory:</b> Braids warns; it does not block tools.</p>
+    </div>
+    <div class="col">
+      <div class="code">
+        <div class="bar"><i></i><i></i><i></i><span>claude code</span></div>
+<pre><span class="pl">$</span> claude plugin marketplace add vyas-devgna/braids
+<span class="pl">$</span> claude plugin install braids@braids</pre>
+      </div>
+      <div class="code">
+        <div class="bar"><i></i><i></i><i></i><span>codex</span></div>
+<pre><span class="pl">$</span> codex plugin marketplace add https://github.com/vyas-devgna/braids
+<span class="pl">$</span> codex plugin add braids@braids --json</pre>
+      </div>
+      <div class="code">
+        <div class="bar"><i></i><i></i><i></i><span>opencode · cline · windsurf · copilot</span></div>
+<pre><span class="pl">$</span> npx github:vyas-devgna/braids &lt;host&gt;</pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span class="tag">MIT</span>
+  <span class="tag warn">experimental · advisory</span>
+  <span class="sp"></span>
+  <a href="https://github.com/vyas-devgna/braids">github</a>
+  <a href="https://github.com/vyas-devgna/braids/blob/main/docs/30_SKILLS_REFERENCE.md">skills</a>
+  <a href="https://github.com/vyas-devgna/braids/blob/main/docs/29_KNOWN_LIMITATIONS.md">limitations</a>
+</footer>
+
+<div class="toast" id="toast">copied</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.38.0/dist/umd/lucide.min.js" defer></script>
+<script type="module">
+// anime.js drives every transition. Nothing here decides whether content is
+// readable: slides are shown with a display toggle, so if this module fails to
+// load the page still works — it just stops moving.
+import { animate, stagger, createTimeline, utils }
+  from "https://cdn.jsdelivr.net/npm/animejs@4.5.0/+esm";
+
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* ── braid ───────────────────────────────────────────────────────────
+   Strands sampled as segments and drawn back-to-front by depth, so they
+   genuinely pass over and under. Six grey, one amber: the concern that
+   carries the risk. anime.js retargets the shape on every change.      */
+const cv = $("#weave"), ctx = cv.getContext("2d");
+const BUNDLES = 3, PER = 2, STRANDS = BUNDLES * PER, HOT = 2;
+const F = { amp: 1, twist: 1, x: .47 };
+let W = 0, H = 0, t = 0, px = 0, py = 0, tx = 0, ty = 0;
+
+const size = () => {
+  const d = Math.min(devicePixelRatio || 1, 2);
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+};
+
+function frame() {
+  ctx.clearRect(0, 0, W, H);
+  tx += (px - tx) * .05; ty += (py - ty) * .05;
+  const wide = W > 980;
+  const cx = (wide ? W * F.x : W * .5) + tx * 20;
+  const spread = Math.min(wide ? W * .055 : W * .17, 84) * F.amp;
+  const step = 11, k = .019 * F.twist, segs = [];
+
+  for (let s = 0; s < STRANDS; s++) {
+    const ph = (Math.floor(s / PER) / BUNDLES) * Math.PI * 2 + (s % PER) * .26;
+    for (let y = -70; y < H + 70; y += step) {
+      const a = k * y + ph + t, b = k * (y + step) + ph + t;
+      segs.push({ x1: cx + Math.sin(a) * spread, y1: y + ty * 12,
+                  x2: cx + Math.sin(b) * spread, y2: y + step + ty * 12, d: Math.cos(a), s });
+    }
+  }
+  segs.sort((m, n) => m.d - n.d);
+  for (const g of segs) {
+    const near = (g.d + 1) / 2, hot = g.s === HOT;
+    ctx.lineWidth = (hot ? 2.9 : 2.4) * (.4 + near * .8);
+    ctx.globalAlpha = (hot ? .10 : .05) + near * (hot ? .46 : .16);
+    ctx.strokeStyle = hot ? "#d99b3f" : "#7f8a96";
+    ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.x2, g.y2); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  if (!reduce) t += .0046;
+  requestAnimationFrame(frame);
+}
+addEventListener("resize", size, { passive: true });
+addEventListener("pointermove", e => {
+  px = (e.clientX / innerWidth - .5) * 2; py = (e.clientY / innerHeight - .5) * 2;
+}, { passive: true });
+size(); frame();
+
+/* ── headline ─────────────────────────────────────────────────────── */
+const hl = $("#hl");
+if (!reduce && hl) {
+  hl.innerHTML = hl.innerHTML.replace(/(\S+)/g, '<span class="w" style="display:inline-block">$1</span>');
+  animate(".w", { opacity: [0, 1], y: [26, 0], filter: ["blur(9px)", "blur(0px)"],
+                  duration: 900, delay: stagger(46), ease: "out(3)" });
+}
+
+/* ── slides ───────────────────────────────────────────────────────── */
+const SHAPE = {
+  what:    { amp: 1,    twist: 1,    x: .47 },
+  depth:   { amp: 1.55, twist: .72,  x: .5  },
+  use:     { amp: .8,   twist: 1.35, x: .46 },
+  install: { amp: .55,  twist: 1.9,  x: .49 },
+};
+const slides = $$(".slide"), tabs = $$("#nav button"), pill = $(".pill");
+let current = "what", busy = false;
+
+function movePill(name, instant) {
+  const b = tabs.find(x => x.dataset.s === name); if (!b) return;
+  const props = { left: b.offsetLeft, width: b.offsetWidth, opacity: 1 };
+  if (instant || reduce) utils.set(pill, props);
+  else animate(pill, { ...props, duration: 520, ease: "outElastic(1, .75)" });
+}
+
+function go(name, instant) {
+  if (busy || !SHAPE[name]) return;
+  const from = slides.find(s => s.dataset.slide === current);
+  const to   = slides.find(s => s.dataset.slide === name);
+  current = name;
+  document.documentElement.dataset.slide = name;
+  tabs.forEach(b => b.setAttribute("aria-selected", String(b.dataset.s === name)));
+  movePill(name, instant);
+  if (location.hash.slice(1) !== name) history.replaceState(null, "", "#" + name);
+
+  if (instant || reduce || from === to) {
+    slides.forEach(s => s.toggleAttribute("data-on", s === to));
+    Object.assign(F, SHAPE[name]);
+    return;
+  }
+
+  busy = true;
+  animate(F, { ...SHAPE[name], duration: 900, ease: "inOut(3)" });
+  createTimeline({ onComplete: () => { busy = false; } })
+    .add(from.children, {
+      opacity: [1, 0], y: [0, -16], filter: ["blur(0px)", "blur(6px)"],
+      duration: 260, delay: stagger(28), ease: "in(2)",
+      onComplete: () => { from.removeAttribute("data-on"); to.setAttribute("data-on", ""); },
+    })
+    .add(to.children, {
+      opacity: [0, 1], y: [22, 0], filter: ["blur(8px)", "blur(0px)"],
+      duration: 620, delay: stagger(70), ease: "out(3)",
+    }, "+=20")
+    .add($$(".v, .sk, .code", to), {
+      scale: [.985, 1], duration: 520, delay: stagger(46), ease: "out(2)",
+    }, "<<");
+}
+
+$("#nav").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (b) go(b.dataset.s);
+});
+addEventListener("keydown", e => {
+  const i = tabs.findIndex(b => b.dataset.s === current);
+  if (e.key === "ArrowRight") { const b = tabs[(i + 1) % tabs.length]; go(b.dataset.s); b.focus(); }
+  if (e.key === "ArrowLeft")  { const b = tabs[(i - 1 + tabs.length) % tabs.length]; go(b.dataset.s); b.focus(); }
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= tabs.length) go(tabs[n - 1].dataset.s);
+});
+
+/* ── depth scale ──────────────────────────────────────────────────── */
+const DEPTHS = [
+  ["D0 · local and reversible", "Do it. No research, no delegation, no ceremony.",
+   "A rename. A comment. Something a compiler would catch."],
+  ["D1 · routine and bounded", "Targeted context and the checks that matter.",
+   "One module, callers understood, easy to undo."],
+  ["D2 · crosses a boundary", "Explicit change-surface model, quality scenarios, broader tests.",
+   "Cross-module, platform-sensitive, or an uncertain integration."],
+  ["D3 · consequence", "Threat and failure analysis, independent challenge, real evidence.",
+   "Security, data integrity, concurrency, measured performance."],
+  ["D4 · hard to recover", "Staged decision, migration and rollback, strongest evidence, residual risk written down.",
+   "Irreversible, mission-critical, or a format older versions cannot read."],
+];
+const dbody = $("#dbody");
+function setDepth(d, instant) {
+  const [h, p1, p2] = DEPTHS[d];
+  $$("#scale button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.d === d)));
+  dbody.innerHTML = `<h3>${h}</h3><p>${p1}</p><p>${p2}</p>`;
+  if (instant || reduce) return;
+  animate(dbody.children, { opacity: [0, 1], y: [10, 0], duration: 420,
+                            delay: stagger(60), ease: "out(3)" });
+  animate(F, { amp: .7 + d * .34, twist: 1.5 - d * .18, duration: 700, ease: "out(3)" });
+}
+$("#scale").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (b) setDepth(+b.dataset.d);
+});
+setDepth(3, true);
+
+/* ── copy ─────────────────────────────────────────────────────────── */
+const toast = $("#toast");
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); }
+  catch {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.cssText = "position:fixed;opacity:0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } finally { ta.remove(); }
+  }
+  if (reduce) return;
+  animate(toast, { opacity: [0, 1], y: [14, 0], duration: 260, ease: "out(3)" });
+  animate(toast, { opacity: 0, y: 14, duration: 320, delay: 1100, ease: "in(2)" });
+}
+document.addEventListener("click", e => {
+  const row = e.target.closest("[data-copy]");
+  if (row) { copy(row.dataset.copy); if (!reduce) animate(row, { scale: [1, .985, 1], duration: 320 }); return; }
+  const block = e.target.closest(".code");
+  if (block) { copy($("pre", block).innerText.trim()); if (!reduce) animate(block, { scale: [1, .992, 1], duration: 320 }); }
+});
+
+/* ── boot ─────────────────────────────────────────────────────────── */
+go(SHAPE[location.hash.slice(1)] ? location.hash.slice(1) : "what", true);
+const icons = () => window.lucide && lucide.createIcons();
+addEventListener("load", () => { icons(); movePill(current, true); });
+addEventListener("resize", () => movePill(current, true), { passive: true });
+icons();
+</script>
+</body>
+</html>
