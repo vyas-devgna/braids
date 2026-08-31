@@ -219,11 +219,16 @@ def summarize(cases: list[dict], results: list[dict]) -> str:
         graded = [run for run in successful if by_id[run["case_id"]]["expected_trigger"] in {"yes", "no"}]
         positives = [r for r in graded if by_id[r["case_id"]]["expected_trigger"] == "yes"]
         negatives = [r for r in graded if by_id[r["case_id"]]["expected_trigger"] == "no"]
-        depth_cases = [r for r in runs if by_id[r["case_id"]]["expected_depth"] not in {"variable", "not-applicable"}]
+        decision_runs = [r for r in successful if not r["case_id"].startswith("TR-")]
+        depth_cases = [
+            r for r in decision_runs
+            if by_id[r["case_id"]]["expected_depth"] not in {"variable", "not-applicable"}
+        ]
         depth_hits = [r for r in depth_cases if r.get("observed_depth") == by_id[r["case_id"]]["expected_depth"]]
-        expected_total = sum(len(by_id[r["case_id"]]["expected_properties"]) for r in runs)
+        expected_total = sum(len(by_id[r["case_id"]]["expected_properties"]) for r in decision_runs)
         expected_seen = sum(
-            len(set(by_id[r["case_id"]]["expected_properties"]) & set(r.get("observed_properties", []))) for r in runs
+            len(set(by_id[r["case_id"]]["expected_properties"]) & set(r.get("observed_properties", [])))
+            for r in decision_runs
         )
         violations = [r for r in runs if r.get("violations")]
 

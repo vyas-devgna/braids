@@ -253,7 +253,7 @@ def judge(case: dict, response: str, timeout: int) -> dict:
 
 
 def run_case(case: dict, host: str, plugin: Path | None, timeout: int,
-             default_fixture: str | None = None) -> dict:
+             default_fixture: str | None = None, artifact_path: Path | None = None) -> dict:
     started = datetime.now(timezone.utc)
     began = time.monotonic()
     with tempfile.TemporaryDirectory(prefix="braids-eval-") as directory:
@@ -276,6 +276,13 @@ def run_case(case: dict, host: str, plugin: Path | None, timeout: int,
                 shutil.copytree(KERNEL, workspace / ".agents/skills/braids",
                                 ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
             response, tools, meta = run_codex(prompt, workspace, timeout)
+
+    if artifact_path:
+        artifact_path.parent.mkdir(parents=True, exist_ok=True)
+        artifact_path.write_text(json.dumps({
+            "case_id": case["id"], "host": host, "prompt": prompt,
+            "response": response, "tools": tools, "host_metadata": meta,
+        }, indent=2) + "\n", encoding="utf-8")
 
     telemetry = measure(tools, response)
     telemetry["wall_time_ms"] = round((time.monotonic() - began) * 1000)
@@ -335,6 +342,8 @@ def main() -> int:
     parser.add_argument("--default-fixture", help="Fixture to use for cases that declare none.")
     parser.add_argument("--resume", action="store_true",
                         help="Append only missing repetitions to an existing output file.")
+    parser.add_argument("--artifacts-dir", type=Path,
+                        help="Write auditable raw host responses and tool traces here.")
     args = parser.parse_args()
     if args.repetitions < 1:
         parser.error("--repetitions must be at least 1")
@@ -371,12 +380,18 @@ def main() -> int:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     mode = "a" if args.resume else "w"
     failures = 0
+    seen = Counter(completed)
     with args.out.open(mode, encoding="utf-8") as handle:
         total = len(remaining)
         for index, case in enumerate(remaining, 1):
             print(f"[{index}/{total}] {args.host} {case['id']}", flush=True)
+            seen[case["id"]] += 1
+            artifact = (
+                args.artifacts_dir / args.host / f"{case['id']}-{seen[case['id']]:02d}.json"
+                if args.artifacts_dir else None
+            )
             try:
-                record = run_case(case, args.host, plugin, args.timeout, args.default_fixture)
+                record = run_case(case, args.host, plugin, args.timeout, args.default_fixture, artifact)
             except subprocess.TimeoutExpired:
                 print(f"  timeout after {args.timeout}s", flush=True)
                 failures += 1

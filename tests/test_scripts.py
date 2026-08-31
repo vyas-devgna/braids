@@ -136,6 +136,30 @@ class ScriptTests(unittest.TestCase):
         self.assertEqual(eval_runner.grade_results([case], [result], False),
                          [f"{case['id']}: run is blocked"])
 
+    def test_skill_validator_rejects_unquotable_frontmatter(self):
+        """An unquoted scalar holding ": " is invalid YAML and breaks host discovery."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "braids"
+            root.mkdir()
+            (root / "SKILL.md").write_text(
+                "---\nname: braids\ndescription: Right-size work. Triggers on: security, retry\n---\n\n# Braids\n",
+                encoding="utf-8",
+            )
+            self.assertIn("frontmatter description contains ': ' and must be quoted",
+                          skill_validator.validate(root))
+
+    def test_trigger_summary_does_not_report_fake_decision_scores(self):
+        case = next(
+            case for case in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl")
+            if case["expected_trigger"] == "yes"
+        )
+        result = {"case_id": case["id"], "host": "test", "result": "pass", "triggered": True,
+                  "observed_depth": "not-applicable", "observed_properties": [], "violations": [],
+                  "telemetry": {"input_tokens": None}}
+        summary = eval_runner.summarize([case], [result])
+        self.assertIn("depth matched                n/a", summary)
+        self.assertIn("expected properties shown    n/a", summary)
+
 
 if __name__ == "__main__":
     unittest.main()

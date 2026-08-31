@@ -26,7 +26,13 @@ def validate(root: Path) -> list[str]:
     for line in frontmatter.splitlines():
         if line and not line.startswith(" ") and ":" in line:
             key, value = line.split(":", 1)
-            fields[key] = value.strip().strip('"\'')
+            raw = value.strip()
+            # A plain YAML scalar may not contain ": ". Hosts parse this file with a
+            # real YAML parser, so an unquoted description holding "Triggers on: x"
+            # breaks skill discovery even though a naive line split reads it fine.
+            if raw and raw[0] not in "\"'" and ": " in raw:
+                errors.append(f"frontmatter {key} contains ': ' and must be quoted")
+            fields[key] = raw.strip('"\'')
 
     name = fields.get("name", "")
     description = fields.get("description", "")
