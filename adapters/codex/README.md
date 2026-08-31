@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Status | `experimental` |
-| Adapter version | 0.1.0-dev.1 |
+| Adapter version | 0.1.0-dev.2 |
 | Methodology version | 3.0.0 |
 | Surfaces | local-cli, desktop, ide-standalone-skill |
 | Host versions exercised | 0.150.1 |

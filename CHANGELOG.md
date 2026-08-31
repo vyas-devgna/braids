@@ -18,10 +18,13 @@ All notable changes will be recorded here.
 - OQ-06 partially resolved: package identity is `Vyas Devgna <https://github.com/vyas-devgna>`, required because Claude Code rejects a plugin manifest without `author` under `--strict` and a marketplace manifest without `owner`.
 - Host research revalidated against current primary sources for all eight hosts; four against locally installed CLIs.
 - The Codex-only `agents/openai.yaml` interface descriptor moved out of the portable kernel into the Codex adapter.
+- Repository-root manifests make a GitHub clone directly installable on Claude Code, Codex, and Cursor.
+- Skill discovery metadata now treats small trust-boundary and guarantee-weakening edits as risk-sensitive, while preserving mechanical-edit exclusions.
+- Host evals now separate trigger measurement from decision-quality judging, reject host errors, support repeated/resumable runs, and pin the evaluated model.
 
 - OQ-07 resolved: final mascot, icon and hero artwork vendored; no Braids behaviour depends on them.
 
 ### Not yet true
 - No adapter is `supported` or `tested`; all eight are `experimental`.
-- No graded model runs exist, so no trigger, depth, parity, injection-resistance or token-saving claim is made.
+- A four-case Codex activation smoke exists; the complete trigger, depth, parity, injection-resistance, and cost suites remain ungraded.
 - Braids is advisory on every host; it ships no enforcement.
