@@ -14,6 +14,12 @@ Revalidated against current official documentation and local Claude Code 2.1.248
 - Disable/uninstall must prove components are no longer loaded; inert cache versions can remain for about 14 days.
 - Initial adapter therefore ships the canonical skill wrapper only. Guard hooks and agents remain absent until their marginal value and exact coverage are tested.
 
+## Skill selection competes with built-ins — observed 2026-08-31
+
+Claude Code ships built-in skills (`code-review`, `debug`, `simplify`, `run`, and others). A plugin skill competes with them by description alone, and a built-in whose *name* matches the user's phrasing tends to win: "Review the last commit" selected the built-in `code-review` over `braids-review`. The core `braids` skill does auto-activate on risk-shaped prompts, because no built-in claims that territory.
+
+Consequence for the adapter: skills that overlap a built-in's name should be documented as explicitly invoked on this host rather than advertised as automatic.
+
 ## Native extension surfaces
 
 Claude Code currently supports standalone `.claude/` configuration and distributable plugins. A plugin can contain:

@@ -75,7 +75,7 @@ Braids selects itself on work involving architecture, security, auth, data integ
 | Skill | Slash command | Use it for |
 |---|---|---|
 | `braids` | `/braids` | The method. Right-sizes any change and holds claims to evidence. |
-| `braids-review` | `/braids-review` | A diff, branch, or PR: what breaks, what is unproven, what costs more than it buys. |
+| `braids-review` | `/braids-review` | A diff, branch, or PR: what breaks, what is unproven, what costs more than it buys. On Claude Code, name it — the built-in `code-review` skill wins generic "review this" phrasing. |
 | `braids-audit` | `/braids-audit` | A whole repository: ranked engineering-risk surface when there is no diff. |
 | `braids-risk` | `/braids-risk` | Adversarial pre-mortem: assume it shipped and caused an incident. |
 | `braids-claims` | `/braids-claims` | Claim ledger: every "faster" or "secure" mapped to the evidence for it. |

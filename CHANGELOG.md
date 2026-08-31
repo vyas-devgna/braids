@@ -29,7 +29,11 @@ All notable changes will be recorded here.
 
 - OQ-07 resolved: final mascot, icon and hero artwork vendored; no Braids behaviour depends on them.
 
+- Seven skill-surface eval cases covering the added skills, including `low` threshold on a harmful change and `ultra` on a trivial one. The corpus is now 99 cases.
+
 ### Not yet true
 - No adapter is `supported` or `tested`; all eight are `experimental`.
+- Of the six added skills only `braids-review` has been exercised live; the other five have no graded runs.
+- On Claude Code the built-in `code-review` skill wins generic review phrasing, so `braids-review` must be named explicitly there.
 - A four-case Codex activation smoke exists; the complete trigger, depth, parity, injection-resistance, and cost suites remain ungraded.
 - Braids is advisory on every host; it ships no enforcement.

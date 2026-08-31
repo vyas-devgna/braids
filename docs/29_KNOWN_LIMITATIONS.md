@@ -60,6 +60,7 @@ State survival across compaction and resume is `not-exercised` on **all eight**,
 - **Cursor documents no plugin uninstall contract.** Local removal is folder deletion plus reload; marketplace lifecycle is unverified.
 - **Cline global skills shadow same-named project skills**, so a stale global copy silently wins.
 - **Cross-host skill directories leak.** OpenCode auto-loads `~/.claude/skills` and `~/.agents/skills`; Copilot reads `.claude/skills` and `.agents/skills`; Cline reads `.claude/skills`; Cascade reads `.agents/skills`. A Braids copy installed for one host can appear in another. `OPENCODE_DISABLE_EXTERNAL_SKILLS=1` suppresses this for OpenCode only. Conformance runs must control for it.
+- **On Claude Code, `braids-review` loses generic review phrasing to the built-in `code-review` skill.** "Review the last commit" selected `code-review`, not `braids-review`. Explicit invocation works and was verified: `braids:braids-review` fired, produced the specified verdict-first format with `bug`/`risk`/`unproven` severities, separated verified from inferred findings, and closed with residual risk — at $0.056 against $0.303 for the generic path on the same diff. Treat `braids-review` as explicitly invoked on that host. The other five added skills have no graded runs at all.
 - **Codex truncates skill descriptions under context pressure.** On 0.150.1 with the developer's full skill set installed, Codex reported `Skill descriptions were shortened to fit the skills context budget`. Because the description is Braids' activation classifier, trigger behaviour on Codex depends on how many other skills are installed. Any Codex trigger number must state the loaded-skill count, and under-triggering there is not necessarily a description defect.
 - **Copilot cloud is out of scope.** The ephemeral cloud agent inherits no local user plugins or skills. Only a `copilot-cli` profile exists; no cloud claim is made.
 - **Cursor cloud is out of scope** for the same reason: user skill directories are not copied to Cloud Agents, remote SSH agents or managed workers.
@@ -90,4 +91,5 @@ For balance, the claims this repository *can* support:
 - Every adapter package is reproducible offline from a single metadata source, with no second copy of the kernel anywhere.
 - Four hosts install, list, disable and remove the generated packages, with residue enumerated.
 - Progressive disclosure holds: dormant cost is roughly a twelfth of activated cost, measured independently by Claude Code.
-- The 92-case corpus is complete, balanced, hash-pinned to its fixtures, and covers R-001–R-030 plus NFR-10.
+- The 99-case corpus is complete, balanced, hash-pinned to its fixtures, and covers R-001–R-030 plus NFR-10.
+- `braids-review` was exercised live on a real diff that weakened an auth check and added an unbounded cache. It found the fail-open comparison, the timing side-channel, and the unbounded growth, and refused the commit message's "simplify" framing.
