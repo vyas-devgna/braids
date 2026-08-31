@@ -15,6 +15,7 @@ PLUGIN_FIELDS = {"$schema", "name", "version", "description", "author", "homepag
 PLUGIN_NAME = re.compile(r"^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?$")
 LOCAL_REF = re.compile(r'"\$ref"\s*:\s*"([^"#][^"#]*)')
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".ico"}
+EXCLUDED_DIRS = {".git", ".ci-venv", ".venv", "venv", "dist", "__pycache__"}
 LIFECYCLE_FILES = {"hooks.json", "mcp.json", "mcp_config.json", ".mcp.json", ".lsp.json", "settings.json"}
 UNSAFE_SCRIPT = re.compile(r"\bimport\s+(?:urllib|http\.client|socket|requests|ftplib|smtplib)\b|(?<![.\w])(?:eval|exec)\s*\(")
 SECRET_PATTERNS = (
@@ -76,7 +77,7 @@ def validate() -> list[str]:
                 errors.append(f"{path.relative_to(ROOT)} has unresolved $ref {target}")
 
     for path in ROOT.rglob("*"):
-        if any(part in {".git", "dist", "__pycache__"} for part in path.parts):
+        if any(part in EXCLUDED_DIRS for part in path.parts):
             continue
         if path.is_symlink():
             try:
@@ -101,6 +102,8 @@ def validate() -> list[str]:
         errors.append("portable package must contain the Braids skill and no mandatory MCP config")
 
     for path in ROOT.rglob("*"):
+        if any(part in EXCLUDED_DIRS for part in path.parts):
+            continue
         if not path.is_file() or path.suffix.lower() not in IMAGE_SUFFIXES:
             continue
         relative = path.relative_to(ROOT)
