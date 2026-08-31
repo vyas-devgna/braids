@@ -9,7 +9,7 @@ Braids ships as plain Agent Skills plus generated manifests, so most "package ma
 | Claude Code | `claude plugin marketplace add vyas-devgna/braids` then `claude plugin install braids@braids` |
 | Codex CLI/desktop | `codex plugin marketplace add https://github.com/vyas-devgna/braids` then `codex plugin add braids@braids --json` |
 | Cursor | clone into `~/.cursor/plugins/local/braids` |
-| Everything else | `npx braids-skill <host>` |
+| Everything else | `npx github:vyas-devgna/braids <host>` |
 
 The repository root is itself the installable plugin: `skills/` sits at the root and `build_adapters.py --install-root` writes `.claude-plugin/`, `.codex-plugin/` and `.cursor-plugin/` manifests beside it. There is no `dist/` to publish and no second copy of the kernel.
 
@@ -25,6 +25,8 @@ The repository root is itself the installable plugin: `skills/` sits at the root
 ## npm
 
 Package name `braids-skill`. It exists to serve `npx braids-skill <host>` for hosts with no plugin system, and to give the skills a versioned artifact. It is not a library: there is no runtime import surface, and `bin` points at a file copier.
+
+The package is ready but not yet present in the npm registry: the first publish requires account 2FA or a granular publish token with 2FA bypass. Until that is configured, `npx github:vyas-devgna/braids <host>` runs the same installer directly from the public repository.
 
 `files` is an allowlist with `__pycache__` and `*.pyc` negated, so the tarball carries only skills, commands, adapters, manifests and the installer — about 100 kB. Brand assets are deliberately excluded; they are repository material and must never enter model context.
 

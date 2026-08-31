@@ -62,12 +62,12 @@ git clone https://github.com/vyas-devgna/braids ~/.cursor/plugins/local/braids
 ### Any other Agent Skills host
 
 ```sh
-npx braids-skill <host>          # opencode, cline, windsurf, copilot, antigravity, agents
-npx braids-skill opencode --user # install for you rather than this project
-npx braids-skill opencode --uninstall
+npx github:vyas-devgna/braids <host>          # opencode, cline, windsurf, copilot, antigravity, agents
+npx github:vyas-devgna/braids opencode --user # install for you rather than this project
+npx github:vyas-devgna/braids opencode --uninstall
 ```
 
-`npx braids-skill` copies the skills into that host's documented skill directory. Run it with no host to see the list. Host-specific commands, limitations, and acceptance evidence live under [`adapters/`](adapters/).
+The installer copies the skills into that host's documented skill directory. Run it with no host to see the list. The shorter `npx braids-skill` command will work after the npm prerelease is published. Host-specific commands, limitations, and acceptance evidence live under [`adapters/`](adapters/).
 
 ## Use
 
