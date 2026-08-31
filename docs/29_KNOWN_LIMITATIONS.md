@@ -56,7 +56,7 @@ State survival across compaction and resume is `not-exercised` on **all eight**,
 
 ## Measurement
 
-`scripts/measure_budget.py` measures static context cost only, using a **chars/4 estimate, not a tokenizer**. Against the one host-authoritative number available — Claude Code 2.1.248 reporting 261 always-on and ~2.8k on-invoke — the estimator reads 215 and 2385. Treat the static estimate as a bound, not as a token count.
+`scripts/measure_budget.py` measures static context cost only, using a **chars/4 estimate, not a tokenizer**. Against the one host-authoritative number available — Claude Code 2.1.248 reporting 280 always-on and ~2.8k on-invoke — the estimator reads 215 and 2385. Treat the static estimate as a bound, not as a token count.
 
 Everything in `docs/24` that depends on a run — tokens per accepted decision, rework ratio, subagent marginal value, research marginal value, single-agent versus subagent comparison, research versus no-research comparison — is unmeasured. No token-saving or cost-reduction claim is made anywhere in this repository.
 

@@ -7,7 +7,7 @@ marginal value) need graded host runs and are not produced here.
 
 Token counts are a chars/4 ESTIMATE, not a tokenizer result. The estimator is
 calibrated against the one host-authoritative measurement available:
-`claude plugin details braids` on Claude Code 2.1.248 reported ~261 always-on and
+`claude plugin details braids` on Claude Code 2.1.248 reported ~280 always-on and
 ~2.8k on-invoke tokens.
 """
 
@@ -33,7 +33,7 @@ CEILINGS = {
 # Host-measured, not estimated. Recorded so drift is visible when the kernel changes.
 OBSERVED = {
     # `claude plugin details braids`, methodology 3.0.0 with the widened description.
-    "claude-code@2.1.248": {"always_on_tokens": 261, "on_invoke_tokens": 2800},
+    "claude-code@2.1.248": {"always_on_tokens": 280, "on_invoke_tokens": 2800},
 }
 
 

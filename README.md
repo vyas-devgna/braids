@@ -1,18 +1,38 @@
-<p align="center"><img src="assets/hero/braids-hero.png" alt="Braids" width="720"></p>
+<p align="center">
+  <img src="assets/hero/braids-hero.png" alt="Braids" width="760">
+</p>
 
-# Braids
+<h1 align="center">Braids</h1>
 
-Braids is an adaptive engineering-governance skill for AI coding agents. It chooses the lowest total lifecycle burden that satisfies the real requirements, quality scenarios, hard constraints, and acceptable residual risk.
+<p align="center">
+  Adaptive engineering governance for AI coding agents.<br>
+  <strong>Enough engineering for the real risk—no more, no less.</strong>
+</p>
 
-Braids is currently under pre-release development. The canonical behavior lives in `skills/braids`; host adapters may expose native packaging or optional guards but may not redefine that behavior.
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2f6f63"></a>
+  <a href="https://github.com/vyas-devgna/braids/actions/workflows/ci.yml"><img alt="Conformance" src="https://github.com/vyas-devgna/braids/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Status: experimental" src="https://img.shields.io/badge/status-experimental-c58b2b">
+</p>
 
-## What it does
+Braids helps coding agents choose the lowest total lifecycle burden that still satisfies the real requirements, quality scenarios, hard constraints, and acceptable residual risk. It rejects both under-engineering and architecture-for-show.
 
-Braids scales its engineering depth from D0 (local and reversible) through D4 (critical or irreversible), acquires only decision-changing context, challenges unsafe or unsupported choices, evaluates reuse and dependencies, and links material claims to evidence. Review-only authority never permits writes. “No change” is a valid result.
+> Complexity is a cost. Require it to purchase scenario-linked value. “No change” is a valid result.
 
-## Portable use
+## Why Braids
 
-Install or copy `skills/braids` into an Agent Skills-compatible host, or load this directory as an Agent Plugins v1 package. No MCP server, network service, runtime dependency, or production telemetry is required.
+| Ordinary agent tendency | Braids response |
+|---|---|
+| Treat every task as roughly equal | Routes work from **D0** local/mechanical to **D4** critical/irreversible |
+| Optimize before finding a bottleneck | Requires a target and suitable evidence |
+| Change the named file and miss callers | Expands context only when the change surface demands it |
+| Add dependencies as shortcuts | Prices security, maintenance, transitives, portability, and exit cost |
+| Call passing tests “production-ready” | Maps each material claim to the evidence that can prove it |
+| Keep polishing after the task is solved | Stops when further work costs more than its expected value |
+
+Braids is a portable [Agent Skill](skills/braids/SKILL.md), not a prompt demo or remote service. It has no runtime dependency, mandatory MCP server, production telemetry, or hidden project state.
+
+## Install
 
 ### Claude Code
 
@@ -21,6 +41,8 @@ claude plugin marketplace add vyas-devgna/braids
 claude plugin install braids@braids
 ```
 
+Verify with `claude plugin details braids`.
+
 ### Codex CLI and desktop
 
 ```sh
@@ -28,46 +50,73 @@ codex plugin marketplace add https://github.com/vyas-devgna/braids
 codex plugin add braids@braids --json
 ```
 
-The Codex IDE extension does not load installable plugins. For that surface, copy `skills/braids` to `<project>/.agents/skills/braids`.
+The Codex IDE extension does not load installable plugins. For the IDE, copy `skills/braids` to `<project>/.agents/skills/braids`.
 
-Run local conformance checks with:
+### Other Agent Skills hosts
+
+Copy `skills/braids` to the host’s documented project or user skill directory. Host-specific commands, limitations, and acceptance evidence live under [`adapters/`](adapters/).
+
+## Use
+
+Braids is selected automatically when the task involves architecture, security, auth, data integrity, failure handling, concurrency, performance, dependencies, deployment, cross-module impact, or evidence-sensitive claims.
+
+Invoke it explicitly when you want certainty:
+
+```text
+Use Braids to review this migration plan and identify the smallest justified design.
+```
+
+```text
+Use Braids before changing this authorization check. Preserve security and explain the minimum safe alternative.
+```
+
+The method progressively loads only the references relevant to the task. Claude Code 2.1.248 currently reports about **280 always-on tokens** and **2.8k tokens when invoked**.
+
+## Engineering depth
+
+| Depth | Typical work | Default treatment |
+|---|---|---|
+| D0 | Safe, local, reversible | Direct change; no research or delegation |
+| D1 | Routine bounded change | Targeted context and checks |
+| D2 | Cross-module or platform-sensitive | Explicit change-surface model and broader verification |
+| D3 | Security, reliability, concurrency, measured performance | Threat/failure analysis and stronger evidence |
+| D4 | Irreversible, mission-critical, hard to recover | Staged decision, migration, rollback, recovery |
+
+## Status
+
+Braids is usable today but remains **experimental**. It is advisory on every host: it reasons about unsafe changes but ships no hooks and enforces nothing. A clean Codex smoke run observed 3/3 expected activations and 1/1 expected dormancy; the complete 92-case behavioral suite is not yet graded.
+
+Read the exact boundaries in [Known Limitations](docs/29_KNOWN_LIMITATIONS.md). A present adapter is not itself a support claim.
+
+## Validate and develop
 
 ```sh
-python3 scripts/validate.py         # package, skill, schema, adapter and secret invariants
-python3 scripts/run_evals.py        # eval corpus integrity (add --fixture-tests for the fixtures)
-python3 scripts/measure_budget.py   # static context budget against the docs/24 ceilings
+python3 scripts/validate.py
+python3 scripts/run_evals.py --fixture-tests
+python3 scripts/measure_budget.py
 python3 -m unittest discover -s tests
+python3 scripts/build_adapters.py --dist dist
 ```
 
-## Host adapters
+The repository contains 92 evaluation cases, eight fixture families, Draft 2020-12 contracts, and eight thin host adapters generated from one semantic source of truth.
 
-Eight adapters are generated from one metadata source — no adapter contains Braids methodology or a second copy of the kernel:
+## Documentation
 
-```sh
-python3 scripts/build_adapters.py --dist dist          # build every installable tree
-python3 scripts/build_adapters.py --dist dist --only codex
-```
+- [Documentation map](docs/00_INDEX.md)
+- [Product requirements](docs/03_PRODUCT_REQUIREMENTS_PRD.md)
+- [Architecture](docs/04_ARCHITECTURE_FREEZE.md)
+- [Security threat model](docs/10_SECURITY_THREAT_MODEL.md)
+- [Evaluation strategy](docs/12_EVALUATION_STRATEGY.md)
+- [Requirements traceability](docs/28_REQUIREMENTS_TRACEABILITY_MATRIX.md)
+- [Known limitations](docs/29_KNOWN_LIMITATIONS.md)
+- [Host research](research/00_INDEX.md)
 
-Each `adapters/<host>/README.md` carries that host's install, disable and uninstall steps, its state against all ten `docs/22` acceptance checks, and its limitations.
+## Contributing and security
 
-**All eight adapters are `experimental`, and Braids is advisory on every host — it ships no hooks and enforces nothing.** Read [docs/29_KNOWN_LIMITATIONS.md](docs/29_KNOWN_LIMITATIONS.md) before relying on any of it.
+Contributions are welcome; read [CONTRIBUTING.md](CONTRIBUTING.md) before changing normative behavior. Report vulnerabilities privately through GitHub’s security advisory flow as described in [SECURITY.md](SECURITY.md).
 
-Host support is claimed only in each adapter's tested capability record. A present adapter directory is not itself a support claim.
+Brand artwork and usage notes live in [`assets/`](assets/README.md). No runtime behavior depends on them.
 
-## Project status
+## License
 
-- Methodology baseline: v3
-- Package: 0.1.0 development series
-- Guard Mode: off by default
-- State: session-local by default
-- License: MIT
-
-The authoritative pre-development dossier remains in `docs/00_INDEX.md`, `research/00_INDEX.md`, and the root baseline artifacts.
-
-## Brand assets
-
-`assets/` holds the mascot, icon and hero artwork, with per-file usage notes in [assets/README.md](assets/README.md). They are repository and distribution material only: no Braids behaviour depends on them, `scripts/validate.py` rejects an image anywhere outside `assets/`, and no asset enters the runtime skill or model context. Only the Cursor package carries one — the 256 px icon, for the `logo` field that manifest documents.
-
-## Licence
-
-MIT. See [LICENSE](LICENSE).
+[MIT](LICENSE) © 2026 Vyas Devgna.

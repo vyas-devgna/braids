@@ -1,28 +1,42 @@
-# Braids Pre-Development / Pre-Testing Dossier
+# Braids documentation
 
 Research freeze date: **2026-08-31**
 
-This package is the pre-implementation source of truth for Braids. It contains the research record, product requirements, frozen architecture, module/state contracts, host integration designs, packaging rules, token/context policy, security model, evidence policy, evaluation methodology, pre-test plan, acceptance gates, repository/release design, and implementation handoff.
+This dossier is the source of truth for Braids: product requirements, frozen architecture, module contracts, host integration, security, evidence policy, evaluation, release gates, and implementation records.
+
+> Looking for installation and everyday use? Start with the [project README](../README.md). Looking for what is not yet proven? Read [Known Limitations](29_KNOWN_LIMITATIONS.md).
+
+## Choose your path
+
+| I want to… | Read |
+|---|---|
+| Understand the product | [Product requirements](03_PRODUCT_REQUIREMENTS_PRD.md) → [Architecture](04_ARCHITECTURE_FREEZE.md) |
+| Implement or review the kernel | [Module contracts](05_MODULE_CONTRACTS_AND_STATE.md) → [Engineering decision method](08_ENGINEERING_DECISION_METHOD.md) |
+| Integrate a host | [Host integration](06_HOST_PLATFORM_INTEGRATION_SPEC.md) → [Adapter acceptance tests](22_HOST_ADAPTER_ACCEPTANCE_TESTS.md) |
+| Evaluate behavior | [Evaluation strategy](12_EVALUATION_STRATEGY.md) → [Trigger evals](23_SKILL_TRIGGER_EVAL_SPEC.md) |
+| Review security | [Threat model](10_SECURITY_THREAT_MODEL.md) → [Enforcement coverage](25_SECURITY_ENFORCEMENT_COVERAGE.md) |
+| Check release readiness | [Freeze checklist](26_PREDEVELOPMENT_FREEZE_CHECKLIST.md) → [Traceability](28_REQUIREMENTS_TRACEABILITY_MATRIX.md) → [Known limitations](29_KNOWN_LIMITATIONS.md) |
+| Trace a design decision | [Decision records](decisions/) → [Implementation map](development/IMPLEMENTATION_MAP.md) |
 
 ## Start here
 
-1. `research/00_INDEX.md` — current host/ecosystem research.
-2. `docs/02_RESEARCH_SYNTHESIS_AND_PRECEDENTS.md` — conclusions from research.
-3. `docs/03_PRODUCT_REQUIREMENTS_PRD.md` — product contract.
-4. `docs/04_ARCHITECTURE_FREEZE.md` — architecture to implement.
-5. `docs/05_MODULE_CONTRACTS_AND_STATE.md` — runtime/module boundaries.
-6. `docs/06_HOST_PLATFORM_INTEGRATION_SPEC.md` — integration strategy.
-7. `docs/07_SKILL_PLUGIN_PACKAGING_SPEC.md` — portable packaging.
-8. `docs/10_SECURITY_THREAT_MODEL.md` — security/trust boundaries.
-9. `docs/12_EVALUATION_STRATEGY.md` — how Braids itself will be judged.
-10. `docs/13_PRE_TEST_PLAN.md` — test plan before implementation.
-11. `docs/22_HOST_ADAPTER_ACCEPTANCE_TESTS.md` — host-specific acceptance.
-12. `docs/23_SKILL_TRIGGER_EVAL_SPEC.md` — activation quality.
-13. `docs/24_TOKEN_BUDGET_AND_TELEMETRY_SPEC.md` — context/token economics.
-14. `docs/25_SECURITY_ENFORCEMENT_COVERAGE.md` — enforcement truthfulness.
-15. `docs/26_PREDEVELOPMENT_FREEZE_CHECKLIST.md` — final Gate 0.
-16. `docs/27_OPEN_QUESTIONS_AND_ASSUMPTION_REGISTER.md` — decisions implementation must not invent.
-17. `docs/28_REQUIREMENTS_TRACEABILITY_MATRIX.md` — requirement → module → evaluation traceability.
+1. [Host and ecosystem research](../research/00_INDEX.md)
+2. [Research synthesis](02_RESEARCH_SYNTHESIS_AND_PRECEDENTS.md)
+3. [Product requirements](03_PRODUCT_REQUIREMENTS_PRD.md)
+4. [Architecture freeze](04_ARCHITECTURE_FREEZE.md)
+5. [Module contracts and state](05_MODULE_CONTRACTS_AND_STATE.md)
+6. [Host integration](06_HOST_PLATFORM_INTEGRATION_SPEC.md)
+7. [Skill and plugin packaging](07_SKILL_PLUGIN_PACKAGING_SPEC.md)
+8. [Security threat model](10_SECURITY_THREAT_MODEL.md)
+9. [Evaluation strategy](12_EVALUATION_STRATEGY.md)
+10. [Pre-test plan](13_PRE_TEST_PLAN.md)
+11. [Host adapter acceptance](22_HOST_ADAPTER_ACCEPTANCE_TESTS.md)
+12. [Skill trigger evaluation](23_SKILL_TRIGGER_EVAL_SPEC.md)
+13. [Token budget and telemetry](24_TOKEN_BUDGET_AND_TELEMETRY_SPEC.md)
+14. [Security enforcement coverage](25_SECURITY_ENFORCEMENT_COVERAGE.md)
+15. [Freeze checklist](26_PREDEVELOPMENT_FREEZE_CHECKLIST.md)
+16. [Open questions and assumptions](27_OPEN_QUESTIONS_AND_ASSUMPTION_REGISTER.md)
+17. [Requirements traceability](28_REQUIREMENTS_TRACEABILITY_MATRIX.md)
 
 ## Complete document set
 
