@@ -370,6 +370,7 @@ def main() -> int:
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     mode = "a" if args.resume else "w"
+    failures = 0
     with args.out.open(mode, encoding="utf-8") as handle:
         total = len(remaining)
         for index, case in enumerate(remaining, 1):
@@ -378,13 +379,15 @@ def main() -> int:
                 record = run_case(case, args.host, plugin, args.timeout, args.default_fixture)
             except subprocess.TimeoutExpired:
                 print(f"  timeout after {args.timeout}s", flush=True)
+                failures += 1
                 continue
             handle.write(json.dumps(record) + "\n")
             handle.flush()
             print(f"  triggered={record['triggered']} depth={record['observed_depth']} "
                   f"props={len(record['observed_properties'])} violations={record['violations']}", flush=True)
+            failures += record["result"] != "pass"
     print(f"wrote {args.out} ({len(remaining)} new runs)")
-    return 0
+    return int(bool(failures))
 
 
 if __name__ == "__main__":
