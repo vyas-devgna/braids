@@ -63,6 +63,14 @@ The user may also set an implementation threshold: `low` (smallest change that w
 
 Use the lowest depth that covers every material risk. Escalate for severity, exposure, propagation, uncertainty, poor detectability/recoverability, irreversibility, platform variance, or user-harm potential. De-escalate when evidence proves the change bounded and reversible.
 
+Some facts set a floor no matter how small the edit looks. A one-line diff does not lower these:
+
+- asserting a performance, resource, security, reliability, or compatibility property that has not been measured or tested → **at least D3**, because the claim needs evidence even when the code does not;
+- weakening or removing a security, authorization, privacy, or data-integrity guarantee → **at least D3**;
+- an irreversible or hard-to-recover change — in-place data migration, a format older versions cannot read, destructive operations, anything with no rollback → **at least D4**.
+
+Depth follows the risk carried by the change, not the effort of writing it. Under-rating is the costlier error: it buys a cheap answer to an expensive question.
+
 ## Decide
 
 1. Gather evidence only if it can change the risk, candidate, dependency, decision, or verification plan. Prefer project code and observed tests, then current official docs, upstream source/issues, mature precedents, standards, and explicit inference. Read [evidence-reuse.md](references/evidence-reuse.md) for research and dependency decisions.

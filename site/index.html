@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en" data-panel="what">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Braids — enough engineering for the real risk</title>
+<meta name="description" content="Adaptive engineering governance for AI coding agents. Right-sizes engineering to real risk and holds every claim to evidence.">
+<link rel="icon" href="braids-icon-256.png">
+<meta property="og:title" content="Braids">
+<meta property="og:description" content="Enough engineering for the real risk — no more, no less.">
+<meta property="og:image" content="https://braids.vyasdevgna.online/braids-icon-512.png">
+<meta name="theme-color" content="#0a0b0d">
+<style>
+:root{
+  --bg:#0a0b0d; --panel:#101216; --line:#1e2228; --line-2:#2a2f36;
+  --ink:#eceae5; --mid:#9aa0a8; --dim:#666c74;
+  --amber:#d59b3c; --amber-dim:#8a6425;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{display:flex;flex-direction:column;height:100dvh;
+  padding:clamp(14px,2.2vh,26px) clamp(16px,3vw,44px);gap:clamp(10px,1.6vh,20px)}
+
+/* film grain + vignette: cinematic without glow */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
+  background:radial-gradient(120% 90% at 50% 40%,transparent 42%,rgba(0,0,0,.55) 100%);}
+body::before{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:59;opacity:.035;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+  animation:grain 6s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}
+  60%{transform:translate(-2%,-2%)}80%{transform:translate(3%,1%)}100%{transform:translate(0,0)}}
+
+canvas#weave{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.7}
+
+/* ── top bar ─────────────────────────────────────────── */
+header{display:flex;align-items:center;gap:clamp(12px,2vw,28px);z-index:10;flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit}
+.brand img{width:28px;height:28px;filter:invert(1) grayscale(1) contrast(1.5) brightness(1.15);opacity:.92}
+.brand b{font-size:16px;letter-spacing:-.015em;font-weight:600}
+nav{margin-left:auto;display:flex;gap:2px;background:rgba(16,18,22,.72);backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:999px;padding:4px}
+nav button{font:500 12.5px/1 var(--mono);letter-spacing:.02em;color:var(--mid);background:none;border:0;
+  cursor:pointer;padding:8px 15px;border-radius:999px;transition:color .28s var(--ease),background .28s var(--ease)}
+nav button:hover{color:var(--ink)}
+nav button[aria-selected=true]{color:var(--bg);background:var(--ink)}
+nav button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+/* ── stage ───────────────────────────────────────────── */
+main{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+  gap:clamp(20px,4vw,64px);align-items:center;z-index:10}
+
+.lede{display:flex;flex-direction:column;gap:clamp(10px,1.8vh,20px);min-width:0}
+h1{font-size:clamp(34px,6.4vw,76px);line-height:.94;letter-spacing:-.045em;font-weight:600;
+  text-shadow:0 8px 40px rgba(10,11,13,.95)}
+h1 em{font-style:normal;color:var(--dim)}
+.sub{font-size:clamp(14px,1.55vw,19px);line-height:1.5;color:var(--mid);max-width:34ch}
+.sub strong{color:var(--ink);font-weight:500}
+
+.cmd{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);
+  box-shadow:0 14px 40px -16px rgba(0,0,0,.85);
+  border-radius:11px;padding:12px 13px;font:13px/1 var(--mono);max-width:min(100%,460px);
+  transition:border-color .3s var(--ease)}
+.cmd:hover{border-color:var(--line-2)}
+.cmd span{color:var(--amber);flex:0 0 auto}
+.cmd code{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 auto}
+.cmd button{flex:0 0 auto;background:none;border:1px solid var(--line-2);color:var(--mid);cursor:pointer;
+  font:11px/1 var(--mono);padding:6px 9px;border-radius:6px;transition:.24s var(--ease)}
+.cmd button:hover{color:var(--ink);border-color:var(--mid)}
+.cmd button.ok{color:var(--amber);border-color:var(--amber-dim)}
+
+/* ── swappable panel ─────────────────────────────────── */
+.stage{position:relative;min-width:0;min-height:0;align-self:stretch;display:flex;align-items:center}
+/* Visibility is a display toggle, never a transition outcome: if animations
+   are throttled or disabled the panel is still fully rendered. The stagger is
+   decoration layered on top. */
+.panel{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;gap:12px}
+.panel[data-on]{display:flex}
+.panel[data-on] > *{animation:rise .5s var(--ease) backwards}
+.panel[data-on] > *:nth-child(1){animation-delay:.05s}
+.panel[data-on] > *:nth-child(2){animation-delay:.11s}
+.panel[data-on] > *:nth-child(3){animation-delay:.17s}
+.panel[data-on] > *:nth-child(4){animation-delay:.23s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.eyebrow{font:500 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+
+.rows{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;box-shadow:0 18px 50px -18px rgba(0,0,0,.9);
+  backdrop-filter:blur(7px)}
+.row{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;
+  background:rgba(16,18,22,.93);padding:11px 15px;transition:background .3s var(--ease)}
+.row:hover{background:#14171c}
+.row dt{font:600 11.5px/1.35 var(--mono);color:var(--amber);white-space:nowrap}
+.row dd{font-size:13.2px;line-height:1.45;color:var(--mid)}
+.row dd b{color:var(--ink);font-weight:500}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
+  box-shadow:0 14px 40px -16px rgba(0,0,0,.85);
+  transition:border-color .3s var(--ease),transform .3s var(--ease)}
+.card:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.card h3{font:600 12px/1 var(--mono);color:var(--ink);margin-bottom:5px;letter-spacing:.01em}
+.card p{font-size:12.4px;line-height:1.45;color:var(--dim)}
+.card.hot h3{color:var(--amber)}
+
+.note{font-size:12.2px;line-height:1.5;color:var(--dim)}
+.note b{color:var(--mid);font-weight:500}
+
+/* ── footer ──────────────────────────────────────────── */
+footer{flex:0 0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;z-index:10;
+  font:11.5px/1 var(--mono);color:var(--dim)}
+footer a{color:var(--mid);text-decoration:none;border-bottom:1px solid transparent;transition:.24s var(--ease)}
+footer a:hover{color:var(--ink);border-bottom-color:var(--amber)}
+.tag{border:1px solid var(--line-2);border-radius:999px;padding:4px 9px}
+.tag.warn{color:var(--amber);border-color:var(--amber-dim)}
+.spacer{margin-left:auto}
+
+@media (max-width:560px){
+  header{gap:8px}
+  .brand b{display:none}
+  nav{padding:3px;gap:0}
+  nav button{padding:7px 10px;font-size:11.5px}
+}
+@media (max-width:900px){
+  main{grid-template-columns:1fr;align-content:center;gap:16px}
+  .stage{height:auto;min-height:44vh}
+  .panel{position:relative;inset:auto;transform:none}
+  .panel:not([data-on]){display:none}
+  h1{font-size:clamp(30px,10vw,46px)}
+  .sub{max-width:none}
+  .split{grid-template-columns:1fr}
+  .rows{max-height:38vh;overflow-y:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  .panel > *{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<canvas id="weave" aria-hidden="true"></canvas>
+
+<header>
+  <a class="brand" href="https://github.com/vyas-devgna/braids">
+    <img src="braids-icon-256.png" alt="">
+    <b>braids</b>
+  </a>
+  <nav id="nav" role="tablist" aria-label="Sections">
+    <button role="tab" data-p="what"    aria-selected="true">what</button>
+    <button role="tab" data-p="depth"   aria-selected="false">depth</button>
+    <button role="tab" data-p="use"     aria-selected="false">use</button>
+    <button role="tab" data-p="install" aria-selected="false">install</button>
+  </nav>
+</header>
+
+<main>
+  <div class="lede">
+    <h1>Enough<br>engineering<br><em>for the real risk.</em></h1>
+    <p class="sub">Coding agents treat a one-line auth change like a rename. Braids
+      <strong>right-sizes the work to the actual risk</strong> and refuses to call anything
+      faster, secure, or production-ready without the evidence.</p>
+    <div class="cmd">
+      <span>$</span><code id="cmd">claude plugin marketplace add vyas-devgna/braids</code>
+      <button id="copy" type="button">copy</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <section class="panel" data-panel="what" data-on>
+      <p class="eyebrow">the difference</p>
+      <dl class="rows">
+        <div class="row"><dt>depth</dt><dd>Routes work <b>D0 → D4</b> by consequence, not by line count.</dd></div>
+        <div class="row"><dt>evidence</dt><dd>Every claim mapped to what would prove it. <b>Green tests are not a speed benchmark.</b></dd></div>
+        <div class="row"><dt>surface</dt><dd>Finds the <b>callers you missed</b>, not just the file you named.</dd></div>
+        <div class="row"><dt>restraint</dt><dd>Prices dependencies and abstractions. <b>“No change” is a valid result.</b></dd></div>
+      </dl>
+      <p class="note">Portable Agent Skill. No runtime dependency, no MCP server, no telemetry.
+        <b>~778 tokens</b> resident; loads the rest only when it fires.</p>
+    </section>
+
+    <section class="panel" data-panel="depth">
+      <p class="eyebrow">two dials</p>
+      <dl class="rows">
+        <div class="row"><dt>D0 · D1</dt><dd>Local and reversible. <b>Just do it</b> — no research, no ceremony.</dd></div>
+        <div class="row"><dt>D2</dt><dd>Cross-module or platform-sensitive. Model the change surface.</dd></div>
+        <div class="row"><dt>D3</dt><dd>Security, data integrity, concurrency, measured performance. <b>Real evidence.</b></dd></div>
+        <div class="row"><dt>D4</dt><dd>Irreversible or mission-critical. Migration, rollback, stated residual risk.</dd></div>
+      </dl>
+      <div class="split">
+        <div class="card"><h3>low · high · ultra</h3><p>You set the effort. Depth still follows the risk.</p></div>
+        <div class="card hot"><h3>the floor</h3><p><b>low</b> never silently weakens auth, privacy, or data integrity.</p></div>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="use">
+      <p class="eyebrow">seven skills, one method</p>
+      <dl class="rows">
+        <div class="row"><dt>/braids</dt><dd>Right-size and implement, with claims held to evidence.</dd></div>
+        <div class="row"><dt>/braids-review</dt><dd>A diff or PR: what breaks, what is unproven, what costs too much.</dd></div>
+        <div class="row"><dt>/braids-audit</dt><dd>Whole repo, ranked by consequence × exposure.</dd></div>
+        <div class="row"><dt>/braids-risk</dt><dd>Pre-mortem. Assume it shipped and caused an incident.</dd></div>
+        <div class="row"><dt>/braids-claims</dt><dd>Every “faster” and “secure” mapped to its evidence.</dd></div>
+        <div class="row"><dt>/braids-depth</dt><dd>Set the threshold, or ask why a task got its depth.</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel" data-panel="install">
+      <p class="eyebrow">pick your host</p>
+      <dl class="rows" id="installs">
+        <div class="row" data-cmd="claude plugin marketplace add vyas-devgna/braids"><dt>claude code</dt><dd><b>claude plugin marketplace add vyas-devgna/braids</b><br>then <code>claude plugin install braids@braids</code></dd></div>
+        <div class="row" data-cmd="codex plugin marketplace add https://github.com/vyas-devgna/braids"><dt>codex</dt><dd><b>codex plugin marketplace add …/braids</b><br>then <code>codex plugin add braids@braids --json</code></dd></div>
+        <div class="row" data-cmd="npx braids-skill opencode"><dt>opencode</dt><dd><b>npx braids-skill opencode</b></dd></div>
+        <div class="row" data-cmd="npx braids-skill cline"><dt>cline · windsurf</dt><dd><b>npx braids-skill cline</b> · <b>windsurf</b></dd></div>
+      </dl>
+      <p class="note">Any Agent Skills host: <b>npx braids-skill &lt;host&gt;</b>. Click a row to copy.
+        Adapters are <b>experimental</b> — read the limitations before relying on them.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <span class="tag">MIT</span>
+  <span class="tag warn">experimental · advisory, enforces nothing</span>
+  <span class="spacer"></span>
+  <a href="https://github.com/vyas-devgna/braids">github</a>
+  <a href="https://github.com/vyas-devgna/braids/blob/main/docs/30_SKILLS_REFERENCE.md">skills</a>
+  <a href="https://github.com/vyas-devgna/braids/blob/main/docs/29_KNOWN_LIMITATIONS.md">limitations</a>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ── the braid ──────────────────────────────────────────────────────
+     Strands are sampled as short segments and drawn back-to-front by
+     depth, so they genuinely pass over and under one another. Six grey
+     strands and one amber: the concern that actually carries risk.      */
+  const cv = document.getElementById("weave"), ctx = cv.getContext("2d");
+  // Three bundles of two strands. A real braid is bundles crossing, not one
+  // wide helix — tight amplitude and paired phases are what make it read.
+  const BUNDLES = 3, PER = 2, STRANDS = BUNDLES * PER, HOT = 2;
+  let W = 0, H = 0, t = 0, amp = 1, ampTarget = 1, px = 0, py = 0, tx = 0, ty = 0;
+
+  const size = () => {
+    const d = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * d; cv.height = H * d;
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+  };
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    amp += (ampTarget - amp) * .045;
+    tx += (px - tx) * .05; ty += (py - ty) * .05;
+
+    const wide = W > 900;
+    // Sits behind the right column on wide screens, centred when stacked.
+    const cx = (wide ? W * 0.47 : W * 0.5) + tx * 18;
+    const spread = Math.min(wide ? W * 0.055 : W * 0.18, 82) * amp;
+    const step = 11, k = 0.019, segs = [];
+
+    for (let s = 0; s < STRANDS; s++) {
+      const bundle = Math.floor(s / PER);
+      const phase = (bundle / BUNDLES) * Math.PI * 2 + (s % PER) * 0.26;
+      for (let y = -70; y < H + 70; y += step) {
+        const a = k * y + phase + t, b = k * (y + step) + phase + t;
+        segs.push({
+          x1: cx + Math.sin(a) * spread, y1: y + ty * 12,
+          x2: cx + Math.sin(b) * spread, y2: y + step + ty * 12,
+          d: Math.cos(a), s
+        });
+      }
+    }
+    segs.sort((m, n) => m.d - n.d);
+
+    for (const g of segs) {
+      const near = (g.d + 1) / 2;
+      const hot = g.s === HOT;
+      ctx.lineWidth = (hot ? 2.9 : 2.4) * (0.4 + near * 0.8);
+      ctx.globalAlpha = (hot ? 0.10 : 0.05) + near * (hot ? 0.46 : 0.16);
+      ctx.strokeStyle = hot ? "#d59b3c" : "#7f8a96";
+      ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.x2, g.y2); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    if (!reduce) t += 0.0046;
+    requestAnimationFrame(frame);
+  }
+
+  addEventListener("resize", size, { passive: true });
+  addEventListener("pointermove", e => {
+    px = (e.clientX / innerWidth - .5) * 2; py = (e.clientY / innerHeight - .5) * 2;
+  }, { passive: true });
+  size(); frame();
+
+  /* ── panels ─────────────────────────────────────────────────────── */
+  const AMP = { what: 1, depth: 1.34, use: .82, install: .62 };
+  const panels = [...document.querySelectorAll(".panel")];
+  const tabs = [...document.querySelectorAll("#nav button")];
+
+  function show(name, instant) {
+    document.documentElement.dataset.panel = name;
+    ampTarget = AMP[name] ?? 1;
+    for (const p of panels) {
+      const on = p.dataset.panel === name;
+      if (instant) {                       // first paint: land on the panel, no cross-fade
+        p.toggleAttribute("data-on", on);
+      } else {                             // later: clear, then re-set to replay the stagger
+        p.removeAttribute("data-on");
+        if (on) requestAnimationFrame(() => p.setAttribute("data-on", ""));
+      }
+    }
+    for (const b of tabs) b.setAttribute("aria-selected", String(b.dataset.p === name));
+    if (location.hash.slice(1) !== name) history.replaceState(null, "", "#" + name);
+  }
+
+  document.getElementById("nav").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (b) show(b.dataset.p);
+  });
+  addEventListener("keydown", e => {
+    const i = tabs.findIndex(b => b.getAttribute("aria-selected") === "true");
+    if (e.key === "ArrowRight") { show(tabs[(i + 1) % tabs.length].dataset.p); tabs[(i + 1) % tabs.length].focus(); }
+    if (e.key === "ArrowLeft")  { const j = (i - 1 + tabs.length) % tabs.length; show(tabs[j].dataset.p); tabs[j].focus(); }
+    const n = parseInt(e.key, 10);
+    if (n >= 1 && n <= tabs.length) show(tabs[n - 1].dataset.p);
+  });
+  const first = AMP[location.hash.slice(1)] ? location.hash.slice(1) : "what";
+  show(first, true);
+
+  /* ── copy ───────────────────────────────────────────────────────── */
+  async function copy(text, btn) {
+    try { await navigator.clipboard.writeText(text); }
+    catch {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } finally { ta.remove(); }
+    }
+    if (!btn) return;
+    const was = btn.textContent;
+    btn.textContent = "copied"; btn.classList.add("ok");
+    setTimeout(() => { btn.textContent = was; btn.classList.remove("ok"); }, 1400);
+  }
+  const copyBtn = document.getElementById("copy");
+  copyBtn.addEventListener("click", () => copy(document.getElementById("cmd").textContent, copyBtn));
+  document.getElementById("installs").addEventListener("click", e => {
+    const row = e.target.closest("[data-cmd]"); if (!row) return;
+    copy(row.dataset.cmd, null);
+    row.animate([{ background: "#1b1f26" }, { background: "#14171c" }], { duration: 620, easing: "ease-out" });
+  });
+})();
+</script>
+</body>
+</html>
