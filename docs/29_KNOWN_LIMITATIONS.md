@@ -11,7 +11,7 @@ This is the report `docs/16` requires before a release candidate. Every entry is
 
 Every deterministic gate in this repository passes. None of them tests what Braids does inside a model.
 
-The 92-case corpus, the 60 balanced trigger prompts, the eight fixture families and the grading thresholds in `scripts/run_evals.py` all exist and all validate. Two four-case activation controls have now run, on the current quoted description:
+The 99-case corpus, the 60 balanced trigger prompts, the eight fixture families and the grading thresholds in `scripts/run_evals.py` all exist and all validate. Two four-case activation controls have now run, on the current quoted description:
 
 | Host | Activated when expected | Dormant when expected | Depth matched |
 |---|---|---|---|

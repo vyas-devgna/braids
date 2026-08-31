@@ -34,7 +34,7 @@ const scope = flag("user") ? "user" : "project";
 
 if (flag("help") || !TARGETS[host]) {
   const known = Object.keys(TARGETS).join(", ");
-  console.log(`braids-install — copy the Braids skills into a host skill directory
+  console.log(`braids-skill — copy the Braids skills into a host skill directory
 
   npx braids-skill <host> [--user] [--uninstall]
 

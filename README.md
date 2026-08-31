@@ -5,8 +5,8 @@
 <h1 align="center">Braids</h1>
 
 <p align="center">
-  Adaptive engineering governance for AI coding agents.<br>
-  <strong>Enough engineering for the real risk—no more, no less.</strong>
+  Safer changes from AI coding agents, without unnecessary ceremony.<br>
+  <strong>Braids matches the work to the risk.</strong>
 </p>
 
 <p align="center">
@@ -16,22 +16,22 @@
   <img alt="Status: experimental" src="https://img.shields.io/badge/status-experimental-c58b2b">
 </p>
 
-Braids helps coding agents choose the lowest total lifecycle burden that still satisfies the real requirements, quality scenarios, hard constraints, and acceptable residual risk. It rejects both under-engineering and architecture-for-show.
+Braids helps coding agents tell the difference between a harmless rename and a one-line change that could break authentication. Small, reversible work stays small. Risky work gets the checks, failure analysis, and evidence it deserves.
 
 > Complexity is a cost. Require it to purchase scenario-linked value. “No change” is a valid result.
 
-## Why Braids
+## What changes when Braids is installed?
 
-| Ordinary agent tendency | Braids response |
+| Without Braids | With Braids |
 |---|---|
-| Treat every task as roughly equal | Routes work from **D0** local/mechanical to **D4** critical/irreversible |
+| Treat every task as roughly equal | Matches effort to consequence, from **D0** local/mechanical to **D4** critical/irreversible |
 | Optimize before finding a bottleneck | Requires a target and suitable evidence |
 | Change the named file and miss callers | Expands context only when the change surface demands it |
 | Add dependencies as shortcuts | Prices security, maintenance, transitives, portability, and exit cost |
 | Call passing tests “production-ready” | Maps each material claim to the evidence that can prove it |
 | Keep polishing after the task is solved | Stops when further work costs more than its expected value |
 
-Braids is a portable [Agent Skill](skills/braids/SKILL.md), not a prompt demo or remote service. It has no runtime dependency, mandatory MCP server, production telemetry, or hidden project state.
+Braids is a set of portable [Agent Skills](skills/braids/SKILL.md). It runs inside your coding agent: no remote service, mandatory MCP server, production telemetry, or hidden project state.
 
 ## Install
 
@@ -120,7 +120,7 @@ Braids loads only the references a task routes to. Claude Code 2.1.248 measures 
 
 Braids is usable today but remains **experimental**. It is advisory on every host: it reasons about unsafe changes but ships no hooks and enforces nothing.
 
-Four-case activation controls on the current description observed 3/3 expected activations and 1/1 expected dormancy on **both** Claude Code 2.1.248 and Codex 0.150.1. Depth routing is the weaker half — on Claude two of four cases read one level *below* the expected depth, which errs toward less engineering than the case deserves. The complete 92-case behavioural suite is not yet graded, and the six skills added alongside the core have no graded runs at all.
+Small activation controls on the current description passed on **both** Claude Code 2.1.248 and Codex 0.150.1. Depth routing is the weaker half: in the Claude control, two cases landed one level below their expected depth. The complete 99-case behavioural suite is not yet graded, and the six focused skills added alongside the core have no graded runs yet.
 
 Read the exact boundaries in [Known Limitations](docs/29_KNOWN_LIMITATIONS.md). A present adapter is not itself a support claim.
 
@@ -134,7 +134,7 @@ python3 -m unittest discover -s tests
 python3 scripts/build_adapters.py --dist dist
 ```
 
-The repository contains 92 evaluation cases, eight fixture families, Draft 2020-12 contracts, and eight thin host adapters generated from one semantic source of truth.
+The repository contains 99 evaluation cases, eight fixture families, Draft 2020-12 contracts, and eight thin host adapters generated from one semantic source of truth.
 
 ## Documentation
 

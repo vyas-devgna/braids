@@ -40,7 +40,7 @@ The order to follow, from `docs/07`:
 3. third-party and community marketplaces
 4. official marketplaces, after conformance maturity
 
-Step 3 becomes defensible once the 92-case suite is graded on at least two hosts and the adapters for those hosts reach `tested`. Step 4 additionally needs the `docs/22` per-host minimums.
+Step 3 becomes defensible once the 99-case suite is graded on at least two hosts and the adapters for those hosts reach `tested`. Step 4 additionally needs the `docs/22` per-host minimums.
 
 ### When the time comes
 

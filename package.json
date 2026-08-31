@@ -32,7 +32,10 @@
     "url": "https://github.com/vyas-devgna/braids/issues"
   },
   "bin": {
-    "braids-install": "scripts/install.mjs"
+    "braids-skill": "scripts/install.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "skills/",

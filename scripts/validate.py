@@ -97,7 +97,7 @@ def validate() -> list[str]:
             except ValueError:
                 errors.append(f"symlink escapes package: {path.relative_to(ROOT)}")
             continue
-        if not path.is_file() or path.suffix.lower() in {".png", ".jpg", ".jpeg", ".gif", ".zip", ".gz"}:
+        if not path.is_file() or path.suffix.lower() in IMAGE_SUFFIXES | {".zip", ".gz"}:
             continue
         try:
             text = path.read_text(encoding="utf-8")

@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -199,20 +200,29 @@ def run_codex(prompt: str, cwd: Path, timeout: int) -> tuple[str, list[dict], di
 def measure(tools: list[dict], response: str) -> dict:
     """Derive telemetry from the host's own trace. No judgement here."""
     names = [tool["name"] for tool in tools]
-    blob = json.dumps(tools)
     commands = " ".join(
         str(tool["input"].get("command", "")) for tool in tools if isinstance(tool.get("input"), dict)
     )
+    read_commands = [
+        str(tool["input"].get("command", ""))
+        for tool in tools
+        if isinstance(tool.get("input"), dict)
+        and re.search(r"(?:^|[\s\"';&|])(?:cat|sed|head|tail)\b", str(tool["input"].get("command", "")))
+    ]
+    direct_reads = [
+        json.dumps(tool.get("input", {})) for tool in tools if tool["name"] in {"Read", "read_file"}
+    ]
+    read_trace = " ".join(read_commands + direct_reads)
     references = sorted({
         name for name in (path.name for path in (KERNEL / "references").glob("*.md"))
-        if name in blob
+        if name in read_trace
     })
     activations = sum(
         1 for tool in tools
         if tool["name"] in {"Skill", "skill"} and "braids" in json.dumps(tool.get("input", {})).lower()
     )
     # Codex reports skill use through its shell/tool trace rather than a Skill tool.
-    if not activations and ("skills/braids/SKILL.md" in blob or "skills/braids" in commands):
+    if not activations and re.search(r"(?:^|[/\\])braids/SKILL\.md\b", read_trace):
         activations = 1
     return {
         "activations": activations,

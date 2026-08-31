@@ -122,6 +122,19 @@ class ScriptTests(unittest.TestCase):
         self.assertEqual(result["violations"], ["host error: 429"])
         judge.assert_not_called()
 
+    def test_listing_skill_files_is_not_an_activation(self):
+        tools = [{"name": "command_execution", "input": {
+            "command": "rg --files -uu",
+            "aggregated_output": ".agents/skills/braids/SKILL.md\n",
+        }}]
+        self.assertEqual(host_runner.measure(tools, "")["activations"], 0)
+
+    def test_reading_the_skill_is_an_activation(self):
+        tools = [{"name": "command_execution", "input": {
+            "command": "/usr/bin/bash -lc \"sed -n '1,220p' .agents/skills/braids/SKILL.md\"",
+        }}]
+        self.assertEqual(host_runner.measure(tools, "")["activations"], 1)
+
     def test_trigger_grading_does_not_require_decision_judgement(self):
         case = next(
             case for case in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl")
