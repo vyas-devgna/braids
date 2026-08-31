@@ -51,6 +51,8 @@ Do not reason from labels such as “robust,” “clean,” “scalable,” or 
 
 Depth controls context, challenge, research, and verification—not line count.
 
+The user may also set an implementation threshold: `low` (smallest change that works, obvious check only), `high` (default; production shape, failure paths, regression tests), or `ultra` (hostile cases, migration and rollback, evidence for every claim, independent challenge). Threshold caps effort; risk sets the floor on care. Honour `low` without lecturing, except where the change touches security, authorization, privacy, data integrity, a destructive or irreversible operation, or an explicit compatibility guarantee—there, name what `low` would skip in one sentence and do the smallest safe version. Threshold never licenses claiming something was verified when it was not. Read [depth-threshold.md](references/depth-threshold.md) when the two dials conflict.
+
 | Depth | Typical evidence | Default treatment |
 |---|---|---|
 | D0 | safe, local, reversible, mechanically checkable | direct work; no external research or subagents |

@@ -57,9 +57,10 @@ def validate() -> list[str]:
             errors.append("plugin and package licenses differ")
 
     validator = ROOT / "skills/braids/scripts/validate_braids.py"
-    result = subprocess.run([sys.executable, str(validator), str(ROOT / "skills/braids")], text=True, capture_output=True)
-    if result.returncode:
-        errors.extend(line for line in result.stderr.splitlines() if line)
+    for skill in sorted(p for p in (ROOT / "skills").iterdir() if (p / "SKILL.md").is_file()):
+        result = subprocess.run([sys.executable, str(validator), str(skill)], text=True, capture_output=True)
+        if result.returncode:
+            errors.extend(f"{skill.name}: {line}" for line in result.stderr.splitlines() if line)
 
     adapters = subprocess.run([sys.executable, str(ROOT / "scripts/build_adapters.py")], text=True, capture_output=True)
     if adapters.returncode:

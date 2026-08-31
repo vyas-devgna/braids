@@ -20,12 +20,17 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-KERNEL = ROOT / "skills/braids"
+SKILLS = ROOT / "skills"
+KERNEL = SKILLS / "braids"
 CHARS_PER_TOKEN = 4
 
 # docs/24: ecosystem guidance, restated here as the gate Braids holds itself to.
 CEILINGS = {
-    "metadata_tokens": 250,
+    # docs/24 states the guidance per *discovered skill*, so the per-skill figure is
+    # the real gate; the total is bounded separately because the user pays the sum
+    # on every turn whether or not any skill fires.
+    "per_skill_metadata_tokens": 250,
+    "metadata_tokens": 1000,
     "kernel_body_tokens": 5000,
     "kernel_body_lines": 500,
     "reference_tokens": 1500,
@@ -41,10 +46,14 @@ def estimate(text: str) -> int:
     return round(len(text) / CHARS_PER_TOKEN)
 
 
-def split_skill() -> tuple[str, str]:
-    text = (KERNEL / "SKILL.md").read_text(encoding="utf-8")
+def split_skill(skill: Path = KERNEL) -> tuple[str, str]:
+    text = (skill / "SKILL.md").read_text(encoding="utf-8")
     frontmatter, body = text[4:].split("\n---\n", 1)
     return frontmatter, body
+
+
+def shipped_skills() -> list[Path]:
+    return sorted(p for p in SKILLS.iterdir() if (p / "SKILL.md").is_file())
 
 
 def measure() -> dict:
@@ -53,10 +62,14 @@ def measure() -> dict:
         path.name: estimate(path.read_text(encoding="utf-8"))
         for path in sorted((KERNEL / "references").glob("*.md"))
     }
-    metadata = estimate(frontmatter)
+    # Every shipped skill advertises its metadata on every turn, so dormant cost
+    # is the sum across the whole set, not the kernel's share of it.
+    per_skill = {skill.name: estimate(split_skill(skill)[0]) for skill in shipped_skills()}
+    metadata = sum(per_skill.values())
     kernel = estimate(body)
     return {
         "estimator": f"chars/{CHARS_PER_TOKEN}",
+        "skills": per_skill,
         "metadata_tokens": metadata,
         "kernel_body_tokens": kernel,
         "kernel_body_lines": len(body.splitlines()),
@@ -76,6 +89,10 @@ def check(report: dict) -> list[str]:
     for key in ("metadata_tokens", "kernel_body_tokens", "kernel_body_lines"):
         if report[key] > CEILINGS[key]:
             errors.append(f"{key} is {report[key]}, above the docs/24 ceiling of {CEILINGS[key]}")
+    for name, tokens in report["skills"].items():
+        if tokens > CEILINGS["per_skill_metadata_tokens"]:
+            errors.append(f"skill {name} advertises {tokens} metadata tokens, "
+                          f"above the {CEILINGS['per_skill_metadata_tokens']} per-skill ceiling")
     for name, tokens in report["references"].items():
         if tokens > CEILINGS["reference_tokens"]:
             errors.append(f"reference {name} is {tokens} tokens, above the {CEILINGS['reference_tokens']} ceiling")
@@ -97,7 +114,9 @@ def main() -> int:
     else:
         stages = report["stages"]
         print(f"estimator: {report['estimator']} (estimate, not a tokenizer)")
-        print(f"dormant metadata          {stages['dormant']:>6} tok")
+        print(f"dormant metadata          {stages['dormant']:>6} tok  ({len(report['skills'])} skills, paid every turn)")
+        for name, tokens in report["skills"].items():
+            print(f"  skill {name:<28} {tokens:>5} tok")
         print(f"activated, no reference   {stages['activated_no_reference']:>6} tok  ({report['kernel_body_lines']} lines)")
         print(f"activated, one reference  {stages['activated_one_reference']:>6} tok  (worst single route)")
         print(f"activated, all references {stages['activated_all_references']:>6} tok  (never a normal path)")

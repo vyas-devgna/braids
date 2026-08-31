@@ -1,0 +1,2 @@
+description = "Braids reference card — skills, thresholds, and depth levels"
+prompt = "Use the braids-help skill. Print the reference card adapted to what the user asked: the available Braids skills and when to reach for each, the low/high/ultra implementation threshold, the D0-D4 depth levels, and the governing rule. Do not perform engineering work. State plainly that Braids is advisory and enforces nothing."

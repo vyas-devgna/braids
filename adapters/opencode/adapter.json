@@ -48,7 +48,7 @@
     "OpenCode also auto-loads external skills from ~/.claude/skills and ~/.agents/skills, so a Braids copy installed for another host can appear here; OPENCODE_DISABLE_EXTERNAL_SKILLS=1 suppresses that scan."
   ],
   "package": {
-    "skill_target": ".opencode/skill/braids",
+    "skill_target": ".opencode/skill",
     "manifests": []
   }
 }

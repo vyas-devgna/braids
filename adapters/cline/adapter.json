@@ -44,7 +44,7 @@
     "PreToolUse cancellation and lifecycle hooks are not shipped and their coverage is not claimed."
   ],
   "package": {
-    "skill_target": ".cline/skills/braids",
+    "skill_target": ".cline/skills",
     "manifests": []
   }
 }

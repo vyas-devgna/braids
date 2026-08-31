@@ -77,9 +77,16 @@ class ScriptTests(unittest.TestCase):
     def test_context_budget_stays_within_the_documented_ceilings(self):
         report = budget.measure()
         self.assertEqual(budget.check(report), [])
-        # Progressive disclosure is the product requirement, not an aspiration:
-        # dormant cost must stay a small fraction of the activated cost.
-        self.assertLess(report["stages"]["dormant"] * 5, report["stages"]["activated_no_reference"])
+        # Progressive disclosure is the product requirement, not an aspiration.
+        # Braids now ships several skills, so dormant cost is the sum every user
+        # pays on every turn whether or not any of them fires. The invariant that
+        # matters: having Braids installed must cost well under using it once.
+        # This fails if roughly five more skills are added without trimming.
+        self.assertLess(report["stages"]["dormant"] * 3, report["stages"]["activated_no_reference"])
+        # And no single skill may dominate the standing cost.
+        for name, tokens in report["skills"].items():
+            with self.subTest(skill=name):
+                self.assertLessEqual(tokens, budget.CEILINGS["per_skill_metadata_tokens"])
 
     def test_kernel_keeps_its_safety_invariants(self):
         """These sentences are the kernel's security posture; losing one is a silent regression."""

@@ -49,7 +49,7 @@
     "Cursor is the only supported host with a documented manifest logo field, so it is the only package that carries a brand asset; the 256 px icon is 59 KB. Claude Code 2.1.248 rejects both icon and logo as unknown fields under --strict."
   ],
   "package": {
-    "skill_target": "skills/braids",
+    "skill_target": "skills",
     "manifests": [
       {
         "path": "plugin.json",

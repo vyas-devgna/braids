@@ -1,0 +1,2 @@
+description = "Right-size and implement a change with evidence-backed engineering"
+prompt = "Use the braids skill for this task. Route engineering depth from the actual risk rather than the line count, resolve material unknowns from the repository before assuming, apply the reuse gate before adding anything new, and map every material claim to the evidence that would prove it. Honour an implementation threshold of low, high, or ultra if the user named one. Lead the report with the verdict, then what changed, what remains unverified, and the residual risk."

@@ -50,7 +50,7 @@
     "Guard hooks, custom agents and LSP configuration are deliberately absent until their coverage is measured."
   ],
   "package": {
-    "skill_target": "skills/braids",
+    "skill_target": "skills",
     "manifests": [
       {
         "path": ".claude-plugin/plugin.json",

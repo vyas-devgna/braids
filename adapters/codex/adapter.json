@@ -55,7 +55,7 @@
     "Guard hooks and custom agents are deliberately absent until their coverage is measured."
   ],
   "package": {
-    "skill_target": "skills/braids",
+    "skill_target": "skills",
     "manifests": [
       {
         "path": ".codex-plugin/plugin.json",

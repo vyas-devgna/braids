@@ -43,7 +43,7 @@
     "No workflow alias, rule, hook or enforcement claim is shipped."
   ],
   "package": {
-    "skill_target": ".windsurf/skills/braids",
+    "skill_target": ".windsurf/skills",
     "manifests": []
   }
 }

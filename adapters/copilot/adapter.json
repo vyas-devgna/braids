@@ -51,7 +51,7 @@
     "Adding a skill directory writes an absolute path into ~/.copilot/settings.json skillDirectories; removal clears the entry but leaves the empty array."
   ],
   "package": {
-    "skill_target": "skills/braids",
+    "skill_target": "skills",
     "manifests": [
       {
         "path": "plugin.json",

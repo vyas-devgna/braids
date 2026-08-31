@@ -1,0 +1,22 @@
+{
+  "name": "braids-skill",
+  "version": "0.1.0-dev.2",
+  "description": "Adaptive engineering governance for AI coding agents. Right-sizes engineering to real risk and holds every claim to evidence.",
+  "keywords": [
+    "agent-skill", "agent-skills", "claude-code", "codex", "cursor", "opencode",
+    "copilot", "windsurf", "cline", "antigravity", "engineering-governance",
+    "code-review", "code-audit", "ai-coding-agent"
+  ],
+  "license": "MIT",
+  "author": { "name": "Vyas Devgna", "url": "https://github.com/vyas-devgna" },
+  "homepage": "https://github.com/vyas-devgna/braids",
+  "repository": { "type": "git", "url": "git+https://github.com/vyas-devgna/braids.git" },
+  "bugs": { "url": "https://github.com/vyas-devgna/braids/issues" },
+  "bin": { "braids-install": "./scripts/install.mjs" },
+  "files": [
+    "skills/", "commands/", "adapters/", "scripts/install.mjs",
+    "plugin.json", "braids.json", "LICENSE", "README.md",
+    ".claude-plugin/", ".codex-plugin/", ".cursor-plugin/"
+  ],
+  "engines": { "node": ">=18" }
+}

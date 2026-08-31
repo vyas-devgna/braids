@@ -47,7 +47,7 @@
     "No rules, hooks, agents or MCP configuration are shipped."
   ],
   "package": {
-    "skill_target": "skills/braids",
+    "skill_target": "skills",
     "manifests": [
       {
         "path": "plugin.json",
