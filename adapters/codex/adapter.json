@@ -15,21 +15,20 @@
   "capabilities_file": "./capabilities.json",
   "guard_mode_default": false,
   "install": [
-    "python3 scripts/build_adapters.py --dist dist --only codex",
-    "standalone (all surfaces, including the IDE extension): cp -r skills/braids .agents/skills/braids",
-    "installable plugin (CLI and desktop only): codex plugin marketplace add <abs>/dist/codex",
+    "standalone (all surfaces, including the IDE extension): cp -r skills/braids <project>/.agents/skills/braids",
+    "installable plugin from a clone (CLI and desktop only): codex plugin marketplace add <repo>",
     "codex plugin list --available --json",
-    "codex plugin add braids@braids-local --json, then start a new session"
+    "codex plugin add braids@braids --json, then start a new session"
   ],
   "disable": [
     "standalone: remove or rename .agents/skills/braids and start a new session",
     "installable plugin: codex plugin remove braids --json"
   ],
   "uninstall": [
-    "codex plugin remove braids@braids-local --json (the bare name is rejected; the marketplace must be named)",
-    "codex plugin marketplace remove braids-local --json",
-    "rm -rf .agents/skills/braids dist/codex",
-    "rmdir ~/.codex/plugins/cache/braids-local, which is left behind empty"
+    "codex plugin remove braids@braids --json (the bare name is rejected; the marketplace must be named)",
+    "codex plugin marketplace remove braids --json",
+    "rm -rf <project>/.agents/skills/braids",
+    "rmdir ~/.codex/plugins/cache/braids, which is left behind empty"
   ],
   "conformance": [
     "discovery: pass \u2014 on 0.150.1 codex plugin marketplace add resolves the generated .claude-plugin/marketplace.json, codex plugin add installs the full skill tree into ~/.codex/plugins/cache, and codex plugin list reports it installed and enabled",
@@ -41,7 +40,7 @@
     "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
     "state-survival: not-exercised \u2014 compaction and resume behaviour was not measured",
     "isolation: not-applicable \u2014 no subagents are shipped; subagent threads are context isolation, not filesystem isolation",
-    "uninstall: pass \u2014 plugin remove plus marketplace remove cleared every cached file and every codex plugin list entry, leaving only an empty ~/.codex/plugins/cache/braids-local directory"
+    "uninstall: pass \u2014 plugin remove plus marketplace remove cleared every cached file and every codex plugin list entry, leaving only an empty ~/.codex/plugins/cache/braids directory"
   ],
   "source_revalidated_at": "2026-08-31",
   "limitations": [
@@ -49,7 +48,7 @@
     "No codex plugin validate command exists, so packaging is gated by the marketplace list/add/remove JSON flow instead.",
     "Codex reads marketplace manifests only from agents/plugins/api_marketplace.json, .claude-plugin/marketplace.json or .cursor-plugin/marketplace.json; there is no .codex-plugin marketplace location, so the adapter ships the .claude-plugin form.",
     "codex plugin remove rejects a bare plugin name and requires plugin@marketplace.",
-    "Removing the plugin and the marketplace leaves an empty ~/.codex/plugins/cache/braids-local directory; nothing loads from it, but it is not deleted automatically.",
+    "Removing the plugin and the marketplace leaves an empty ~/.codex/plugins/cache/braids directory; nothing loads from it, but it is not deleted automatically.",
     "Hooks require separate trust; hosted WebSearch is outside local hook coverage, write_stdin raises no second PreToolUse, background hooks cannot block, and parsed prompt/agent handlers are currently skipped.",
     "Subagents get separate threads and contexts but inherit the parent sandbox and approval mode; that is not filesystem or worktree isolation.",
     "The Codex-only skill interface descriptor (agents/openai.yaml) is owned by this adapter, not by the portable kernel, so no other host package ships it.",
@@ -74,8 +73,8 @@
       {
         "path": ".claude-plugin/marketplace.json",
         "content": {
-          "name": "braids-local",
-          "description": "Local development marketplace for the Braids adapter.",
+          "name": "braids",
+          "description": "Braids \u2014 adaptive engineering governance for AI coding agents.",
           "plugins": [
             {
               "name": "@name",

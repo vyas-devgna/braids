@@ -23,11 +23,10 @@ writes the installable tree.
 
 ## Install
 
-1. python3 scripts/build_adapters.py --dist dist --only codex
-2. standalone (all surfaces, including the IDE extension): cp -r skills/braids .agents/skills/braids
-3. installable plugin (CLI and desktop only): codex plugin marketplace add <abs>/dist/codex
-4. codex plugin list --available --json
-5. codex plugin add braids@braids-local --json, then start a new session
+1. standalone (all surfaces, including the IDE extension): cp -r skills/braids <project>/.agents/skills/braids
+2. installable plugin from a clone (CLI and desktop only): codex plugin marketplace add <repo>
+3. codex plugin list --available --json
+4. codex plugin add braids@braids --json, then start a new session
 
 ## Disable
 
@@ -36,10 +35,10 @@ writes the installable tree.
 
 ## Uninstall
 
-1. codex plugin remove braids@braids-local --json (the bare name is rejected; the marketplace must be named)
-2. codex plugin marketplace remove braids-local --json
-3. rm -rf .agents/skills/braids dist/codex
-4. rmdir ~/.codex/plugins/cache/braids-local, which is left behind empty
+1. codex plugin remove braids@braids --json (the bare name is rejected; the marketplace must be named)
+2. codex plugin marketplace remove braids --json
+3. rm -rf <project>/.agents/skills/braids
+4. rmdir ~/.codex/plugins/cache/braids, which is left behind empty
 
 ## Acceptance state (docs/22)
 
@@ -54,7 +53,7 @@ writes the installable tree.
 | enforcement-truthfulness | not-applicable | this adapter claims no deterministic blocking |
 | state-survival | not-exercised | compaction and resume behaviour was not measured |
 | isolation | not-applicable | no subagents are shipped; subagent threads are context isolation, not filesystem isolation |
-| uninstall | pass | plugin remove plus marketplace remove cleared every cached file and every codex plugin list entry, leaving only an empty ~/.codex/plugins/cache/braids-local directory |
+| uninstall | pass | plugin remove plus marketplace remove cleared every cached file and every codex plugin list entry, leaving only an empty ~/.codex/plugins/cache/braids directory |
 
 `not-exercised` means exactly that: the behaviour was not directly tested here
 and is not claimed.
@@ -65,7 +64,7 @@ and is not claimed.
 - No codex plugin validate command exists, so packaging is gated by the marketplace list/add/remove JSON flow instead.
 - Codex reads marketplace manifests only from agents/plugins/api_marketplace.json, .claude-plugin/marketplace.json or .cursor-plugin/marketplace.json; there is no .codex-plugin marketplace location, so the adapter ships the .claude-plugin form.
 - codex plugin remove rejects a bare plugin name and requires plugin@marketplace.
-- Removing the plugin and the marketplace leaves an empty ~/.codex/plugins/cache/braids-local directory; nothing loads from it, but it is not deleted automatically.
+- Removing the plugin and the marketplace leaves an empty ~/.codex/plugins/cache/braids directory; nothing loads from it, but it is not deleted automatically.
 - Hooks require separate trust; hosted WebSearch is outside local hook coverage, write_stdin raises no second PreToolUse, background hooks cannot block, and parsed prompt/agent handlers are currently skipped.
 - Subagents get separate threads and contexts but inherit the parent sandbox and approval mode; that is not filesystem or worktree isolation.
 - The Codex-only skill interface descriptor (agents/openai.yaml) is owned by this adapter, not by the portable kernel, so no other host package ships it.

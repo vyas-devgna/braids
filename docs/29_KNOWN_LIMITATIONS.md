@@ -4,18 +4,18 @@ Version: 0.1.0-dev.1 · Date: 2026-08-31
 
 This is the report `docs/16` requires before a release candidate. Every entry is something Braids does **not** currently support or has **not** currently proven. Nothing here is aspirational.
 
-## The one blocking gap: no graded model behaviour
+## The blocking gap: no complete graded model run
 
 Every deterministic gate in this repository passes. None of them tests what Braids does inside a model.
 
-The 92-case corpus, the 60 balanced trigger prompts, the eight fixture families and the grading thresholds in `scripts/run_evals.py` all exist and all validate. What does not exist is a single `--results` file. Until observed runs are graded:
+The 92-case corpus, the 60 balanced trigger prompts, the eight fixture families and the grading thresholds in `scripts/run_evals.py` all exist and all validate. A four-case clean Codex activation control observed 3/3 expected activations and 1/1 expected dormancy. It is a smoke test, not the release suite. Claude Code was quota-blocked during the matching run, and the independent property/depth judge was therefore unavailable. Until complete observed runs are graded:
 
 - **no trigger accuracy is claimed.** The 0.90 positive / 0.10 near-miss thresholds are enforced by the grader, not met by evidence.
 - **no depth-routing accuracy is claimed.** D0–D4 classification is specified and fixtured, never measured.
 - **no cross-host semantic parity is claimed.** `evals/cross-host/cases.jsonl` defines the comparison; the comparison has not been run.
 - **no prompt-injection resistance is claimed.** `evals/adversarial/cases.jsonl` specifies the expected refusals; the model has not been put in front of them.
 
-Consequence: **no adapter is `supported` and none is `tested`.** All eight are `experimental`. `scripts/build_adapters.py` enforces this — `status: supported` is rejected unless all ten `docs/22` acceptance checks pass, and `tested` is rejected unless discovery, activation and uninstall pass. Activation passes nowhere, because activation is model behaviour.
+Consequence: **no adapter is `supported` and none is `tested`.** All eight are `experimental`. `scripts/build_adapters.py` enforces this — `status: supported` is rejected unless all ten `docs/22` acceptance checks pass, and `tested` is rejected unless discovery, activation and uninstall pass. Activation has only the Codex smoke evidence above; it does not pass the release gate.
 
 Closing this gap needs graded runs on each host, which cost real model quota. That is a spend decision, not an engineering one.
 
@@ -56,7 +56,7 @@ State survival across compaction and resume is `not-exercised` on **all eight**,
 
 ## Measurement
 
-`scripts/measure_budget.py` measures static context cost only, using a **chars/4 estimate, not a tokenizer**. Against the one host-authoritative number available — Claude Code 2.1.248 reporting 192 always-on and ~2.8k on-invoke — the estimator reads 168 and 2338, so it runs roughly 12–17% low. Treat the numbers as a bound with that margin, not as token counts.
+`scripts/measure_budget.py` measures static context cost only, using a **chars/4 estimate, not a tokenizer**. Against the one host-authoritative number available — Claude Code 2.1.248 reporting 261 always-on and ~2.8k on-invoke — the estimator reads 215 and 2385. Treat the static estimate as a bound, not as a token count.
 
 Everything in `docs/24` that depends on a run — tokens per accepted decision, rework ratio, subagent marginal value, research marginal value, single-agent versus subagent comparison, research versus no-research comparison — is unmeasured. No token-saving or cost-reduction claim is made anywhere in this repository.
 

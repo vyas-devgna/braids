@@ -1,0 +1,15 @@
+{
+  "name": "braids",
+  "description": "Braids \u2014 adaptive engineering governance for AI coding agents.",
+  "plugins": [
+    {
+      "name": "braids",
+      "description": "Adaptive engineering governance for right-sized, evidence-backed AI coding work.",
+      "source": "./"
+    }
+  ],
+  "owner": {
+    "name": "Vyas Devgna",
+    "url": "https://github.com/vyas-devgna"
+  }
+}

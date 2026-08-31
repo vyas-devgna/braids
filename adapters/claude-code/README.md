@@ -23,11 +23,11 @@ writes the installable tree.
 
 ## Install
 
-1. python3 scripts/build_adapters.py --dist dist --only claude-code
-2. claude plugin validate <abs>/dist/claude-code/.claude-plugin/plugin.json --strict
-3. claude plugin marketplace add <abs>/dist/claude-code
-4. claude plugin install braids@braids-local
-5. alternative development path: claude --plugin-dir <abs>/dist/claude-code, then /reload-plugins after edits
+1. from a clone (no build step; the repository root is the plugin): claude plugin marketplace add <repo>
+2. claude plugin install braids@braids
+3. or straight from GitHub: claude plugin marketplace add vyas-devgna/braids
+4. verify with claude plugin details braids
+5. isolated single-host package instead: python3 scripts/build_adapters.py --dist dist --only claude-code, then claude --plugin-dir dist/claude-code
 
 ## Disable
 
@@ -37,9 +37,8 @@ writes the installable tree.
 ## Uninstall
 
 1. claude plugin uninstall braids
-2. claude plugin marketplace remove braids-local
-3. rm -rf dist/claude-code
-4. confirm with claude plugin list that no braids entry remains
+2. claude plugin marketplace remove braids
+3. confirm with claude plugin list that no braids entry remains
 
 ## Acceptance state (docs/22)
 

@@ -13,11 +13,11 @@
   "capabilities_file": "./capabilities.json",
   "guard_mode_default": false,
   "install": [
-    "python3 scripts/build_adapters.py --dist dist --only claude-code",
-    "claude plugin validate <abs>/dist/claude-code/.claude-plugin/plugin.json --strict",
-    "claude plugin marketplace add <abs>/dist/claude-code",
-    "claude plugin install braids@braids-local",
-    "alternative development path: claude --plugin-dir <abs>/dist/claude-code, then /reload-plugins after edits"
+    "from a clone (no build step; the repository root is the plugin): claude plugin marketplace add <repo>",
+    "claude plugin install braids@braids",
+    "or straight from GitHub: claude plugin marketplace add vyas-devgna/braids",
+    "verify with claude plugin details braids",
+    "isolated single-host package instead: python3 scripts/build_adapters.py --dist dist --only claude-code, then claude --plugin-dir dist/claude-code"
   ],
   "disable": [
     "claude plugin disable braids",
@@ -25,8 +25,7 @@
   ],
   "uninstall": [
     "claude plugin uninstall braids",
-    "claude plugin marketplace remove braids-local",
-    "rm -rf dist/claude-code",
+    "claude plugin marketplace remove braids",
     "confirm with claude plugin list that no braids entry remains"
   ],
   "conformance": [
@@ -69,8 +68,8 @@
       {
         "path": ".claude-plugin/marketplace.json",
         "content": {
-          "name": "braids-local",
-          "description": "Local development marketplace for the Braids adapter.",
+          "name": "braids",
+          "description": "Braids \u2014 adaptive engineering governance for AI coding agents.",
           "plugins": [
             {
               "name": "@name",

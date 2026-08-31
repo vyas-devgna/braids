@@ -2,6 +2,7 @@ import importlib.util
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +20,7 @@ capabilities = load("capabilities", ROOT / "skills/braids/scripts/inspect_capabi
 eval_runner = load("eval_runner", ROOT / "scripts/run_evals.py")
 adapters = load("adapters", ROOT / "scripts/build_adapters.py")
 budget = load("budget", ROOT / "scripts/measure_budget.py")
+host_runner = load("host_runner", ROOT / "scripts/run_host_evals.py")
 
 
 class ScriptTests(unittest.TestCase):
@@ -95,6 +97,23 @@ class ScriptTests(unittest.TestCase):
     def test_eval_corpus_is_complete(self):
         cases = [case for path in eval_runner.CASE_FILES for case in eval_runner.load_jsonl(path)]
         self.assertEqual(eval_runner.check_cases(cases), [])
+
+    def test_host_error_is_blocked_not_passed(self):
+        case = eval_runner.load_jsonl(ROOT / "evals/kernel/cases.jsonl")[0]
+        failed = ("rate limited", [], {
+            "_host_returncode": 1,
+            "_host_error": "limit",
+            "is_error": True,
+            "api_error_status": 429,
+            "usage": {"input_tokens": 0, "output_tokens": 0},
+        })
+        with patch.object(host_runner, "run_claude", return_value=failed), \
+             patch.object(host_runner, "judge") as judge:
+            result = host_runner.run_case(case, "claude-code", ROOT, 1)
+        self.assertEqual(result["result"], "blocked")
+        self.assertIsNone(result["triggered"])
+        self.assertEqual(result["violations"], ["host error: 429"])
+        judge.assert_not_called()
 
 
 if __name__ == "__main__":

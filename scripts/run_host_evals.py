@@ -150,6 +150,8 @@ def run_claude(prompt: str, cwd: Path, plugin: Path | None, timeout: int) -> tup
             meta = event
             if isinstance(event.get("result"), str):
                 response += event["result"]
+    meta["_host_returncode"] = completed.returncode
+    meta["_host_error"] = completed.stderr.strip()
     return response, tools, meta
 
 
@@ -181,6 +183,8 @@ def run_codex(prompt: str, cwd: Path, timeout: int) -> tuple[str, list[dict], di
             response += str(item.get("text", "")) + "\n"
         elif kind in {"command_execution", "file_change", "mcp_tool_call", "web_search"}:
             tools.append({"name": kind, "input": item})
+    meta["_host_returncode"] = completed.returncode
+    meta["_host_error"] = completed.stderr.strip()
     return response, tools, meta
 
 
@@ -270,7 +274,12 @@ def run_case(case: dict, host: str, plugin: Path | None, timeout: int,
     telemetry["input_tokens"] = usage.get("input_tokens")
     telemetry["output_tokens"] = usage.get("output_tokens")
 
-    verdict = judge(case, response, timeout) if plugin else {"depth": "unknown", "present": []}
+    host_failed = bool(
+        meta.get("_host_returncode")
+        or meta.get("is_error")
+        or meta.get("terminal_reason") == "api_error"
+    )
+    verdict = judge(case, response, timeout) if plugin and not host_failed else {"depth": "unknown", "present": []}
     forbidden = set(case["forbidden_properties"]) & set(verdict["present"])
     observed = sorted(set(verdict["present"]) - forbidden)
     return {
@@ -284,12 +293,14 @@ def run_case(case: dict, host: str, plugin: Path | None, timeout: int,
         "adapter_version": "0.1.0-dev.1" if plugin else None,
         "available_tools": sorted({tool["name"] for tool in tools}),
         "started_at": started.isoformat(),
-        "result": "pass" if response.strip() else "blocked",
-        "triggered": telemetry["activations"] > 0,
+        "result": "blocked" if host_failed or not response.strip() else "pass",
+        "triggered": None if host_failed else telemetry["activations"] > 0,
         "observed_depth": verdict["depth"] if verdict["depth"] in
                           {"D0", "D1", "D2", "D3", "D4", "not-applicable"} else "unknown",
         "observed_properties": observed,
-        "violations": sorted(forbidden),
+        "violations": sorted(forbidden) + (
+            [f"host error: {meta.get('api_error_status') or meta.get('_host_returncode')}"] if host_failed else []
+        ),
         "claim_evidence_coverage": None,
         "telemetry": telemetry,
     }

@@ -1,0 +1,17 @@
+{
+  "name": "braids",
+  "version": "0.1.0-dev.1",
+  "description": "Adaptive engineering governance for right-sized, evidence-backed AI coding work.",
+  "keywords": [
+    "agent-skill",
+    "engineering-governance",
+    "software-development"
+  ],
+  "author": {
+    "name": "Vyas Devgna",
+    "url": "https://github.com/vyas-devgna"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/vyas-devgna/braids",
+  "repository": "https://github.com/vyas-devgna/braids"
+}

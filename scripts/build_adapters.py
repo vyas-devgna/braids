@@ -236,16 +236,44 @@ def package(dist: Path, values: dict[str, object], only: str | None) -> list[str
     return errors
 
 
+def install_root(values: dict[str, object]) -> list[str]:
+    """Write host manifests at the repository root.
+
+    The root already holds `skills/braids`, so for every adapter whose package
+    layout is `skills/braids` the repository *is* the installable plugin. Writing
+    those manifests here lets a user install straight from a clone or a git
+    marketplace, with no build step and still no second copy of the kernel.
+    """
+    written = []
+    for directory in sorted(p for p in ADAPTERS.iterdir() if p.is_dir()):
+        adapter = json.loads((directory / "adapter.json").read_text(encoding="utf-8"))
+        if adapter["package"]["skill_target"] != "skills/braids":
+            continue
+        for entry in adapter["package"]["manifests"]:
+            path = ROOT / entry["path"]
+            if path == ROOT / "plugin.json":
+                continue  # the portable manifest is hand-owned canonical metadata
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(resolve(entry["content"], values), indent=2) + "\n", encoding="utf-8")
+            written.append(entry["path"])
+    return sorted(set(written))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true", help="Regenerate adapter READMEs from adapter.json.")
     parser.add_argument("--dist", type=Path, help="Assemble installable adapter trees under this directory.")
     parser.add_argument("--only", help="Restrict --dist to one adapter id.")
+    parser.add_argument("--install-root", action="store_true",
+                        help="Write host manifests at the repository root so a clone installs directly.")
     args = parser.parse_args()
 
     values = canonical_values()
     if args.write:
         write_readmes(values)
+    if args.install_root:
+        for path in install_root(values):
+            print(f"root manifest: {path}")
 
     directories = sorted(p for p in ADAPTERS.iterdir() if p.is_dir())
     errors = [error for directory in directories for error in check_adapter(directory, values)]

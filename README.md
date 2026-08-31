@@ -14,6 +14,22 @@ Braids scales its engineering depth from D0 (local and reversible) through D4 (c
 
 Install or copy `skills/braids` into an Agent Skills-compatible host, or load this directory as an Agent Plugins v1 package. No MCP server, network service, runtime dependency, or production telemetry is required.
 
+### Claude Code
+
+```sh
+claude plugin marketplace add vyas-devgna/braids
+claude plugin install braids@braids
+```
+
+### Codex CLI and desktop
+
+```sh
+codex plugin marketplace add https://github.com/vyas-devgna/braids
+codex plugin add braids@braids --json
+```
+
+The Codex IDE extension does not load installable plugins. For that surface, copy `skills/braids` to `<project>/.agents/skills/braids`.
+
 Run local conformance checks with:
 
 ```sh
@@ -44,7 +60,7 @@ Host support is claimed only in each adapter's tested capability record. A prese
 - Package: 0.1.0 development series
 - Guard Mode: off by default
 - State: session-local by default
-- License: not yet selected; see `LICENSE`
+- License: MIT
 
 The authoritative pre-development dossier remains in `docs/00_INDEX.md`, `research/00_INDEX.md`, and the root baseline artifacts.
 

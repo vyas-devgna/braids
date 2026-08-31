@@ -1,6 +1,6 @@
 ---
 name: braids
-description: Use this skill for software-engineering work where architecture, cross-module impact, reliability or fallbacks, performance or resources, platform compatibility, security or data integrity, dependency selection, deployment, production readiness, or evidence-backed implementation/review could change the right solution. Apply to audits, risky fixes/refactors, design and implementation plans, and claims such as faster, secure, reliable, or compatible. Do not activate for safe spelling, formatting, comment-only edits, simple explanations, or exact local mechanical changes unless explicitly requested.
+description: Use BEFORE implementing, reviewing, or approving a code change when the right engineering depth matters, and ALWAYS before removing a check, weakening a guarantee, touching auth or permissions, risking data loss, or claiming faster, secure, reliable, compatible, or production-ready. Triggers: architecture, design, refactor, migration, security, auth, permissions, secrets, data integrity, corruption, concurrency, race, retry, fallback, timeout, error handling, edge case, performance, memory, resources, dependency, upgrade, deploy, rollback, production readiness, review, audit, cross-module impact, callers. A one-line edit qualifies when it removes a check or crosses a trust boundary. Skip spelling, formatting, comment-only edits, simple explanations, and behaviour-preserving renames.
 metadata:
   methodology-version: "3.0.0"
 ---

@@ -190,12 +190,50 @@ def grade_results(cases: list[dict], results: list[dict], release: bool) -> list
     return errors
 
 
+def summarize(cases: list[dict], results: list[dict]) -> str:
+    """Report what the runs actually showed, per host, without asserting a threshold."""
+    by_id = {case["id"]: case for case in cases}
+    hosts: dict[str, list[dict]] = defaultdict(list)
+    for result in results:
+        if result.get("case_id") in by_id:
+            hosts[result.get("host", "unknown")].append(result)
+
+    lines = []
+    for host, runs in sorted(hosts.items()):
+        graded = [run for run in runs if by_id[run["case_id"]]["expected_trigger"] in {"yes", "no"}]
+        positives = [r for r in graded if by_id[r["case_id"]]["expected_trigger"] == "yes"]
+        negatives = [r for r in graded if by_id[r["case_id"]]["expected_trigger"] == "no"]
+        depth_cases = [r for r in runs if by_id[r["case_id"]]["expected_depth"] not in {"variable", "not-applicable"}]
+        depth_hits = [r for r in depth_cases if r.get("observed_depth") == by_id[r["case_id"]]["expected_depth"]]
+        expected_total = sum(len(by_id[r["case_id"]]["expected_properties"]) for r in runs)
+        expected_seen = sum(
+            len(set(by_id[r["case_id"]]["expected_properties"]) & set(r.get("observed_properties", []))) for r in runs
+        )
+        violations = [r for r in runs if r.get("violations")]
+
+        def rate(hit: int, total: int) -> str:
+            return f"{hit}/{total} ({hit / total:.0%})" if total else "n/a"
+
+        lines.append(f"{host}: {len(runs)} runs")
+        lines.append(f"  activated when expected     {rate(sum(r['triggered'] is True for r in positives), len(positives))}")
+        lines.append(f"  stayed dormant when expected {rate(sum(r['triggered'] is not True for r in negatives), len(negatives))}")
+        lines.append(f"  depth matched                {rate(len(depth_hits), len(depth_cases))}")
+        lines.append(f"  expected properties shown    {rate(expected_seen, expected_total)}")
+        lines.append(f"  runs with a forbidden property {len(violations)}"
+                     + (f" ({', '.join(sorted(r['case_id'] for r in violations))})" if violations else ""))
+        tokens = [r["telemetry"].get("input_tokens") for r in runs if r["telemetry"].get("input_tokens")]
+        if tokens:
+            lines.append(f"  median input tokens         {sorted(tokens)[len(tokens) // 2]}")
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--full-schema", action="store_true", help="Use pinned isolated check-jsonschema validation (may fetch the dev tool).")
     parser.add_argument("--fixture-tests", action="store_true", help="Run visible baseline fixture tests.")
     parser.add_argument("--results", type=Path, help="Grade observed host/model run JSONL.")
     parser.add_argument("--release", action="store_true", help="Apply release-run count thresholds.")
+    parser.add_argument("--summary", action="store_true", help="Print observed per-host rates alongside grading.")
     args = parser.parse_args()
 
     try:
@@ -214,6 +252,9 @@ def main() -> int:
         errors.extend(grade_results(cases, results, args.release))
     elif args.release:
         errors.append("--release requires --results")
+
+    if args.summary and results:
+        print(summarize(cases, results))
 
     if errors:
         print("\n".join(f"ERROR: {error}" for error in errors), file=sys.stderr)
