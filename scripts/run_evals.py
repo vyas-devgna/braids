@@ -162,6 +162,14 @@ def grade_results(cases: list[dict], results: list[dict], release: bool) -> list
             continue
         runs[case_id].append(result)
         case = by_id[case_id]
+        if result.get("result") != "pass":
+            errors.append(f"{case_id}: run is {result.get('result', 'missing')}")
+            continue
+        if case_id.startswith("TR-"):
+            expected_trigger = case["expected_trigger"]
+            if expected_trigger in {"yes", "no"} and result.get("triggered") is not (expected_trigger == "yes"):
+                errors.append(f"{case_id}: trigger result differs from expectation")
+            continue
         observed = set(result.get("observed_properties", []))
         expected = set(case["expected_properties"])
         forbidden = set(case["forbidden_properties"])
@@ -177,10 +185,16 @@ def grade_results(cases: list[dict], results: list[dict], release: bool) -> list
 
     trigger_cases = [case for case in cases if case["id"].startswith("TR-")]
     if release:
-        short = [case["id"] for case in trigger_cases if len(runs[case["id"]]) < 5]
+        short = [
+            case["id"] for case in trigger_cases
+            if sum(run.get("result") == "pass" for run in runs[case["id"]]) < 5
+        ]
         if short:
             errors.append(f"release trigger cases require five runs: {short}")
-    observed_triggers = [result for case in trigger_cases for result in runs[case["id"]]]
+    observed_triggers = [
+        result for case in trigger_cases for result in runs[case["id"]]
+        if result.get("result") == "pass"
+    ]
     positives = [result for result in observed_triggers if by_id[result["case_id"]]["expected_trigger"] == "yes"]
     negatives = [result for result in observed_triggers if by_id[result["case_id"]]["expected_trigger"] == "no"]
     if positives and sum(result["triggered"] is True for result in positives) / len(positives) < 0.90:
@@ -200,7 +214,9 @@ def summarize(cases: list[dict], results: list[dict]) -> str:
 
     lines = []
     for host, runs in sorted(hosts.items()):
-        graded = [run for run in runs if by_id[run["case_id"]]["expected_trigger"] in {"yes", "no"}]
+        successful = [run for run in runs if run.get("result") == "pass"]
+        blocked = len(runs) - len(successful)
+        graded = [run for run in successful if by_id[run["case_id"]]["expected_trigger"] in {"yes", "no"}]
         positives = [r for r in graded if by_id[r["case_id"]]["expected_trigger"] == "yes"]
         negatives = [r for r in graded if by_id[r["case_id"]]["expected_trigger"] == "no"]
         depth_cases = [r for r in runs if by_id[r["case_id"]]["expected_depth"] not in {"variable", "not-applicable"}]
@@ -215,6 +231,8 @@ def summarize(cases: list[dict], results: list[dict]) -> str:
             return f"{hit}/{total} ({hit / total:.0%})" if total else "n/a"
 
         lines.append(f"{host}: {len(runs)} runs")
+        if blocked:
+            lines.append(f"  blocked/error runs          {blocked}")
         lines.append(f"  activated when expected     {rate(sum(r['triggered'] is True for r in positives), len(positives))}")
         lines.append(f"  stayed dormant when expected {rate(sum(r['triggered'] is not True for r in negatives), len(negatives))}")
         lines.append(f"  depth matched                {rate(len(depth_hits), len(depth_cases))}")

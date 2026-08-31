@@ -115,6 +115,27 @@ class ScriptTests(unittest.TestCase):
         self.assertEqual(result["violations"], ["host error: 429"])
         judge.assert_not_called()
 
+    def test_trigger_grading_does_not_require_decision_judgement(self):
+        case = next(
+            case for case in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl")
+            if case["expected_trigger"] == "yes"
+        )
+        result = {"case_id": case["id"], "host": "test", "result": "pass", "triggered": True,
+                  "observed_depth": "not-applicable", "observed_properties": [], "violations": [],
+                  "telemetry": {"input_tokens": None}}
+        self.assertEqual(eval_runner.grade_results([case], [result], False), [])
+
+    def test_blocked_trigger_run_fails_without_distorting_rates(self):
+        case = next(
+            case for case in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl")
+            if case["expected_trigger"] == "yes"
+        )
+        result = {"case_id": case["id"], "host": "test", "result": "blocked", "triggered": None,
+                  "observed_depth": "not-applicable", "observed_properties": [], "violations": [],
+                  "telemetry": {"input_tokens": None}}
+        self.assertEqual(eval_runner.grade_results([case], [result], False),
+                         [f"{case['id']}: run is blocked"])
+
 
 if __name__ == "__main__":
     unittest.main()

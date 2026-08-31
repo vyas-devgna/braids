@@ -25,6 +25,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -32,6 +33,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 KERNEL = ROOT / "skills/braids"
 JUDGE_MODEL = "claude-haiku-4-5-20251001"
+HOST_MODELS = {"claude-code": "sonnet", "codex": "gpt-5.6-sol"}
 ISOLATED: dict[str, str] = {}
 
 # Appended to every prompt, identically on every host, so the judge has a
@@ -123,6 +125,7 @@ def parse_json_block(text: str) -> dict | None:
 def run_claude(prompt: str, cwd: Path, plugin: Path | None, timeout: int) -> tuple[str, list[dict], dict]:
     command = [
         "claude", "-p", prompt,
+        "--model", HOST_MODELS["claude-code"],
         "--output-format", "stream-json", "--verbose",
         "--permission-mode", "plan", "--strict-mcp-config",
     ]
@@ -138,8 +141,10 @@ def run_claude(prompt: str, cwd: Path, plugin: Path | None, timeout: int) -> tup
             events.append(json.loads(line))
         except json.JSONDecodeError:
             continue
-    tools, response, meta = [], "", {}
+    tools, response, meta, model = [], "", {}, None
     for event in events:
+        if event.get("type") == "system" and event.get("subtype") == "init":
+            model = event.get("model")
         if event.get("type") == "assistant":
             for block in event["message"].get("content", []):
                 if block.get("type") == "tool_use":
@@ -152,12 +157,14 @@ def run_claude(prompt: str, cwd: Path, plugin: Path | None, timeout: int) -> tup
                 response += event["result"]
     meta["_host_returncode"] = completed.returncode
     meta["_host_error"] = completed.stderr.strip()
+    meta["_host_model"] = model or HOST_MODELS["claude-code"]
     return response, tools, meta
 
 
 def run_codex(prompt: str, cwd: Path, timeout: int) -> tuple[str, list[dict], dict]:
     command = [
         "codex", "exec", prompt, "--json", "--sandbox", "read-only",
+        "--model", HOST_MODELS["codex"],
         "--skip-git-repo-check", "--ephemeral", "-C", str(cwd),
     ]
     completed = subprocess.run(
@@ -185,6 +192,7 @@ def run_codex(prompt: str, cwd: Path, timeout: int) -> tuple[str, list[dict], di
             tools.append({"name": kind, "input": item})
     meta["_host_returncode"] = completed.returncode
     meta["_host_error"] = completed.stderr.strip()
+    meta["_host_model"] = HOST_MODELS["codex"]
     return response, tools, meta
 
 
@@ -259,7 +267,8 @@ def run_case(case: dict, host: str, plugin: Path | None, timeout: int,
         if fixture:
             shutil.copytree(ROOT / fixture, workspace, dirs_exist_ok=True,
                             ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
-        prompt = case["prompt"] + ENVELOPE
+        trigger_only = case["id"].startswith("TR-")
+        prompt = case["prompt"] if trigger_only else case["prompt"] + ENVELOPE
         if host == "claude-code":
             response, tools, meta = run_claude(prompt, workspace, plugin, timeout)
         else:
@@ -279,7 +288,11 @@ def run_case(case: dict, host: str, plugin: Path | None, timeout: int,
         or meta.get("is_error")
         or meta.get("terminal_reason") == "api_error"
     )
-    verdict = judge(case, response, timeout) if plugin and not host_failed else {"depth": "unknown", "present": []}
+    verdict = (
+        judge(case, response, timeout)
+        if plugin and not host_failed and not trigger_only
+        else {"depth": "not-applicable" if trigger_only else "unknown", "present": []}
+    )
     forbidden = set(case["forbidden_properties"]) & set(verdict["present"])
     observed = sorted(set(verdict["present"]) - forbidden)
     return {
@@ -287,7 +300,7 @@ def run_case(case: dict, host: str, plugin: Path | None, timeout: int,
         "fixture_hash": case.get("fixture_hash"),
         "host": host,
         "host_version": HOST_VERSIONS[host],
-        "model": meta.get("model") or ("claude-opus-5" if host == "claude-code" else "gpt-5.6-sol"),
+        "model": meta.get("_host_model", HOST_MODELS[host]),
         "model_version": None,
         "core_version": "3.0.0",
         "adapter_version": "0.1.0-dev.1" if plugin else None,
@@ -317,8 +330,14 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--baseline", action="store_true", help="Run without Braids, for the comparison arm.")
     parser.add_argument("--timeout", type=int, default=600)
+    parser.add_argument("--repetitions", type=int, default=1,
+                        help="Run each selected case this many times (development trigger protocol: 3).")
     parser.add_argument("--default-fixture", help="Fixture to use for cases that declare none.")
+    parser.add_argument("--resume", action="store_true",
+                        help="Append only missing repetitions to an existing output file.")
     args = parser.parse_args()
+    if args.repetitions < 1:
+        parser.error("--repetitions must be at least 1")
 
     cases = [
         case
@@ -335,10 +354,26 @@ def main() -> int:
         print(f"ERROR: build the adapter first: {plugin}", file=sys.stderr)
         return 1
 
+    completed: Counter[str] = Counter()
+    if args.resume and args.out.exists():
+        completed.update(
+            record["case_id"]
+            for line in args.out.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+            for record in [json.loads(line)]
+            if record.get("host") == args.host and record.get("result") == "pass"
+        )
+    remaining = [
+        case for case in cases
+        for _ in range(max(0, args.repetitions - completed[case["id"]]))
+    ]
+
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    with args.out.open("w", encoding="utf-8") as handle:
-        for index, case in enumerate(cases, 1):
-            print(f"[{index}/{len(cases)}] {args.host} {case['id']}", flush=True)
+    mode = "a" if args.resume else "w"
+    with args.out.open(mode, encoding="utf-8") as handle:
+        total = len(remaining)
+        for index, case in enumerate(remaining, 1):
+            print(f"[{index}/{total}] {args.host} {case['id']}", flush=True)
             try:
                 record = run_case(case, args.host, plugin, args.timeout, args.default_fixture)
             except subprocess.TimeoutExpired:
@@ -348,7 +383,7 @@ def main() -> int:
             handle.flush()
             print(f"  triggered={record['triggered']} depth={record['observed_depth']} "
                   f"props={len(record['observed_properties'])} violations={record['violations']}", flush=True)
-    print(f"wrote {args.out}")
+    print(f"wrote {args.out} ({len(remaining)} new runs)")
     return 0
 
 
