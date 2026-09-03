@@ -20,7 +20,7 @@ The repository root is itself the installable plugin: `skills/` sits at the root
 3. Re-run the gates locally — the workflow runs the same ones.
 4. Tag `vX.Y.Z` and push. `.github/workflows/release.yml` re-verifies, checks the tag against both manifests, and publishes to npm with provenance.
 
-Publishing uses npm trusted publishing (OIDC). The first publication needs a short-lived bootstrap `NPM_TOKEN`; after the package exists and the trusted publisher is configured, that repository secret is removed.
+Publishing uses npm trusted publishing (OIDC). npm requires the first publication to use interactive account 2FA or a granular `NPM_TOKEN` with bypass 2FA; after the package exists and the trusted publisher is configured, no repository secret remains.
 
 ## npm
 
