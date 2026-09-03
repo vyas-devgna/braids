@@ -34,10 +34,10 @@ FR-1–FR-18 and NFR-1–NFR-9 map through R-001–R-030 as recorded in `docs/28
 | 0 Bootstrap | done | governance files, canonical metadata, MIT licence |
 | 1 Portable kernel | done | `agentskills validate` clean; structural and safety-invariant tests |
 | 2 Contracts and schemas | done | 17 Draft 2020-12 schemas, meta-validated in CI |
-| 3 Evaluation harness | corpus done, unrun | 99 cases, 60 balanced trigger prompts, 8 fixture families; no complete `--results` file exists |
+| 3 Evaluation harness | corpus done, small controls run | 100 cases, 60 balanced trigger prompts, 8 fixture families; no complete `--results` file exists |
 | 4 Host adapters | packaged, not accepted | 8 adapters generated from one source; discovery and uninstall exercised on Claude Code, Codex, OpenCode and Copilot; all 8 remain `experimental` |
 | 5 Guard Mode | deliberately not shipped | `docs/decisions/0003-no-guard-mode-in-0.1.0.md` |
-| 6 Token/context | static budget done, per-run open | `scripts/measure_budget.py`; Claude Code measured 778 always-on / ~3.1k on-invoke across seven skills |
+| 6 Token/context | static budget done, per-run open | `scripts/measure_budget.py`; Claude Code 2.1.248 projected 870 always-on / ~3.9k for the 3.1.0 core invocation |
 | 7 Security/adversarial | deterministic checks done, behaviour unrun | lifecycle-file and kernel-script gates in `validate.py`; adversarial corpus specified but ungraded |
 | 8 Cross-host conformance | blocked | needs graded model runs on each host |
 | 9 Release candidate | blocked on 3, 8 | `docs/29_KNOWN_LIMITATIONS.md` |

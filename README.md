@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/hero/braids-hero.png" alt="Braids" width="760">
+  <img src="https://raw.githubusercontent.com/vyas-devgna/braids/main/assets/hero/braids-hero.png" alt="Braids" width="760">
 </p>
 
 <h1 align="center">Braids</h1>
@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://braids.vyasdevgna.online"><img alt="Site" src="https://img.shields.io/badge/site-braids.vyasdevgna.online-2f6f63"></a>
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2f6f63"></a>
+  <a href="https://github.com/vyas-devgna/braids/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2f6f63"></a>
   <a href="https://github.com/vyas-devgna/braids/actions/workflows/ci.yml"><img alt="Conformance" src="https://github.com/vyas-devgna/braids/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Status: experimental" src="https://img.shields.io/badge/status-experimental-c58b2b">
 </p>
@@ -31,7 +31,7 @@ Braids helps coding agents tell the difference between a harmless rename and a o
 | Call passing tests “production-ready” | Maps each material claim to the evidence that can prove it |
 | Keep polishing after the task is solved | Stops when further work costs more than its expected value |
 
-Braids is a set of portable [Agent Skills](skills/braids/SKILL.md). It runs inside your coding agent: no remote service, mandatory MCP server, production telemetry, or hidden project state.
+Braids is a set of portable [Agent Skills](https://github.com/vyas-devgna/braids/blob/main/skills/braids/SKILL.md). It runs inside your coding agent: no remote service, mandatory MCP server, production telemetry, or hidden project state.
 
 ## Install
 
@@ -67,7 +67,7 @@ npx github:vyas-devgna/braids opencode --user # install for you rather than this
 npx github:vyas-devgna/braids opencode --uninstall
 ```
 
-The installer copies the skills into that host's documented skill directory. Run it with no host to see the list. The shorter `npx braids-skill` command will work after the npm prerelease is published. Host-specific commands, limitations, and acceptance evidence live under [`adapters/`](adapters/).
+The installer copies the skills into that host's documented skill directory. Run it with no host to see the list. For the published prerelease, use `npx braids-skill@next <host>`. Host-specific commands, limitations, and acceptance evidence live under [`adapters/`](https://github.com/vyas-devgna/braids/tree/main/adapters).
 
 ## Use
 
@@ -104,7 +104,7 @@ braids low — just make this test pass, don't redesign anything.
 
 ### Cost
 
-Braids loads only the references a task routes to. Claude Code 2.1.248 measures **~778 tokens always-on** across all seven skills and **~3.1k when the core skill fires**. Individual skills cost ~60–90 always-on and 0.7–1.2k on invoke.
+Braids loads only the references a task routes to. On 2026-09-03, Claude Code 2.1.248 projected **~870 tokens always-on** across all seven skills and **~3.9k when the 3.1.0 core skill fires**. These are host estimates, not measured runtime usage.
 
 ## Engineering depth
 
@@ -120,9 +120,11 @@ Braids loads only the references a task routes to. Claude Code 2.1.248 measures 
 
 Braids is usable today but remains **experimental**. It is advisory on every host: it reasons about unsafe changes but ships no hooks and enforces nothing.
 
-Small activation controls on the current description passed on **both** Claude Code 2.1.248 and Codex 0.150.1. Depth routing is the weaker half: in the Claude control, two cases landed one level below their expected depth. The complete 99-case behavioural suite is not yet graded, and the six focused skills added alongside the core have no graded runs yet.
+Small activation controls passed on **both** Claude Code 2.1.248 and Codex 0.150.1. Measuring two high-severity *kernel* cases at four runs each then showed the opposite of what those controls suggested: activation, not depth routing, was the weak half — Braids fired on 3/8 runs, and routed depth correctly whenever it did fire. Rewriting the skill description moved that to **7/8**, with the irreversible-migration case activating 4/4 and routing D4 4/4. One gap stays open: the unmeasured-claim case still self-reports a depth below the D3 floor even though its behaviour is right.
 
-Read the exact boundaries in [Known Limitations](docs/29_KNOWN_LIMITATIONS.md). A present adapter is not itself a support claim.
+That is eight runs on two cases on one host — a directional signal, not a trigger rate. The 0.90/0.10 release thresholds remain unmet and unclaimed, the near-miss corpus has not been re-run against the new description, the complete 100-case suite is not yet graded, and the six focused skills added alongside the core have no graded runs yet. Method and scope limits: [`evals/results/README.md`](https://github.com/vyas-devgna/braids/blob/main/evals/results/README.md).
+
+Read the exact boundaries in [Known Limitations](https://github.com/vyas-devgna/braids/blob/main/docs/29_KNOWN_LIMITATIONS.md). A present adapter is not itself a support claim.
 
 ## Validate and develop
 
@@ -134,27 +136,27 @@ python3 -m unittest discover -s tests
 python3 scripts/build_adapters.py --dist dist
 ```
 
-The repository contains 99 evaluation cases, eight fixture families, Draft 2020-12 contracts, and eight thin host adapters generated from one semantic source of truth.
+The repository contains 100 evaluation cases, eight fixture families, Draft 2020-12 contracts, and eight thin host adapters generated from one semantic source of truth.
 
 ## Documentation
 
-- [Skills reference](docs/30_SKILLS_REFERENCE.md) — what each skill does and what it costs
-- [Distribution](docs/31_DISTRIBUTION.md) — installing, releasing, and why Braids is not in a marketplace yet
-- [Documentation map](docs/00_INDEX.md)
-- [Product requirements](docs/03_PRODUCT_REQUIREMENTS_PRD.md)
-- [Architecture](docs/04_ARCHITECTURE_FREEZE.md)
-- [Security threat model](docs/10_SECURITY_THREAT_MODEL.md)
-- [Evaluation strategy](docs/12_EVALUATION_STRATEGY.md)
-- [Requirements traceability](docs/28_REQUIREMENTS_TRACEABILITY_MATRIX.md)
-- [Known limitations](docs/29_KNOWN_LIMITATIONS.md)
-- [Host research](research/00_INDEX.md)
+- [Skills reference](https://github.com/vyas-devgna/braids/blob/main/docs/30_SKILLS_REFERENCE.md) — what each skill does and what it costs
+- [Distribution](https://github.com/vyas-devgna/braids/blob/main/docs/31_DISTRIBUTION.md) — installing, releasing, and why Braids is not in a marketplace yet
+- [Documentation map](https://github.com/vyas-devgna/braids/blob/main/docs/00_INDEX.md)
+- [Product requirements](https://github.com/vyas-devgna/braids/blob/main/docs/03_PRODUCT_REQUIREMENTS_PRD.md)
+- [Architecture](https://github.com/vyas-devgna/braids/blob/main/docs/04_ARCHITECTURE_FREEZE.md)
+- [Security threat model](https://github.com/vyas-devgna/braids/blob/main/docs/10_SECURITY_THREAT_MODEL.md)
+- [Evaluation strategy](https://github.com/vyas-devgna/braids/blob/main/docs/12_EVALUATION_STRATEGY.md)
+- [Requirements traceability](https://github.com/vyas-devgna/braids/blob/main/docs/28_REQUIREMENTS_TRACEABILITY_MATRIX.md)
+- [Known limitations](https://github.com/vyas-devgna/braids/blob/main/docs/29_KNOWN_LIMITATIONS.md)
+- [Host research](https://github.com/vyas-devgna/braids/blob/main/research/00_INDEX.md)
 
 ## Contributing and security
 
-Contributions are welcome; read [CONTRIBUTING.md](CONTRIBUTING.md) before changing normative behavior. Report vulnerabilities privately through GitHub’s security advisory flow as described in [SECURITY.md](SECURITY.md).
+Contributions are welcome; read [CONTRIBUTING.md](https://github.com/vyas-devgna/braids/blob/main/CONTRIBUTING.md) before changing normative behavior. Report vulnerabilities privately through GitHub’s security advisory flow as described in [SECURITY.md](https://github.com/vyas-devgna/braids/blob/main/SECURITY.md).
 
-Brand artwork and usage notes live in [`assets/`](assets/README.md). No runtime behavior depends on them.
+Brand artwork and usage notes live in [`assets/`](https://github.com/vyas-devgna/braids/blob/main/assets/README.md). No runtime behavior depends on them.
 
 ## License
 
-[MIT](LICENSE) © 2026 Vyas Devgna.
+[MIT](https://github.com/vyas-devgna/braids/blob/main/LICENSE) © 2026 Vyas Devgna.

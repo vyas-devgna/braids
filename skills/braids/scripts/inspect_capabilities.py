@@ -25,6 +25,7 @@ import json
 import os
 import shutil
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -100,7 +101,7 @@ def detect_surface(env: dict[str, str]) -> tuple[str, str]:
     if ci:
         return "cloud", f"CI environment: {', '.join(sorted(ci))}"
     if Path("/.dockerenv").exists() or Path("/run/.containerenv").exists():
-        return "cloud", "container marker present (/.dockerenv or /run/.containerenv)"
+        return "unknown", "container marker present; a container may be local or cloud-hosted"
     return "local", "no CI or container marker observed"
 
 
@@ -122,21 +123,24 @@ def detect_network(env: dict[str, str]) -> tuple[str, str]:
     # what the host states about itself.
     if env.get("CODEX_SANDBOX_NETWORK_DISABLED") == "1":
         return "none", "host sets CODEX_SANDBOX_NETWORK_DISABLED=1"
-    if env.get("no_proxy") or env.get("NO_PROXY"):
-        return "restricted", "a no_proxy policy is configured"
-    return "unknown", "not probed; a kernel script must not open the network"
+    proxies = [name for name in ("HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "http_proxy", "https_proxy", "no_proxy")
+               if env.get(name)]
+    detail = f"; proxy variables present: {', '.join(sorted(proxies))}" if proxies else ""
+    return "unknown", f"not probed; a kernel script must not open the network{detail}"
 
 
 def detect_write(cwd: Path) -> tuple[str, str]:
-    probe = cwd / ".braids-write-probe"
+    probe: Path | None = None
     try:
-        probe.write_text("", encoding="utf-8")
+        descriptor, raw_path = tempfile.mkstemp(prefix=".braids-write-probe-", dir=cwd)
+        os.close(descriptor)
+        probe = Path(raw_path)
     except OSError as exc:
         return "unavailable", f"cannot create a file in the working tree ({exc.strerror or exc})"
     try:
         probe.unlink()
-    except OSError:
-        return "available", "created a probe file but could not remove it"
+    except OSError as exc:
+        return "available", f"created a unique probe file but could not remove it ({exc.strerror or exc})"
     return "available", "created and removed a probe file in the working tree"
 
 
@@ -149,10 +153,15 @@ def detect_read(cwd: Path) -> tuple[str, str]:
 
 
 def detect_instructions(cwd: Path) -> tuple[str, str]:
-    found = [name for name, _ in INSTRUCTION_FILES if (cwd / name).exists()]
+    found = []
+    for directory in (cwd, *cwd.parents):
+        for name, _ in INSTRUCTION_FILES:
+            path = directory / name
+            if path.exists():
+                found.append(str(path.relative_to(cwd)) if path.is_relative_to(cwd) else str(path))
     if not found:
-        return "unknown", "no project instruction file found in the working tree"
-    return "project", f"project instruction files present: {', '.join(found)}"
+        return "unknown", "no project instruction file found in the working tree or its parents"
+    return "project", f"project instruction files present: {', '.join(sorted(set(found)))}"
 
 
 def detect_hooks(cwd: Path) -> tuple[dict, str]:
@@ -328,7 +337,7 @@ def summarize(profile: dict) -> str:
     if unknown:
         lines.append(f"unknown     code intelligence: {', '.join(unknown)}")
     lines.append("")
-    lines.append("Values above are observations. Every `unknown` is genuinely unknown, not absent.")
+    lines.append("Values above are observations or explicit caller overrides. Every `unknown` is genuinely unknown, not absent.")
     return "\n".join(lines)
 
 

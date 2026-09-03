@@ -1,10 +1,11 @@
-# Braids - Safer AI Coding Assistant
+# Braids - Risk-calibrated engineering for AI coding agents
 
-Braids is an AI coding assistant and developer tool that keeps simple code changes simple and gives risky changes the care they deserve. It runs locally inside your coding agent.
+Braids is a portable Agent Skills methodology that keeps simple code changes simple and gives risky changes the care and evidence they deserve. It runs inside the user's coding agent.
 
 ## Key Features
-- Dynamic thresholding: Automatically routes requests to the right level of engineering depth based on risk.
-- High Security: Runs locally. No remote service, telemetry, or hidden project state.
+- Risk-calibrated depth: Guides agents from D0 to D4 based on consequence, uncertainty, and recoverability.
+- Local method: Braids has no remote service, mandatory MCP server, production telemetry, or hidden project state. The host's own policies still apply.
+- User-selected effort: Low, high, and ultra thresholds control implementation effort without weakening evidence claims.
 - Depth Levels: Ranging from D0 (local, reversible) to D4 (hard to recover, mission-critical).
 - Dedicated Skills:
   - `/braids`: Right-size and implement, holding all claims to concrete evidence.
@@ -16,7 +17,8 @@ Braids is an AI coding assistant and developer tool that keeps simple code chang
 
 ## Installation
 - Claude Code: `claude plugin marketplace add vyas-devgna/braids`
-- Codex / OpenCode / Cline / Copilot: `npx github:vyas-devgna/braids <host>`
+- Codex: `codex plugin marketplace add https://github.com/vyas-devgna/braids && codex plugin add braids@braids --json`
+- OpenCode / Cline / Copilot / Windsurf: `npx github:vyas-devgna/braids <host>`
 
 ## Documentation
 - Main site: https://braids.vyasdevgna.online/

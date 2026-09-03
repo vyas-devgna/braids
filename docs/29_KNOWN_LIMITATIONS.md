@@ -1,6 +1,6 @@
 # Known Limitations
 
-Version: 0.1.0-dev.2 · Date: 2026-08-31
+Version: 0.1.0-dev.2 · Date: 2026-09-03
 
 > [!WARNING]
 > Braids is **advisory on every host**. It reasons about unsafe changes; it does not block a tool call. No adapter is `supported` or `tested` — all eight are `experimental`.
@@ -11,7 +11,7 @@ This is the report `docs/16` requires before a release candidate. Every entry is
 
 Every deterministic gate in this repository passes. None of them tests what Braids does inside a model.
 
-The 99-case corpus, the 60 balanced trigger prompts, the eight fixture families and the grading thresholds in `scripts/run_evals.py` all exist and all validate. Two four-case activation controls have now run, on the current quoted description:
+The 100-case corpus, the 60 balanced trigger prompts, the eight fixture families and the grading thresholds in `scripts/run_evals.py` all exist and all validate. Two four-case activation controls ran on the then-current 3.0.0 description:
 
 | Host | Activated when expected | Dormant when expected | Depth matched |
 |---|---|---|---|
@@ -74,13 +74,13 @@ State survival across compaction and resume is `not-exercised` on **all eight**,
 
 ## Measurement
 
-`scripts/measure_budget.py` measures static context cost only, using a **chars/4 estimate, not a tokenizer**. Against the one host-authoritative number available — Claude Code 2.1.248 reporting 280 always-on and ~2.8k on-invoke — the estimator reads 215 and 2385. Treat the static estimate as a bound, not as a token count.
+`scripts/measure_budget.py` measures static context cost only, using a **chars/4 estimate, not a tokenizer**. On 2026-09-03, `claude --plugin-dir . plugin details braids` on Claude Code 2.1.248 projected ~870 always-on across all seven skills and ~3.9k for the 3.1.0 core invocation; the local estimator reads 728 and 3720. Both are estimates, not measured runtime usage.
 
 Everything in `docs/24` that depends on a run — tokens per accepted decision, rework ratio, subagent marginal value, research marginal value, single-agent versus subagent comparison, research versus no-research comparison — is unmeasured. No token-saving or cost-reduction claim is made anywhere in this repository.
 
 ## Distribution weight
 
-`assets/` is 17 MB of the repository's 17.4 MB packed size; `skills/`, the thing being installed, is 140 KB. The documented fallback install path `npx github:vyas-devgna/braids <host>` clones the repository, so a user installing a 140 KB skill currently transfers roughly 124× that in brand artwork. The npm package excludes `assets/` through `files`, so `npx braids-skill` does not pay this once the prerelease is published.
+`assets/` is 17 MB of the repository's 17.4 MB packed size; `skills/`, the thing being installed, is 140 KB. The GitHub fallback `npx github:vyas-devgna/braids <host>` clones the repository, so a user installing a 140 KB skill transfers roughly 124× that in brand artwork. The npm package excludes `assets/` through `files`, so `npx braids-skill@next` does not pay this cost.
 
 Recompressing the artwork **would make this worse, not better**. The assets were added in the initial commit and never modified, so the original blobs are in history; rewriting them adds new blobs and grows the pack. The only changes that reduce clone size are a history rewrite or moving the artwork out of the repository, both of which rewrite published history and are the owner's call, not a maintenance action. Measured, recorded, deliberately not fixed.
 
@@ -103,6 +103,6 @@ For balance, the claims this repository *can* support:
 - All eight adapter manifests and capability profiles validate against the repository's own Draft 2020-12 schemas.
 - Every adapter package is reproducible offline from a single metadata source, with no second copy of the kernel anywhere.
 - Four hosts install, list, disable and remove the generated packages, with residue enumerated.
-- Progressive disclosure holds: dormant cost is roughly a twelfth of activated cost, measured independently by Claude Code.
-- The 99-case corpus is complete, balanced, hash-pinned to its fixtures, and covers R-001–R-030 plus NFR-10.
+- Progressive disclosure holds structurally: the current static estimate is 728 dormant against 3720 for a core activation with no reference.
+- The 100-case corpus is complete, balanced, hash-pinned to its fixtures, and covers R-001–R-030 plus NFR-10.
 - `braids-review` was exercised live on a real diff that weakened an auth check and added an unbounded cache. It found the fail-open comparison, the timing side-channel, and the unbounded growth, and refused the commit message's "simplify" framing.

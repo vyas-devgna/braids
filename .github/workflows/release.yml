@@ -26,7 +26,19 @@ jobs:
           python3 scripts/run_evals.py --fixture-tests
           python3 scripts/measure_budget.py
           python3 -m unittest discover -s tests
-          .ci-venv/bin/agentskills validate skills/braids
+          .ci-venv/bin/check-jsonschema --check-metaschema schemas/*.json
+          .ci-venv/bin/check-jsonschema --schemafile https://agent-plugins.org/schemas/1.0.0/plugin.schema.json plugin.json
+          .ci-venv/bin/check-jsonschema --schemafile schemas/adapter.schema.json adapters/*/adapter.json
+          .ci-venv/bin/check-jsonschema --schemafile schemas/host-capabilities.schema.json adapters/*/capabilities.json
+          PATH="$PWD/.ci-venv/bin:$PATH" python3 scripts/run_evals.py --full-schema
+          for skill in skills/*; do
+            test -f "$skill/SKILL.md" || continue
+            .ci-venv/bin/agentskills validate "$skill"
+          done
+          for skill in dist/claude-code/skills/*; do
+            test -f "$skill/SKILL.md" || continue
+            .ci-venv/bin/agentskills validate "$skill"
+          done
       - name: Tag must match the package version
         run: |
           tag="${GITHUB_REF_NAME#v}"
@@ -43,14 +55,25 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "22"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+      - name: Select npm dist-tag
+        id: dist_tag
+        shell: bash
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [[ "$version" == *-* ]]; then
+            echo "name=next" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=latest" >> "$GITHUB_OUTPUT"
+          fi
       - name: Publish
-        # Requires NPM_TOKEN in repository secrets. Absent it, the job fails
-        # loudly rather than publishing a partial release.
-        run: npm publish --provenance --access public
+        # npm uses OIDC first, then the bootstrap token for the first publish,
+        # before this package can have a trusted publisher configured.
+        run: npm publish --provenance --access public --tag "${{ steps.dist_tag.outputs.name }}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -34,7 +34,7 @@
     "discovery: pass \u2014 on 0.150.1 codex plugin marketplace add resolves the generated .claude-plugin/marketplace.json, codex plugin add installs the full skill tree into ~/.codex/plugins/cache, and codex plugin list reports it installed and enabled",
     "activation: not-exercised \u2014 model-invoked skill selection needs graded runs, not a packaging check",
     "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
-    "progressive-disclosure: pass \u2014 the package ships one SKILL.md plus one level of references and adds nothing to AGENTS.md",
+    "progressive-disclosure: pass \u2014 the package ships seven independently routed skills, keeps core references one level deep, and adds nothing to AGENTS.md",
     "authority: pass \u2014 adapter ships no hooks, agents or tool policy, so it cannot change the inherited sandbox or approval mode",
     "degradation: pass \u2014 no MCP, hook or hosted-tool dependency is declared, so absent optional tools remove no adapter behaviour",
     "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",
@@ -63,11 +63,31 @@
           "name": "@name",
           "version": "@version",
           "description": "@description",
+          "skills": "./skills/",
           "keywords": "@keywords",
           "author": "@author",
           "license": "@license",
           "homepage": "@homepage",
-          "repository": "@repository"
+          "repository": "@repository",
+          "interface": {
+            "displayName": "Braids",
+            "shortDescription": "Risk-calibrated engineering guidance",
+            "longDescription": "Braids matches engineering depth to real risk, challenges failure modes, and keeps material claims tied to evidence.",
+            "developerName": "Vyas Devgna",
+            "category": "Developer Tools",
+            "capabilities": [
+              "Engineering guidance",
+              "Code review",
+              "Risk analysis"
+            ],
+            "websiteURL": "https://braids.vyasdevgna.online",
+            "brandColor": "#2F6F63",
+            "defaultPrompt": [
+              "Use Braids to right-size and implement this change.",
+              "Audit this repository's highest engineering risks.",
+              "Review this change and identify unsupported claims."
+            ]
+          }
         }
       },
       {

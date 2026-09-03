@@ -20,14 +20,20 @@ jobs:
       - name: Validate portable package and skill
         run: |
           python3 scripts/validate.py
-          .ci-venv/bin/agentskills validate skills/braids
+          for skill in skills/*; do
+            test -f "$skill/SKILL.md" || continue
+            .ci-venv/bin/agentskills validate "$skill"
+          done
           .ci-venv/bin/check-jsonschema --schemafile https://agent-plugins.org/schemas/1.0.0/plugin.schema.json plugin.json
       - name: Validate host adapters
         run: |
           python3 scripts/build_adapters.py --dist dist
           .ci-venv/bin/check-jsonschema --schemafile schemas/adapter.schema.json adapters/*/adapter.json
           .ci-venv/bin/check-jsonschema --schemafile schemas/host-capabilities.schema.json adapters/*/capabilities.json
-          .ci-venv/bin/agentskills validate dist/claude-code/skills/braids
+          for skill in dist/claude-code/skills/*; do
+            test -f "$skill/SKILL.md" || continue
+            .ci-venv/bin/agentskills validate "$skill"
+          done
       - name: Validate contracts and evals
         run: |
           .ci-venv/bin/check-jsonschema --check-metaschema schemas/*.json

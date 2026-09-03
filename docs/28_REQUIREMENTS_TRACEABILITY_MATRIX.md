@@ -42,7 +42,7 @@ Every R-001–R-030 requirement has eval coverage; `scripts/run_evals.py` fails 
 | Requirements | Deterministically demonstrated today | Still needs graded runs |
 |---|---|---|
 | R-020, R-023, R-025, R-027 | adapters generated from one metadata source with no duplicated kernel (`scripts/validate.py` rejects any `SKILL.md` under `adapters/`); packages install and uninstall with no MCP or server on four hosts; no `.braids/` state is written | cross-host *semantic* conformance (R-020, R-027) |
-| R-021, R-024 | `scripts/measure_budget.py` bounds dormant, activated and worst-case cost; Claude Code independently measured 192 always-on against ~2.8k on-invoke; no adapter ships a subagent | tokens per accepted decision, subagent marginal value |
+| R-021, R-024 | `scripts/measure_budget.py` bounds dormant, activated and worst-case cost; Claude Code 2.1.248 projected 870 always-on across seven skills against ~3.9k for the 3.1.0 core invocation; no adapter ships a subagent | measured runtime tokens per accepted decision, subagent marginal value |
 | R-022, R-029 | every `capabilities.json` carries an empty `enforcement` array; `build_adapters.py` rejects an `enforced` operation without an exercised enforcement test, and `validate.py` rejects any lifecycle file in an adapter; no adapter declares an MCP, LSP or hook dependency | behaviour when a tool is removed mid-run |
 | R-001–R-019, R-026, R-028, R-030 | specified in the kernel, fixtured in the corpus, and the safety-critical sentences are regression-guarded by `tests/test_scripts.py::test_kernel_keeps_its_safety_invariants` | all of it — these are model-behaviour requirements and no observed run has been graded |
 

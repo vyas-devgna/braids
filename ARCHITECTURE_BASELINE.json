@@ -26,5 +26,5 @@
     "OpenCode",
     "Cline"
   ],
-  "status": "pre-development architecture freeze candidate"
+  "status": "historical pre-development baseline; implemented with subsequent decisions recorded under docs/decisions"
 }

@@ -44,10 +44,10 @@ writes the installable tree.
 
 | Check | State | Evidence |
 |---|---|---|
-| discovery | pass | on 2.1.248 claude plugin validate --strict exits 0 for both generated manifests, marketplace add plus plugin install succeed, and claude plugin details reports Skills(1) braids with Agents/Hooks/MCP/LSP all 0 |
+| discovery | pass | on 2.1.248 claude plugin validate --strict exits 0 for both generated manifests, marketplace add plus plugin install succeed, and claude plugin details reports Skills(7) with Agents/Hooks/MCP/LSP all 0 |
 | activation | not-exercised | model-invoked skill selection needs graded runs; claude plugin eval is the identified harness and has not been run |
 | semantic-parity | not-exercised | requires graded cross-host runs via scripts/run_evals.py --results |
-| progressive-disclosure | pass | claude plugin details measured ~192 always-on tokens against ~2.8k on-invoke, and the package ships one SKILL.md plus one level of references with no persistent instruction file |
+| progressive-disclosure | pass | Claude Code 2.1.248 projected ~870 always-on tokens across seven skills against ~3.9k for the 3.1.0 core invocation; conditional references and scripts remain outside dormant context |
 | authority | pass | the component inventory confirms zero agents, hooks, MCP and LSP servers, so the adapter cannot escalate beyond the session permission mode |
 | degradation | pass | no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour |
 | enforcement-truthfulness | not-applicable | this adapter claims no deterministic blocking |

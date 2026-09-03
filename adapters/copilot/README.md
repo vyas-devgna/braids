@@ -47,7 +47,7 @@ writes the installable tree.
 | discovery | pass | on 1.0.82 copilot skill add registered the skill and copilot skill list showed it under Custom skills, and copilot plugin list --plugin-dir listed braids as an external plugin from the generated root plugin.json |
 | activation | not-exercised | model-invoked skill selection needs graded runs |
 | semantic-parity | not-exercised | requires graded cross-host runs via scripts/run_evals.py --results |
-| progressive-disclosure | pass | the package ships one SKILL.md plus one level of references and no repository instruction file |
+| progressive-disclosure | pass | the package ships seven independently routed skills, keeps core references one level deep, and adds no repository instruction file |
 | authority | pass | adapter ships no hooks, agents, MCP or LSP configuration, so it cannot widen the CLI permission flags |
 | degradation | pass | no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour |
 | enforcement-truthfulness | not-applicable | this adapter claims no deterministic blocking |

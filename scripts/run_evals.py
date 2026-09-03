@@ -15,6 +15,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CASE_FILES = tuple(sorted((ROOT / "evals").glob("*/cases.jsonl")))
+PROJECT = json.loads((ROOT / "braids.json").read_text(encoding="utf-8"))
+CURRENT_CORE = PROJECT["methodology_version"]
+CURRENT_PACKAGE = PROJECT["package_version"]
 REQUIREMENTS = {f"R-{number:03d}" for number in range(1, 31)} | {"NFR-10"}
 CASE_REQUIRED = {
     "id", "category", "partition", "requirement_ids", "module_owners", "fixture", "fixture_hash",
@@ -161,6 +164,7 @@ def grade_results(cases: list[dict], results: list[dict], release: bool) -> list
     errors: list[str] = []
     by_id = {case["id"]: case for case in cases}
     runs: dict[str, list[dict]] = defaultdict(list)
+    identities: set[tuple] = set()
     for result in results:
         case_id = result.get("case_id")
         if case_id not in by_id:
@@ -168,6 +172,12 @@ def grade_results(cases: list[dict], results: list[dict], release: bool) -> list
             continue
         runs[case_id].append(result)
         case = by_id[case_id]
+        if result.get("fixture_hash") != case.get("fixture_hash"):
+            errors.append(f"{case_id}: result fixture hash differs from the case")
+        identity = (case_id, result.get("host"), result.get("started_at"))
+        if identity in identities:
+            errors.append(f"{case_id}: duplicate run record for {result.get('host')} at {result.get('started_at')}")
+        identities.add(identity)
         if result.get("result") != "pass":
             errors.append(f"{case_id}: run is {result.get('result', 'missing')}")
             continue
@@ -190,23 +200,61 @@ def grade_results(cases: list[dict], results: list[dict], release: bool) -> list
             errors.append(f"{case_id}: trigger result differs from expectation")
 
     trigger_cases = [case for case in cases if case["id"].startswith("TR-")]
+    complete_cohorts: set[tuple] = set()
     if release:
-        short = [
-            case["id"] for case in trigger_cases
-            if sum(run.get("result") == "pass" for run in runs[case["id"]]) < 5
-        ]
-        if short:
-            errors.append(f"release trigger cases require five runs: {short}")
+        release_runs: dict[str, list[dict]] = defaultdict(list)
+        for case in trigger_cases:
+            for run in runs[case["id"]]:
+                if run.get("core_version") != CURRENT_CORE:
+                    errors.append(
+                        f"{case['id']}: release run uses core {run.get('core_version')}, expected {CURRENT_CORE}"
+                    )
+                    continue
+                if run.get("adapter_version") != CURRENT_PACKAGE:
+                    errors.append(
+                        f"{case['id']}: release run uses adapter {run.get('adapter_version')}, expected {CURRENT_PACKAGE}"
+                    )
+                    continue
+                if run.get("result") == "pass":
+                    release_runs[case["id"]].append(run)
+
+        cohorts = {
+            (run.get("host"), run.get("host_version"), run.get("model"), run.get("model_version"))
+            for case_runs in release_runs.values() for run in case_runs
+        }
+        complete_cohorts = {
+            cohort for cohort in cohorts
+            if all(sum(
+                (run.get("host"), run.get("host_version"), run.get("model"), run.get("model_version")) == cohort
+                for run in release_runs[case["id"]]
+            ) >= 5 for case in trigger_cases)
+        }
+        if not complete_cohorts:
+            errors.append("release trigger cases require five current-version runs in one comparable cohort")
+
     observed_triggers = [
         result for case in trigger_cases for result in runs[case["id"]]
         if result.get("result") == "pass"
     ]
-    positives = [result for result in observed_triggers if by_id[result["case_id"]]["expected_trigger"] == "yes"]
-    negatives = [result for result in observed_triggers if by_id[result["case_id"]]["expected_trigger"] == "no"]
-    if positives and sum(result["triggered"] is True for result in positives) / len(positives) < 0.90:
-        errors.append("positive trigger rate is below 0.90")
-    if negatives and sum(result["triggered"] is True for result in negatives) / len(negatives) > 0.10:
-        errors.append("near-miss false-trigger rate exceeds 0.10")
+    groups = {"all runs": observed_triggers}
+    if release:
+        groups = {
+            "/".join(str(part) for part in cohort): [
+                run for run in observed_triggers
+                if run.get("core_version") == CURRENT_CORE
+                and run.get("adapter_version") == CURRENT_PACKAGE
+                and (run.get("host"), run.get("host_version"), run.get("model"), run.get("model_version")) == cohort
+            ]
+            for cohort in complete_cohorts
+        }
+    for label, selected in groups.items():
+        positives = [result for result in selected if by_id[result["case_id"]]["expected_trigger"] == "yes"]
+        negatives = [result for result in selected if by_id[result["case_id"]]["expected_trigger"] == "no"]
+        suffix = f" for {label}" if release else ""
+        if positives and sum(result["triggered"] is True for result in positives) / len(positives) < 0.90:
+            errors.append(f"positive trigger rate is below 0.90{suffix}")
+        if negatives and sum(result["triggered"] is True for result in negatives) / len(negatives) > 0.10:
+            errors.append(f"near-miss false-trigger rate exceeds 0.10{suffix}")
     return errors
 
 

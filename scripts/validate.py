@@ -15,7 +15,9 @@ PLUGIN_FIELDS = {"$schema", "name", "version", "description", "author", "homepag
 PLUGIN_NAME = re.compile(r"^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?$")
 LOCAL_REF = re.compile(r'"\$ref"\s*:\s*"([^"#][^"#]*)')
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".ico"}
-EXCLUDED_DIRS = {".git", ".ci-venv", ".venv", "venv", "dist", "__pycache__"}
+EXCLUDED_DIRS = {
+    ".agents", ".git", ".ci-venv", ".venv", "venv", "dist", "node_modules", "__pycache__",
+}
 LIFECYCLE_FILES = {"hooks.json", "mcp.json", "mcp_config.json", ".mcp.json", ".lsp.json", "settings.json"}
 UNSAFE_SCRIPT = re.compile(r"\bimport\s+(?:urllib|http\.client|socket|requests|ftplib|smtplib)\b|(?<![.\w])(?:eval|exec)\s*\(")
 SECRET_PATTERNS = (
@@ -23,6 +25,7 @@ SECRET_PATTERNS = (
     re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
     re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{32,}\b"),
 )
+UNFINISHED = re.compile(r"\[" + "TO" + "DO" + r"|\b" + "FIX" + "ME" + r"\b", re.IGNORECASE)
 
 
 def load_json(path: Path, errors: list[str]) -> object | None:
@@ -104,8 +107,9 @@ def validate() -> list[str]:
         except UnicodeDecodeError:
             errors.append(f"unexpected binary file: {path.relative_to(ROOT)}")
             continue
-        if path.parts[0] in {"skills", "adapters", "scripts", "evals", "fixtures", ".github"}:
-            if re.search(r"\[TODO|\bFIXME\b", text, re.IGNORECASE):
+        relative = path.relative_to(ROOT)
+        if relative.parts[0] in {"skills", "adapters", "scripts", "evals", "fixtures", ".github"}:
+            if UNFINISHED.search(text):
                 errors.append(f"unfinished implementation marker: {path.relative_to(ROOT)}")
         if any(pattern.search(text) for pattern in SECRET_PATTERNS):
             errors.append(f"possible secret material: {path.relative_to(ROOT)}")

@@ -20,7 +20,7 @@ Seven skills. One method. Each skill is a lens onto the same decision procedure 
 
 The method. Establishes authority and host capabilities, resolves material assumptions from evidence rather than guessing, builds only the model the decision needs, routes depth from risk, applies the reuse gate, rejects candidates that violate a hard constraint, compares lifecycle burden, then maps every material claim to evidence before stopping.
 
-Selected automatically on risky work. ~310 always-on tokens, ~3.1k when it fires.
+Selected automatically on risky work. Claude Code 2.1.248 currently projects ~330 always-on tokens and ~3.9k when it fires.
 
 ## `braids-review`
 
@@ -68,17 +68,17 @@ Prints the reference card. Does no engineering work.
 
 ## Cost
 
-Measured by `claude plugin details braids` on Claude Code 2.1.248:
+Projected by `claude --plugin-dir . plugin details braids` on Claude Code 2.1.248, 2026-09-03, methodology 3.1.0:
 
 | Skill | Always-on | On invoke |
 |---|---|---|
-| `braids` | ~310 | ~3.1k |
-| `braids-review` | ~90 | ~800 |
-| `braids-audit` | ~80 | ~810 |
+| `braids` | ~330 | ~3.9k |
+| `braids-review` | ~160 | ~790 |
+| `braids-audit` | ~80 | ~800 |
 | `braids-depth` | ~80 | ~1.2k |
 | `braids-risk` | ~80 | ~700 |
-| `braids-claims` | ~70 | ~760 |
+| `braids-claims` | ~70 | ~750 |
 | `braids-help` | ~60 | ~960 |
-| **Total** | **~778** | — |
+| **Total** | **~870** | — |
 
-Always-on is paid every turn whether or not anything fires. `scripts/measure_budget.py` gates this: 250 tokens per skill, 1000 total, and the standing cost must stay well under a single activation.
+Always-on is paid every turn whether or not anything fires. These are host estimates, not measured runtime usage. `scripts/measure_budget.py` separately gates a deterministic chars/4 estimate: 280 for the routing kernel, 250 for each focused skill, and 1000 total.

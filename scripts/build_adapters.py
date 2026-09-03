@@ -188,6 +188,9 @@ def check_adapter(directory: Path, values: dict[str, object]) -> list[str]:
     for relative in package_paths:
         if Path(relative).is_absolute() or ".." in Path(relative).parts:
             errors.append(f"{where}: package path escapes the package: {relative}")
+    for source in adapter["package"].get("extra_files", {}).values():
+        if not (directory / source).is_file():
+            errors.append(f"{where}: package source is missing: {source}")
 
     for entry in adapter["package"]["manifests"]:
         try:
@@ -262,6 +265,32 @@ def install_root(values: dict[str, object]) -> list[str]:
     return sorted(set(written))
 
 
+def check_root_manifests(values: dict[str, object]) -> list[str]:
+    """Ensure checked-in host manifests still match their adapter sources."""
+    errors: list[str] = []
+    expected: dict[str, str] = {}
+    for directory in sorted(p for p in ADAPTERS.iterdir() if p.is_dir()):
+        adapter = json.loads((directory / "adapter.json").read_text(encoding="utf-8"))
+        if adapter["package"]["skill_target"] != "skills":
+            continue
+        for entry in adapter["package"]["manifests"]:
+            relative = entry["path"]
+            if relative == "plugin.json":
+                continue
+            rendered = json.dumps(resolve(entry["content"], values), indent=2) + "\n"
+            if relative in expected and expected[relative] != rendered:
+                errors.append(f"root manifest {relative} has conflicting adapter sources")
+            expected[relative] = rendered
+
+    for relative, rendered in expected.items():
+        path = ROOT / relative
+        if not path.is_file():
+            errors.append(f"root manifest {relative} is missing; rerun scripts/build_adapters.py --install-root")
+        elif path.read_text(encoding="utf-8") != rendered:
+            errors.append(f"root manifest {relative} is stale; rerun scripts/build_adapters.py --install-root")
+    return errors
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true", help="Regenerate adapter READMEs from adapter.json.")
@@ -279,7 +308,10 @@ def main() -> int:
             print(f"root manifest: {path}")
 
     directories = sorted(p for p in ADAPTERS.iterdir() if p.is_dir())
+    if args.only and args.only not in {directory.name for directory in directories}:
+        parser.error(f"unknown adapter: {args.only}")
     errors = [error for directory in directories for error in check_adapter(directory, values)]
+    errors.extend(check_root_manifests(values))
     if not errors and args.dist:
         errors.extend(package(args.dist, values, args.only))
 

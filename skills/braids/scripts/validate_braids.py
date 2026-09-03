@@ -10,6 +10,7 @@ from pathlib import Path
 
 LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)")
 NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+UNFINISHED = re.compile(r"\b(?:" + "TO" + "DO" + "|" + "FIX" + "ME" + r")\b|\[" + "TO" + "DO", re.IGNORECASE)
 
 
 def validate(root: Path) -> list[str]:
@@ -42,7 +43,7 @@ def validate(root: Path) -> list[str]:
         errors.append("description must contain 1-1024 characters")
     if len(text.splitlines()) >= 500:
         errors.append("SKILL.md must stay below 500 lines")
-    if re.search(r"\b(?:TODO|FIXME)\b|\[TODO", text, re.IGNORECASE):
+    if UNFINISHED.search(text):
         errors.append("SKILL.md contains unfinished scaffold text")
 
     for target in LINK.findall(body):

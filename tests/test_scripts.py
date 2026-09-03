@@ -23,6 +23,7 @@ eval_runner = load("eval_runner", ROOT / "scripts/run_evals.py")
 adapters = load("adapters", ROOT / "scripts/build_adapters.py")
 budget = load("budget", ROOT / "scripts/measure_budget.py")
 host_runner = load("host_runner", ROOT / "scripts/run_host_evals.py")
+source_validator = load("source_validator", ROOT / "scripts/validate.py")
 
 
 class ScriptTests(unittest.TestCase):
@@ -81,6 +82,30 @@ class ScriptTests(unittest.TestCase):
         self.assertEqual(value["host"], "unknown")
         self.assertEqual(value["network"], "unknown")
 
+    def test_write_probe_never_overwrites_a_user_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            existing = root / ".braids-write-probe"
+            existing.write_text("keep me", encoding="utf-8")
+            self.assertEqual(capabilities.detect_write(root)[0], "available")
+            self.assertEqual(existing.read_text(encoding="utf-8"), "keep me")
+            self.assertEqual(sorted(path.name for path in root.iterdir()), [existing.name])
+
+    def test_proxy_configuration_is_not_misreported_as_network_restriction(self):
+        value, evidence = capabilities.detect_network({"NO_PROXY": "localhost"})
+        self.assertEqual(value, "unknown")
+        self.assertIn("NO_PROXY", evidence)
+
+    def test_parent_project_instructions_are_discovered(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            child = root / "project"
+            child.mkdir()
+            (root / "AGENTS.md").write_text("instructions", encoding="utf-8")
+            value, evidence = capabilities.detect_instructions(child)
+        self.assertEqual(value, "project")
+        self.assertIn("AGENTS.md", evidence)
+
     def test_probe_names_the_verification_commands_the_project_offers(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -108,6 +133,22 @@ class ScriptTests(unittest.TestCase):
         for directory in sorted(p for p in adapters.ADAPTERS.iterdir() if p.is_dir()):
             with self.subTest(adapter=directory.name):
                 self.assertEqual(adapters.check_adapter(directory, values), [])
+        self.assertEqual(adapters.check_root_manifests(values), [])
+
+    def test_codex_plugin_manifest_has_current_interface_contract(self):
+        import json
+
+        manifest = json.loads((ROOT / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["skills"], "./skills/")
+        interface = manifest["interface"]
+        required = {
+            "displayName", "shortDescription", "longDescription", "developerName",
+            "category", "capabilities", "defaultPrompt",
+        }
+        self.assertEqual(required - set(interface), set())
+        self.assertTrue(all(isinstance(value, str) and value.strip() for value in interface["capabilities"]))
+        self.assertGreaterEqual(len(interface["defaultPrompt"]), 1)
+        self.assertLessEqual(len(interface["defaultPrompt"]), 3)
 
     def test_adapter_cannot_claim_a_status_its_evidence_does_not_support(self):
         import json
@@ -133,6 +174,19 @@ class ScriptTests(unittest.TestCase):
             errors = adapters.check_adapter(root, adapters.canonical_values())
         self.assertTrue(any("requires discovery to pass" in error for error in errors), errors)
         self.assertTrue(any("requires a primary-source revalidation date" in error for error in errors), errors)
+
+    def test_adapter_rejects_a_missing_package_source(self):
+        import json
+
+        with tempfile.TemporaryDirectory() as directory:
+            source = ROOT / "adapters/codex"
+            target = Path(directory) / "codex"
+            shutil.copytree(source, target)
+            manifest = json.loads((target / "adapter.json").read_text(encoding="utf-8"))
+            manifest["package"]["extra_files"]["skills/braids/agents/openai.yaml"] = "files/missing.yaml"
+            (target / "adapter.json").write_text(json.dumps(manifest), encoding="utf-8")
+            errors = adapters.check_adapter(target, adapters.canonical_values())
+        self.assertTrue(any("package source is missing" in error for error in errors), errors)
 
     def test_context_budget_stays_within_the_documented_ceilings(self):
         report = budget.measure()
@@ -169,6 +223,23 @@ class ScriptTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)
 
+    def test_source_validator_checks_implementation_markers_in_absolute_paths(self):
+        """The repository validator receives absolute Paths; its scope test must not use path.parts[0]."""
+        marker = ROOT / "scripts" / "_validator_marker_test.py"
+        marker.write_text("# F" + "IXME: deliberate regression probe\n", encoding="utf-8")
+        try:
+            errors = source_validator.validate()
+        finally:
+            marker.unlink()
+        self.assertIn("unfinished implementation marker: scripts/_validator_marker_test.py", errors)
+
+    def test_site_keeps_content_and_primary_action_without_javascript(self):
+        text = (ROOT / "site/index.html").read_text(encoding="utf-8")
+        self.assertIn(".reveal { opacity: 1; }", text)
+        self.assertIn("<h3>D3 · consequence</h3>", text)
+        self.assertIn('<button type="button" class="copyrow"', text)
+        self.assertNotIn("google-site-verification-code", text)
+
     def test_eval_corpus_is_complete(self):
         cases = [case for path in eval_runner.CASE_FILES for case in eval_runner.load_jsonl(path)]
         self.assertEqual(eval_runner.check_cases(cases), [])
@@ -203,6 +274,54 @@ class ScriptTests(unittest.TestCase):
         }}]
         self.assertEqual(host_runner.measure(tools, "")["activations"], 1)
 
+    def test_reading_a_focused_braids_skill_is_an_activation(self):
+        tools = [{"name": "command_execution", "input": {
+            "command": "sed -n '1,220p' .agents/skills/braids-claims/SKILL.md",
+        }}]
+        self.assertEqual(host_runner.measure(tools, "")["activations"], 1)
+
+    def test_host_runner_uses_the_same_fixture_hash_as_the_corpus_gate(self):
+        fixture = ROOT / "fixtures/monorepo"
+        self.assertEqual(host_runner.tree_hash(fixture), eval_runner.tree_hash(fixture))
+
+    def test_stale_fixture_is_rejected_before_a_host_run(self):
+        case = dict(eval_runner.load_jsonl(ROOT / "evals/kernel/cases.jsonl")[0])
+        case["fixture_hash"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "fixture hash is stale"):
+            host_runner.run_case(case, "claude-code", None, 1)
+
+    def test_codex_eval_installs_the_packaged_skill_set(self):
+        import json
+
+        case = next(c for c in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl") if c["id"] == "TR-P01")
+        with tempfile.TemporaryDirectory() as directory:
+            plugin = Path(directory) / "plugin"
+            for name in ("braids", "braids-claims"):
+                skill = plugin / "skills" / name
+                skill.mkdir(parents=True)
+                (skill / "SKILL.md").write_text(
+                    f'---\nname: {name}\ndescription: "test"\n---\n', encoding="utf-8",
+                )
+
+            def fake_codex(prompt, cwd, timeout):
+                names = sorted(path.name for path in (cwd / ".agents/skills").iterdir())
+                return json.dumps(names), [], {"_host_returncode": 0, "_host_model": "test"}
+
+            with patch.object(host_runner, "run_codex", side_effect=fake_codex):
+                result = host_runner.run_case(case, "codex", plugin, 1)
+        self.assertEqual(result["result"], "pass")
+
+    def test_judge_failure_blocks_a_run_instead_of_passing_it(self):
+        case = eval_runner.load_jsonl(ROOT / "evals/kernel/cases.jsonl")[0]
+        host = ("host response", [], {"_host_returncode": 0, "_host_model": "test"})
+        with patch.object(host_runner, "run_claude", return_value=host), \
+             patch.object(host_runner, "judge", return_value={
+                 "depth": "unknown", "present": [], "error": "unavailable",
+             }):
+            result = host_runner.run_case(case, "claude-code", ROOT, 1)
+        self.assertEqual(result["result"], "blocked")
+        self.assertEqual(result["violations"], ["judge error: unavailable"])
+
     def test_trigger_grading_does_not_require_decision_judgement(self):
         case = next(
             case for case in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl")
@@ -223,6 +342,51 @@ class ScriptTests(unittest.TestCase):
                   "telemetry": {"input_tokens": None}}
         self.assertEqual(eval_runner.grade_results([case], [result], False),
                          [f"{case['id']}: run is blocked"])
+
+    def test_result_fixture_hash_must_match_the_case(self):
+        case = next(
+            case for case in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl")
+            if case["fixture_hash"] is None
+        )
+        result = {"case_id": case["id"], "host": "test", "started_at": "2026-09-03T00:00:00Z",
+                  "fixture_hash": "0" * 64, "result": "pass", "triggered": True}
+        errors = eval_runner.grade_results([case], [result], False)
+        self.assertIn(f"{case['id']}: result fixture hash differs from the case", errors)
+
+    def test_release_runs_cannot_be_filled_with_duplicates_or_baselines(self):
+        case = next(
+            case for case in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl")
+            if case["expected_trigger"] == "yes"
+        )
+        run = {
+            "case_id": case["id"], "host": "test", "host_version": "1", "model": "model",
+            "model_version": None, "started_at": "2026-09-03T00:00:00Z", "fixture_hash": None,
+            "core_version": eval_runner.CURRENT_CORE, "adapter_version": None,
+            "result": "pass", "triggered": True,
+        }
+        errors = eval_runner.grade_results([case], [run] * 5, True)
+        self.assertTrue(any("duplicate run record" in error for error in errors), errors)
+        self.assertTrue(any("release run uses adapter" in error for error in errors), errors)
+        self.assertTrue(any("five current-version runs in one comparable cohort" in error for error in errors), errors)
+
+    def test_historical_runs_cannot_pad_a_failing_release_rate(self):
+        case = next(
+            case for case in eval_runner.load_jsonl(ROOT / "evals/trigger/cases.jsonl")
+            if case["expected_trigger"] == "yes"
+        )
+
+        def run(index, core, triggered):
+            return {
+                "case_id": case["id"], "host": "test", "host_version": "1", "model": "model",
+                "model_version": None, "started_at": f"2026-09-03T00:00:{index:02d}Z",
+                "fixture_hash": case["fixture_hash"], "core_version": core,
+                "adapter_version": eval_runner.CURRENT_PACKAGE, "result": "pass", "triggered": triggered,
+            }
+
+        current = [run(index, eval_runner.CURRENT_CORE, False) for index in range(5)]
+        historical = [run(index + 5, "older", True) for index in range(50)]
+        errors = eval_runner.grade_results([case], current + historical, True)
+        self.assertTrue(any("positive trigger rate is below 0.90" in error for error in errors), errors)
 
     def test_skill_validator_rejects_unquotable_frontmatter(self):
         """An unquoted scalar holding ": " is invalid YAML and breaks host discovery."""
@@ -300,9 +464,39 @@ class InstallerTests(unittest.TestCase):
         self.assertTrue(edited.is_file(), "uninstall destroyed local edits")
         self.assertIn("local edit", edited.read_text(encoding="utf-8"))
 
+    def test_uninstall_removes_a_clean_skill_retired_by_a_later_package(self):
+        import json
+
+        self.run_installer(self.workspace)
+        receipt_path = self.skills / ".braids-install.json"
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        (self.skills / "braids").rename(self.skills / "braids-retired")
+        receipt["skills"]["braids-retired"] = receipt["skills"].pop("braids")
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+
+        self.assertEqual(self.run_installer(self.workspace, "--uninstall").returncode, 0)
+        self.assertFalse((self.skills / "braids-retired").exists())
+
+    def test_uninstall_ignores_receipt_names_that_escape_the_skill_root(self):
+        import json
+
+        outside = self.workspace / "outside"
+        outside.mkdir()
+        marker = outside / "keep"
+        marker.write_text("irreplaceable", encoding="utf-8")
+        self.skills.mkdir(parents=True)
+        (self.skills / ".braids-install.json").write_text(json.dumps({
+            "receiptVersion": 1,
+            "skills": {"../../outside": {"files": {"keep": "not-a-real-hash"}}},
+        }), encoding="utf-8")
+
+        self.run_installer(self.workspace, "--uninstall")
+        self.assertEqual(marker.read_text(encoding="utf-8"), "irreplaceable")
+
     def test_install_refuses_to_overwrite_a_foreign_skill_but_installs_the_rest(self):
         theirs = self.write_foreign_skill("braids-review")
         result = self.run_installer(self.workspace)
+        self.assertEqual(result.returncode, 1)
         self.assertIn("irreplaceable", theirs.read_text(encoding="utf-8"))
         self.assertIn("refusing", result.stderr)
         self.assertTrue((self.skills / "braids/SKILL.md").is_file(), "unrelated skills should still install")

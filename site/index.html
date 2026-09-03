@@ -3,25 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Braids AI | Safer AI Coding Assistant & Developer Tool</title>
-<meta name="description" content="Braids is an AI coding assistant and developer tool that keeps simple code changes simple and gives risky changes the care they deserve. Secure, fast, and no ceremony.">
+<title>Braids | Risk-calibrated engineering for AI coding agents</title>
+<meta name="description" content="Braids is an Agent Skills methodology that keeps simple code changes simple and gives risky changes the care and evidence they deserve.">
 <meta name="keywords" content="AI coding, developer tools, secure coding, AI assistant, Braids, GitHub, Claude, coding agent, code review, AI programming">
 <meta name="author" content="Vyas Devgna">
-<meta name="google-site-verification" content="ADD_YOUR_GOOGLE_SEARCH_CONSOLE_ID_HERE" />
 <link rel="canonical" href="https://braids.vyasdevgna.online/">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://braids.vyasdevgna.online/">
-<meta property="og:title" content="Braids AI | Safer AI Coding Assistant & Developer Tool">
-<meta property="og:description" content="An AI coding assistant that keeps simple work simple and slows down when mistakes get expensive. Safer changes, less ceremony.">
+<meta property="og:title" content="Braids | Risk-calibrated engineering for AI coding agents">
+<meta property="og:description" content="Agent Skills that keep simple work simple and add care when mistakes get expensive.">
 <meta property="og:image" content="https://braids.vyasdevgna.online/braids-mascot.png">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://braids.vyasdevgna.online/">
-<meta name="twitter:title" content="Braids AI | Safer AI Coding Assistant">
-<meta name="twitter:description" content="An AI coding assistant that keeps simple work simple and slows down when mistakes get expensive. Safer changes, less ceremony.">
+<meta name="twitter:title" content="Braids | Risk-calibrated engineering for AI coding agents">
+<meta name="twitter:description" content="Agent Skills that keep simple work simple and add care when mistakes get expensive.">
 <meta name="twitter:image" content="https://braids.vyasdevgna.online/braids-mascot.png">
 
 <!-- JSON-LD Structured Data -->
@@ -32,7 +31,7 @@
   "name": "Braids",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any",
-  "description": "An AI coding assistant that automatically routes code changes based on engineering depth and risk.",
+  "description": "An Agent Skills methodology that helps AI coding agents match engineering depth to risk.",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -119,7 +118,7 @@ nav button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 .section.full-width { grid-template-columns: 1fr; align-items: center; justify-items: center; text-align: center; }
 
 /* Active motion reveal classes */
-.reveal { opacity: 0; transform: translateY(30px); filter: blur(8px); }
+.reveal { opacity: 1; }
 
 h1{font-size:clamp(36px,5.6vw,72px);line-height:1.0;letter-spacing:-.045em;font-weight:600;
   text-shadow:0 8px 40px rgba(10,11,13,.9)}
@@ -132,7 +131,7 @@ h2{font-size:clamp(24px,3vw,40px);line-height:1.1;letter-spacing:-.03em;font-wei
 
 /* ── code ───────────────────────────────────────────── */
 .code{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);
-  border-radius:12px;overflow:hidden;box-shadow:0 24px 60px -20px rgba(0,0,0,.95);cursor:pointer;
+  border-radius:12px;overflow:hidden;box-shadow:0 24px 60px -20px rgba(0,0,0,.95);
   transition: transform 0.3s var(--e), border-color 0.3s var(--e), box-shadow 0.3s var(--e);}
 .code:hover { transform: translateY(-4px); border-color: var(--line-2); box-shadow: 0 32px 80px -20px rgba(0,0,0,1); }
 .code .bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);
@@ -147,8 +146,10 @@ h2{font-size:clamp(24px,3vw,40px);line-height:1.1;letter-spacing:-.03em;font-wei
 
 .copyrow{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);
   border-radius:10px;padding:14px 16px;font:13px/1 var(--mono);
-  box-shadow:0 16px 44px -20px rgba(0,0,0,.9);cursor:pointer;transition:all .25s var(--e)}
+  box-shadow:0 16px 44px -20px rgba(0,0,0,.9);cursor:pointer;transition:all .25s var(--e);
+  width:100%;text-align:left;color:inherit}
 .copyrow:hover{border-color:var(--line-2); transform: translateY(-2px);}
+.copyrow:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 .copyrow .p{color:var(--amber)}
 .copyrow code{color:var(--ink);flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .copyrow .ic{width:14px;height:14px;color:var(--dim);flex:0 0 auto}
@@ -233,12 +234,12 @@ footer a:hover{color:var(--ink);border-bottom-color:var(--amber)}
   <a class="brand" href="https://github.com/vyas-devgna/braids">
     <img src="braids-icon-256.png" alt=""><b>braids</b>
   </a>
-  <nav id="nav" role="tablist" aria-label="Sections">
+  <nav id="nav" aria-label="Sections">
     <span class="pill" aria-hidden="true"></span>
-    <button role="tab" data-s="what" class="active">why</button>
-    <button role="tab" data-s="depth">how</button>
-    <button role="tab" data-s="use">skills</button>
-    <button role="tab" data-s="install">install</button>
+    <button data-s="what" class="active">why</button>
+    <button data-s="depth">how</button>
+    <button data-s="use">skills</button>
+    <button data-s="install">install</button>
   </nav>
 </header>
 
@@ -250,10 +251,10 @@ footer a:hover{color:var(--ink);border-bottom-color:var(--amber)}
       <h1 id="hl">Safer changes. <em>Less ceremony.</em></h1>
       <p class="sub">A rename and an authentication change should not get the same treatment.
         Braids keeps simple work simple and slows down when mistakes get expensive.</p>
-      <div class="copyrow" data-copy="claude plugin marketplace add vyas-devgna/braids">
+      <button type="button" class="copyrow" data-copy="claude plugin marketplace add vyas-devgna/braids" aria-label="Copy the Claude Code install command">
         <span class="p">$</span><code>claude plugin marketplace add vyas-devgna/braids</code>
         <i class="ic" data-lucide="copy"></i>
-      </div>
+      </button>
     </div>
     <div class="col reveal">
       <div class="code">
@@ -282,7 +283,11 @@ footer a:hover{color:var(--ink);border-bottom-color:var(--amber)}
         <button data-d="3" aria-pressed="true">D3</button>
         <button data-d="4" aria-pressed="false">D4</button>
       </div>
-      <div class="dbody" id="dbody" aria-live="polite"></div>
+      <div class="dbody" id="dbody" aria-live="polite">
+        <h3>D3 · consequence</h3>
+        <p>Threat and failure analysis, independent challenge, real evidence.</p>
+        <p>Security, data integrity, concurrency, measured performance.</p>
+      </div>
     </div>
     <div class="col reveal">
       <p class="eyebrow">You choose the effort limit</p>
@@ -417,8 +422,10 @@ function frame() {
     ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.x2, g.y2); ctx.stroke();
   }
   ctx.globalAlpha = 1;
-  if (!reduce) t += .0046;
-  requestAnimationFrame(frame);
+  if (!reduce) {
+    t += .0046;
+    requestAnimationFrame(frame);
+  }
 }
 addEventListener("resize", size, { passive: true });
 addEventListener("pointermove", e => {
@@ -469,11 +476,8 @@ const observer = new IntersectionObserver((entries) => {
         if(id === 'what' && !entry.target.hasAttribute('data-played')) {
           entry.target.setAttribute('data-played', 'true');
           const hl = $("#hl");
-          if(hl) {
-            hl.innerHTML = hl.innerHTML.replace(/(\S+)/g, '<span class="w" style="display:inline-block">$1</span>');
-            animate(".w", { opacity: [0, 1], y: [26, 0], filter: ["blur(9px)", "blur(0px)"],
-                            duration: 900, delay: stagger(46), ease: "out(3)" });
-          }
+          if(hl) animate(hl, { opacity: [0, 1], y: [26, 0], filter: ["blur(9px)", "blur(0px)"],
+                               duration: 900, ease: "out(3)" });
         }
       } else {
         entry.target.querySelectorAll('.reveal').forEach(el => utils.set(el, {opacity: 1, y: 0, filter: 'blur(0px)'}));
@@ -488,7 +492,7 @@ $("#nav").addEventListener("click", e => {
   const b = e.target.closest("button");
   if (b) {
     const el = document.getElementById(b.dataset.s);
-    if(el) el.scrollIntoView({ behavior: 'smooth' });
+    if(el) el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
   }
 });
 
@@ -534,9 +538,7 @@ async function copy(text) {
 }
 document.addEventListener("click", e => {
   const row = e.target.closest("[data-copy]");
-  if (row) { copy(row.dataset.copy); if (!reduce) animate(row, { scale: [1, .97, 1], duration: 320 }); return; }
-  const block = e.target.closest(".code");
-  if (block) { copy($("pre", block).innerText.trim()); if (!reduce) animate(block, { scale: [1, .98, 1], duration: 320 }); }
+  if (row) { copy(row.dataset.copy); if (!reduce) animate(row, { scale: [1, .97, 1], duration: 320 }); }
 });
 
 /* ── boot ─────────────────────────────────────────────────────────── */

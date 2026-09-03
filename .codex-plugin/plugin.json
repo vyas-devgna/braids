@@ -2,6 +2,7 @@
   "name": "braids",
   "version": "0.1.0-dev.2",
   "description": "Adaptive engineering governance for right-sized, evidence-backed AI coding work.",
+  "skills": "./skills/",
   "keywords": [
     "agent-skill",
     "engineering-governance",
@@ -13,5 +14,24 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/vyas-devgna/braids",
-  "repository": "https://github.com/vyas-devgna/braids"
+  "repository": "https://github.com/vyas-devgna/braids",
+  "interface": {
+    "displayName": "Braids",
+    "shortDescription": "Risk-calibrated engineering guidance",
+    "longDescription": "Braids matches engineering depth to real risk, challenges failure modes, and keeps material claims tied to evidence.",
+    "developerName": "Vyas Devgna",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Engineering guidance",
+      "Code review",
+      "Risk analysis"
+    ],
+    "websiteURL": "https://braids.vyasdevgna.online",
+    "brandColor": "#2F6F63",
+    "defaultPrompt": [
+      "Use Braids to right-size and implement this change.",
+      "Audit this repository's highest engineering risks.",
+      "Review this change and identify unsupported claims."
+    ]
+  }
 }

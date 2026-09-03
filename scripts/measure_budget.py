@@ -6,9 +6,9 @@ possibly cost. Per-run metrics in docs/24 (tool calls, rework ratio, research
 marginal value) need graded host runs and are not produced here.
 
 Token counts are a chars/4 ESTIMATE, not a tokenizer result. The estimator is
-calibrated against the one host-authoritative measurement available:
-`claude plugin details braids` on Claude Code 2.1.248 reported ~778 always-on
-across the seven skills and ~3.1k when the core skill fires.
+calibrated against the one current host projection available:
+`claude plugin details braids` on Claude Code 2.1.248 reported ~870 always-on
+across the seven skills and ~3.9k when the 3.1.0 core skill fires.
 """
 
 from __future__ import annotations
@@ -42,13 +42,15 @@ CEILINGS = {
     "kernel_body_lines": 500,
     "reference_tokens": 1500,
 }
-# Host-measured, not estimated. Recorded so drift is visible when the kernel changes.
+# Host-projected, not measured runtime usage. Recorded so drift is visible.
 OBSERVED = {
-    # `claude plugin details braids` on the seven-skill set, methodology 3.0.0.
-    # Per-component always-on: braids 310, review 90, audit 80, depth 80, risk 80,
-    # claims 70, help 60. On-invoke: braids 3.1k, depth 1.2k, help 960, audit 810,
-    # review 800, claims 760, risk 700.
-    "claude-code@2.1.248": {"always_on_tokens": 778, "on_invoke_tokens": 3100},
+    # `claude --plugin-dir . plugin details braids`, 2026-09-03, methodology 3.1.0.
+    # Per-component always-on: braids 330, review 160, audit 80, depth 80, risk 80,
+    # claims 70, help 60. On-invoke: braids 3.9k, depth 1.2k, help 960, audit 800,
+    # review 790, claims 750, risk 700.
+    "claude-code@2.1.248/methodology-3.1.0": {
+        "always_on_tokens": 870, "on_invoke_tokens": 3900,
+    },
 }
 
 

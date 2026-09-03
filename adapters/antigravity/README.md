@@ -45,7 +45,7 @@ writes the installable tree.
 | discovery | not-exercised | the host is not installed in this environment, so packaging is validated statically only |
 | activation | not-exercised | model-invoked skill selection needs graded runs on the host |
 | semantic-parity | not-exercised | requires graded cross-host runs via scripts/run_evals.py --results |
-| progressive-disclosure | pass | the package ships one SKILL.md plus one level of references and no persistent instruction file, which is what the host's documented three-stage discovery/activation/execution loading consumes |
+| progressive-disclosure | pass | the package ships seven independently routed skills, keeps core references one level deep, and adds no persistent instruction file, matching the host's documented discovery/activation/execution loading |
 | authority | pass | adapter ships no rules, hooks, agents, commands, variables or MCP, so it cannot widen the host permission model |
 | degradation | pass | no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour |
 | enforcement-truthfulness | not-applicable | this adapter claims no deterministic blocking |

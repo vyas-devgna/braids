@@ -105,12 +105,11 @@ This dossier is the source of truth for Braids: product requirements, frozen arc
 - `matrices/host-capability-matrix.csv`
 - `matrices/research-evidence-register.csv`
 - `diagrams/*.mmd`
-- `PACKAGE_MANIFEST.json`
 
 ## Architecture freeze rule
 
 The portable source of truth is the Braids engineering methodology and state/evaluation contracts. Host-specific hooks, rules, agents, permission systems, LSP/MCP declarations, marketplace metadata, and cloud/local behavior are adapters.
 
-**Development should not begin until `26_PREDEVELOPMENT_FREEZE_CHECKLIST.md` is reviewed and accepted.**
+The freeze was accepted before implementation. Current changes are governed by the automated validation gates and decision records.
 
 Host extension APIs are fast-moving. The per-host research file must be rechecked against primary vendor documentation immediately before each adapter implementation.

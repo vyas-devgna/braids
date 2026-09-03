@@ -33,7 +33,7 @@
     "discovery: pass \u2014 on 1.0.82 copilot skill add registered the skill and copilot skill list showed it under Custom skills, and copilot plugin list --plugin-dir listed braids as an external plugin from the generated root plugin.json",
     "activation: not-exercised \u2014 model-invoked skill selection needs graded runs",
     "semantic-parity: not-exercised \u2014 requires graded cross-host runs via scripts/run_evals.py --results",
-    "progressive-disclosure: pass \u2014 the package ships one SKILL.md plus one level of references and no repository instruction file",
+    "progressive-disclosure: pass \u2014 the package ships seven independently routed skills, keeps core references one level deep, and adds no repository instruction file",
     "authority: pass \u2014 adapter ships no hooks, agents, MCP or LSP configuration, so it cannot widen the CLI permission flags",
     "degradation: pass \u2014 no MCP, LSP or hook dependency is declared, so absent optional tools remove no adapter behaviour",
     "enforcement-truthfulness: not-applicable \u2014 this adapter claims no deterministic blocking",

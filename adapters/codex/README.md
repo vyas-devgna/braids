@@ -47,7 +47,7 @@ writes the installable tree.
 | discovery | pass | on 0.150.1 codex plugin marketplace add resolves the generated .claude-plugin/marketplace.json, codex plugin add installs the full skill tree into ~/.codex/plugins/cache, and codex plugin list reports it installed and enabled |
 | activation | not-exercised | model-invoked skill selection needs graded runs, not a packaging check |
 | semantic-parity | not-exercised | requires graded cross-host runs via scripts/run_evals.py --results |
-| progressive-disclosure | pass | the package ships one SKILL.md plus one level of references and adds nothing to AGENTS.md |
+| progressive-disclosure | pass | the package ships seven independently routed skills, keeps core references one level deep, and adds nothing to AGENTS.md |
 | authority | pass | adapter ships no hooks, agents or tool policy, so it cannot change the inherited sandbox or approval mode |
 | degradation | pass | no MCP, hook or hosted-tool dependency is declared, so absent optional tools remove no adapter behaviour |
 | enforcement-truthfulness | not-applicable | this adapter claims no deterministic blocking |

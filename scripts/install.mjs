@@ -140,7 +140,13 @@ function readReceipt() {
   if (!existsSync(path)) return null;
   try {
     const parsed = JSON.parse(readFileSync(path, "utf8"));
-    if (parsed?.receiptVersion !== RECEIPT_VERSION || typeof parsed.skills !== "object") return null;
+    if (
+      parsed?.receiptVersion !== RECEIPT_VERSION ||
+      !parsed.skills ||
+      typeof parsed.skills !== "object" ||
+      Array.isArray(parsed.skills) ||
+      Object.keys(parsed.skills).some((name) => !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name))
+    ) return null;
     return parsed;
   } catch {
     return null; // A corrupt receipt proves nothing; fall back to content comparison.
@@ -188,7 +194,10 @@ const say = (line) => console.log(dryRun ? `would ${line}` : line);
 if (flag("uninstall")) {
   let removed = 0;
   const kept = [];
-  for (const name of names) {
+  // Include skills recorded by an older package even if this release no longer
+  // ships them; otherwise an upgrade can make a clean uninstall impossible.
+  const uninstallNames = [...new Set([...names, ...Object.keys(receipt?.skills ?? {})])].sort();
+  for (const name of uninstallNames) {
     const target = join(base, name);
     const { state } = classify(name, receipt, sources[name]);
     if (state === "absent") continue;
@@ -277,3 +286,6 @@ if (!dryRun) {
     console.log("Consider committing this directory so your team gets the same behaviour.");
   }
 }
+// A partial package can still be useful, but automation must not mistake it for
+// a complete install. Everything written remains safe to uninstall via receipt.
+if (blocked.length) process.exitCode = 1;

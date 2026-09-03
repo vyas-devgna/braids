@@ -34,6 +34,10 @@
   "bin": {
     "braids-skill": "scripts/install.mjs"
   },
+  "scripts": {
+    "verify": "python3 scripts/validate.py && python3 scripts/build_adapters.py --dist dist && python3 scripts/run_evals.py --fixture-tests && python3 scripts/measure_budget.py && python3 -m unittest discover -s tests",
+    "prepublishOnly": "npm run verify"
+  },
   "publishConfig": {
     "access": "public"
   },
