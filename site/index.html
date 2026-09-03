@@ -430,6 +430,35 @@ addEventListener("keydown", e => {
   if (n >= 1 && n <= tabs.length) go(tabs[n - 1].dataset.s);
 });
 
+let scrollTimeout = null;
+addEventListener("wheel", e => {
+  if (busy || e.target.closest(".code") || e.target.closest(".dbody")) return;
+  const i = tabs.findIndex(b => b.dataset.s === current);
+  if ((e.deltaY > 50 && i === tabs.length - 1) || (e.deltaY < -50 && i === 0)) return;
+  e.preventDefault();
+  if (scrollTimeout) return;
+  
+  if (e.deltaY > 20 && i < tabs.length - 1) { 
+    go(tabs[i + 1].dataset.s); 
+    scrollTimeout = setTimeout(() => scrollTimeout = null, 1000);
+  }
+  else if (e.deltaY < -20 && i > 0) { 
+    go(tabs[i - 1].dataset.s); 
+    scrollTimeout = setTimeout(() => scrollTimeout = null, 1000);
+  }
+}, { passive: false });
+
+let touchStartY = 0;
+addEventListener("touchstart", e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+addEventListener("touchend", e => {
+  if (busy || e.target.closest(".code") || e.target.closest(".dbody")) return;
+  const touchEndY = e.changedTouches[0].clientY;
+  const diff = touchStartY - touchEndY;
+  const i = tabs.findIndex(b => b.dataset.s === current);
+  if (diff > 50 && i < tabs.length - 1) { go(tabs[i + 1].dataset.s); }
+  else if (diff < -50 && i > 0) { go(tabs[i - 1].dataset.s); }
+}, { passive: true });
+
 const DEPTHS = [
   ["D0 · local and reversible", "Do it. No research, no delegation, no ceremony.",
    "A rename. A comment. Something a compiler would catch."],
