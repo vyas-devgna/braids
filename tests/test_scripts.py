@@ -150,6 +150,12 @@ class ScriptTests(unittest.TestCase):
                 key = "kernel_metadata_tokens" if name == "braids" else "per_skill_metadata_tokens"
                 self.assertLessEqual(tokens, budget.CEILINGS[key])
 
+    def test_malformed_corpus_is_reported_not_raised(self):
+        """The release gate must list every problem, not stop at the first bad line."""
+        errors = eval_runner.check_cases([{"id": "TR-P99"}, {"category": "orphan"}])
+        self.assertTrue(errors)
+        self.assertTrue(any("missing" in error for error in errors))
+
     def test_kernel_keeps_its_safety_invariants(self):
         """These sentences are the kernel's security posture; losing one is a silent regression."""
         text = (ROOT / "skills/braids/SKILL.md").read_text(encoding="utf-8")

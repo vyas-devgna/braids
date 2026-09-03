@@ -88,13 +88,19 @@ def check_cases(cases: list[dict]) -> list[str]:
     if missing_requirements:
         errors.append(f"requirements without eval coverage: {sorted(missing_requirements)}")
 
-    triggers = [case for case in cases if case["id"].startswith("TR-")]
+    # A case missing `id` or `expected_trigger` is already reported above. Filter it
+    # out rather than raising here, so a malformed corpus yields the full error list
+    # instead of a traceback from the gate that guards releases.
+    triggers = [
+        case for case in cases
+        if str(case.get("id", "")).startswith("TR-") and "expected_trigger" in case and "partition" in case
+    ]
     positives = [case for case in triggers if case["expected_trigger"] == "yes"]
     negatives = [case for case in triggers if case["expected_trigger"] == "no"]
     if len(positives) < 30 or len(negatives) < 30:
         errors.append(f"trigger corpus needs >=30 positive and negative cases, got {len(positives)}/{len(negatives)}")
     for partition in ("train", "validation", "holdout"):
-        selected = [case for case in triggers if case["partition"] == partition]
+        selected = [case for case in triggers if case.get("partition") == partition]
         if not any(case["expected_trigger"] == "yes" for case in selected) or not any(case["expected_trigger"] == "no" for case in selected):
             errors.append(f"trigger partition {partition} is not balanced")
     return errors

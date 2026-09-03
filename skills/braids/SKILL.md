@@ -93,6 +93,8 @@ For performance/resource claims, use [performance-resources.md](references/perfo
 
 Record the chosen option, rejected alternatives and why, assumptions, evidence, interfaces, failure/fallback behavior, migration and rollback/recovery where relevant, resource expectations, verification obligations, and residual risks. Keep session state ephemeral unless the user requests a durable artifact.
 
+A long session loses that record before it loses the code. When earlier context has been summarized, compacted, or dropped, treat unresolved assumptions, unverified claims, and stated residual risks as still open rather than settled, and re-derive them from the repository instead of trusting that a previous turn checked them. A claim carried forward as supported because it was discussed once is how unverified silently becomes done.
+
 ## Execute within authority
 
 Implement only after authority is delegated. Use the smallest justified blast radius, preserve unrelated user changes, and avoid opportunistic refactors. Re-check trust-boundary input validation, failure cleanup, retries/idempotency, concurrency, compatibility, and recovery in proportion to depth.

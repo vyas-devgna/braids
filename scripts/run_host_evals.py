@@ -33,6 +33,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 KERNEL = ROOT / "skills/braids"
+# Single source of truth; a run record that mislabels the methodology it exercised
+# is worse than no record, because it is graded and cited later.
+CORE_VERSION = json.loads((ROOT / "braids.json").read_text(encoding="utf-8"))["methodology_version"]
+PACKAGE_VERSION = json.loads((ROOT / "braids.json").read_text(encoding="utf-8"))["package_version"]
 JUDGE_MODEL = "claude-haiku-4-5-20251001"
 HOST_MODELS = {"claude-code": "sonnet", "codex": "gpt-5.6-sol"}
 ISOLATED: dict[str, str] = {}
@@ -319,8 +323,8 @@ def run_case(case: dict, host: str, plugin: Path | None, timeout: int,
         "host_version": HOST_VERSIONS[host],
         "model": meta.get("_host_model", HOST_MODELS[host]),
         "model_version": None,
-        "core_version": "3.0.0",
-        "adapter_version": "0.1.0-dev.2" if plugin else None,
+        "core_version": CORE_VERSION,
+        "adapter_version": PACKAGE_VERSION if plugin else None,
         "available_tools": sorted({tool["name"] for tool in tools}),
         "started_at": started.isoformat(),
         "result": "blocked" if host_failed or not response.strip() else "pass",
