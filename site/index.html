@@ -1,516 +1,712 @@
-<!doctype html>
-<html lang="en" data-slide="what">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Braids — safer AI coding without the ceremony</title>
-<meta name="description" content="Braids keeps simple code changes simple and gives risky changes the care they deserve.">
-<link rel="icon" href="braids-icon-256.png">
-<meta property="og:title" content="Braids">
-<meta property="og:description" content="Safer AI coding without unnecessary ceremony.">
-<meta property="og:image" content="https://braids.vyasdevgna.online/braids-mascot.png">
-<meta name="theme-color" content="#010102">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg: #010102; /* Linear canvas */
-  --panel: #0f1011; /* surface-1 */
-  --panel-2: #141516; /* surface-2 */
-  --line: #23252a; /* hairline */
-  --line-2: #34343a; /* hairline-strong */
-  --ink: #f7f8f8;
-  --mid: #d0d6e0; /* ink-muted */
-  --dim: #8a8f98; /* ink-subtle */
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Braids — safer AI coding without the ceremony</title>
+  <meta name="description" content="Braids keeps simple code changes simple and gives risky changes the care they deserve.">
+  <link rel="icon" href="braids-icon-256.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
-  --primary: #5e6ad2;
-  --amber: #d29922; 
-  --amber-dim: rgba(210,153,34,0.3);
-  --red: #f85149; 
-  --green: #27a644; 
-  
-  --mono: 'JetBrains Mono', ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --e: cubic-bezier(.22, .61, .36, 1);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
-  font-family:var(--sans);-webkit-font-smoothing:antialiased}
-body{display:flex;flex-direction:column;height:100dvh;
-  padding:clamp(13px,2vh,24px) clamp(15px,3vw,42px);gap:clamp(8px,1.4vh,16px)}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
-  background:radial-gradient(125% 95% at 50% 42%,transparent 40%,rgba(0,0,0,.6) 100%)}
-body::before{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:59;opacity:.02;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
-  animation:grain 6s steps(6) infinite}
-@keyframes grain{0%,100%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}
-  50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-2%)}}
-canvas#weave{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.62}
-.mascot{position:fixed;right:2vw;bottom:-5vh;width:min(34vw,470px);height:68vh;
-  object-fit:contain;object-position:right bottom;z-index:1;opacity:.15;pointer-events:none;
-  filter:contrast(1.04) brightness(.86);display:none}
-html[data-slide=what] .mascot{display:block}
+  <style>
+    :root {
+      /* Stripe-inspired color palette */
+      --primary: #533afd;
+      --primary-press: #2e2b8c;
+      --primary-soft: #665efd;
+      
+      --brand-dark-900: #1c1e54;
+      --ink: #0d253d;
+      --ink-secondary: #273951;
+      --ink-mute: #64748d;
+      
+      --on-primary: #ffffff;
+      --canvas: #ffffff;
+      --canvas-soft: #f6f9fc;
+      --canvas-cream: #f5e9d4;
+      
+      --hairline: #e3e8ee;
+      --ruby: #ea2261;
+      --amber: #d99b3f;
+      --green: #27a644;
+      
+      --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      
+      --rounded-md: 8px;
+      --rounded-lg: 12px;
+      --rounded-xl: 16px;
+      --rounded-pill: 9999px;
+    }
 
-/* ── chrome ─────────────────────────────────────────── */
-header{display:flex;align-items:center;gap:14px;z-index:10;flex:0 0 auto}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
-.brand img{width:27px;height:27px;filter:invert(1) grayscale(1) contrast(1.5) brightness(0.9);opacity:.92}
-.brand b{font-size:15.5px;letter-spacing:-.015em;font-weight:600}
-nav{margin-left:auto;display:flex;gap:2px;background:rgba(1,1,2,.75);backdrop-filter:blur(14px);
-  border:1px solid var(--line);border-radius:999px;padding:4px;position:relative}
-nav .pill{position:absolute;top:4px;bottom:4px;background:var(--surface-2);border-radius:999px;z-index:0;
-  left:0;width:0;opacity:0}
-nav button{position:relative;z-index:1;font:500 12.5px/1 var(--mono);color:var(--dim);background:none;
-  border:0;cursor:pointer;padding:8px 15px;border-radius:999px;transition:color .3s var(--e)}
-nav button:hover{color:var(--ink)}
-nav button[aria-selected=true]{color:var(--ink)}
-nav button:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      height: 100%;
+      background-color: var(--canvas);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* ── slides ─────────────────────────────────────────── */
-main{flex:1 1 auto;min-height:0;position:relative;z-index:10}
-.slide{position:absolute;inset:0;display:none;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);
-  gap:clamp(18px,3.6vw,54px);align-items:center;max-width:1280px;margin:0 auto}
-.slide[data-on]{display:grid}
+    /* Scroll Snapping Container */
+    .scroll-container {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    
+    .scroll-container::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
 
-h1{font-size:clamp(40px,5.6vw,80px);line-height:1.05;letter-spacing:-.04em;font-weight:600;
-  text-shadow:0 8px 40px rgba(1,1,2,.9)}
-h1 em{font-style:normal;color:var(--dim)}
-h2{font-size:clamp(28px,3vw,40px);line-height:1.15;letter-spacing:-.03em;font-weight:600}
-.sub{font-size:clamp(14px,1.45vw,18px);line-height:1.5;color:var(--mid);max-width:36ch}
-.sub strong{color:var(--ink);font-weight:500}
-.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--primary)}
-.col{display:flex;flex-direction:column;gap:clamp(12px,1.5vh,20px);min-width:0}
+    .section {
+      height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      scroll-snap-stop: always;
+    }
 
-/* ── code ───────────────────────────────────────────── */
-.code{background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.4);cursor:pointer}
-.code .bar{display:flex;align-items:center;gap:8px;padding:9px 13px;border-bottom:1px solid var(--line);
-  font:11px/1 var(--mono);color:var(--dim);background:rgba(1,1,2,0.5)}
-.code .bar i{width:8px;height:8px;border-radius:50%;background:var(--line-2);flex:0 0 auto}
-.code .bar .who{margin-left:auto}
-.code pre{margin:0;padding:16px 14px;font:13px/1.65 var(--mono);overflow:auto}
-.code pre::-webkit-scrollbar{height:6px;width:6px}
-.code pre::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
-.del{color:var(--red)}.add{color:var(--green)}.cm{color:var(--dim)}
-.kw{color:var(--primary)}.pl{color:var(--mid)}
+    /* Gradient Mesh Background */
+    .gradient-mesh {
+      position: absolute;
+      top: -20%;
+      left: -10%;
+      width: 120%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 15% 50%, rgba(245, 233, 212, 0.8) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(234, 34, 97, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 50% 100%, rgba(83, 58, 253, 0.6) 0%, transparent 50%),
+        radial-gradient(circle at 80% 90%, rgba(155, 104, 41, 0.5) 0%, transparent 40%);
+      background-color: #f8f6fc;
+      filter: blur(60px);
+      z-index: 0;
+      animation: mesh-move 20s ease-in-out infinite alternate;
+      opacity: 0.6;
+      transform-origin: center;
+    }
 
-.copyrow{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);
-  border-radius:8px;padding:12px 14px;font:13px/1 var(--mono);
-  box-shadow:0 16px 44px -20px rgba(0,0,0,.9);cursor:pointer;transition:border-color .25s var(--e)}
-.copyrow:hover{border-color:var(--line-2)}
-.copyrow .p{color:var(--primary)}
-.copyrow code{color:var(--ink);flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.copyrow .ic{width:14px;height:14px;color:var(--dim);flex:0 0 auto}
+    @keyframes mesh-move {
+      0% { transform: scale(1) translate(0, 0) rotate(0deg); }
+      50% { transform: scale(1.1) translate(2%, 3%) rotate(2deg); }
+      100% { transform: scale(1.05) translate(-2%, -2%) rotate(-1deg); }
+    }
+    
+    .gradient-mesh.soft {
+      top: -50%;
+      opacity: 0.3;
+      background: radial-gradient(circle at 50% 50%, rgba(83, 58, 253, 0.3) 0%, transparent 60%);
+    }
 
-/* ── verdict ────────────────────────────────────────── */
-.verdict{display:flex;flex-direction:column;gap:8px}
-.v{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;
-  background:var(--panel-2);border:1px solid var(--line);border-left:2px solid var(--tone,var(--line-2));
-  border-radius:8px;padding:12px 14px}
-.v b{font:600 11px/1 var(--mono);color:var(--tone,var(--mid));text-transform:uppercase;letter-spacing:.05em}
-.v span{font-size:14px;line-height:1.5;color:var(--ink)}
-.v span i{color:var(--ink);font-style:normal;font-weight:500;font-family:var(--mono);font-size:13px}
-.v.bug{--tone:var(--red)}.v.risk{--tone:var(--amber)}.v.ok{--tone:var(--green)}
+    /* Content Layout */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 10;
+    }
 
-/* ── depth scale ────────────────────────────────────── */
-.scale{display:flex;gap:6px}
-.scale button{flex:1 1 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;
-  padding:12px 6px;cursor:pointer;font:500 13px/1 var(--mono);color:var(--dim);
-  transition:all .25s var(--e)}
-.scale button:hover{color:var(--ink);border-color:var(--line-2);background:var(--panel-2)}
-.scale button[aria-pressed=true]{color:var(--on-primary);background:var(--primary);border-color:var(--primary);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)}
-.scale button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-.dbody{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:16px 20px;
-  min-height:120px}
-.dbody h3{font:500 13px/1.3 var(--mono);color:var(--primary);margin-bottom:8px}
-.dbody p{font-size:14px;line-height:1.5;color:var(--ink)}
-.dbody p + p{margin-top:6px;color:var(--dim);font-size:13px}
+    /* Typography */
+    h1, h2, h3 {
+      font-weight: 300;
+      color: var(--ink);
+      font-feature-settings: "ss01";
+    }
 
-/* ── skills ─────────────────────────────────────────── */
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.sk{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;
-  transition:border-color .25s var(--e),transform .25s var(--e)}
-.sk:hover{border-color:var(--line-2);transform:translateY(-2px)}
-.sk b{display:block;font:500 13px/1 var(--mono);color:var(--primary);margin-bottom:6px}
-.sk span{font-size:14px;line-height:1.5;color:var(--mid)}
+    h1 {
+      font-size: clamp(40px, 5vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -1.4px;
+      margin-bottom: 24px;
+    }
 
-.note{font-size:13px;line-height:1.5;color:var(--dim);max-width:62ch}
-.note b{color:var(--mid);font-weight:500}
+    h2 {
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.15;
+      letter-spacing: -0.96px;
+      margin-bottom: 16px;
+    }
 
-footer{flex:0 0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;z-index:10;
-  font:12px/1 var(--sans);color:var(--dim)}
-footer a{color:var(--mid);text-decoration:none;transition:.2s ease}
-footer a:hover{color:var(--ink)}
-.tag{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-family:var(--mono);font-size:11px}
-.tag.warn{color:var(--amber);border-color:var(--amber-dim);background:rgba(210,153,34,0.05)}
-.sp{margin-left:auto}
-.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);z-index:70;opacity:0;
-  background:var(--ink);color:var(--bg);font:500 13px/1 var(--sans);padding:10px 16px;border-radius:999px;
-  pointer-events:none}
+    p.lead {
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--ink-secondary);
+      max-width: 560px;
+      letter-spacing: -0.2px;
+    }
 
-@media (max-width:980px){
-  .mascot{display:none!important}
-  .slide{grid-template-columns:1fr;align-content:center;gap:16px}
-  .grid{grid-template-columns:1fr}
-  h1{font-size:clamp(32px,8.4vw,48px)}
-  .code pre{max-height:26vh}
-  .hide-sm{display:none}
-}
-@media (max-width:560px){
-  .brand b{display:none}
-  nav button{padding:8px 12px;font-size:12px}
-  .scale button{padding:10px 4px;font-size:12px}
-}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;
-    animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
-}
-</style>
+    p.body {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--ink-mute);
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+    }
+
+    /* Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(227, 232, 238, 0.5);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 18px;
+      letter-spacing: -0.2px;
+    }
+
+    .brand img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--ink-secondary);
+      font-weight: 400;
+      font-size: 15px;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border-radius: var(--rounded-pill);
+      font-weight: 400;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      box-shadow: 0 4px 14px rgba(83, 58, 253, 0.25);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-press);
+      box-shadow: 0 6px 20px rgba(83, 58, 253, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: rgba(83, 58, 253, 0.08);
+      color: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(83, 58, 253, 0.12);
+    }
+
+    /* Product UI Mockup */
+    .mockup-panel {
+      background-color: var(--brand-dark-900);
+      border-radius: var(--rounded-xl);
+      padding: 24px;
+      box-shadow: 0 24px 80px rgba(13, 37, 61, 0.15), 0 4px 12px rgba(13, 37, 61, 0.08);
+      color: var(--on-primary);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .mockup-dots {
+      display: flex;
+      gap: 6px;
+      margin-right: 12px;
+    }
+
+    .mockup-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    pre {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-x: auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .code-del { color: #f85149; }
+    .code-add { color: #56d364; }
+    .code-cm { color: rgba(255,255,255,0.4); }
+    .code-kw { color: #b392f0; }
+    
+    .verdict-box {
+      margin-top: 24px;
+      background: rgba(255,255,255,0.04);
+      border-radius: var(--rounded-lg);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    
+    .verdict-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 16px;
+      font-size: 14px;
+      align-items: baseline;
+    }
+    
+    .verdict-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+    
+    .verdict-badge.bug { color: #f85149; }
+    .verdict-badge.risk { color: #d29922; }
+    .verdict-badge.ok { color: #56d364; }
+
+    /* Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* Feature Cards */
+    .feature-card {
+      background-color: var(--canvas);
+      border-radius: var(--rounded-lg);
+      padding: 32px;
+      border: 1px solid var(--hairline);
+      box-shadow: 0 4px 12px rgba(13, 37, 61, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(13, 37, 61, 0.08);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--rounded-md);
+      background-color: var(--canvas-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: var(--primary);
+    }
+    
+    /* Depth Interactive */
+    .depth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    
+    .depth-tab {
+      padding: 8px 16px;
+      border-radius: var(--rounded-pill);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--canvas-soft);
+      color: var(--ink-mute);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .depth-tab:hover {
+      background: rgba(83, 58, 253, 0.08);
+      color: var(--primary);
+    }
+    
+    .depth-tab.active {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    
+    .depth-content {
+      background: var(--canvas-soft);
+      border-radius: var(--rounded-lg);
+      padding: 24px;
+      border: 1px solid var(--hairline);
+      min-height: 140px;
+    }
+    
+    .depth-content h4 {
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--ink-mute);
+      font-size: 14px;
+    }
+    
+    footer a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    
+    footer a:hover {
+      color: var(--ink);
+    }
+    
+    .copy-toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--ink);
+      color: var(--canvas);
+      padding: 12px 24px;
+      border-radius: var(--rounded-pill);
+      font-size: 14px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+      font-weight: 500;
+      box-shadow: 0 12px 32px rgba(13, 37, 61, 0.15);
+    }
+    
+    .copy-toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .grid-2 { grid-template-columns: 1fr; gap: 32px; }
+      .section { height: auto; min-height: 100vh; padding: 120px 0; }
+      .nav-links { display: none; }
+      h1 { font-size: clamp(36px, 8vw, 48px); }
+    }
+  </style>
 </head>
 <body>
-<canvas id="weave" aria-hidden="true"></canvas>
-<picture><source srcset="braids-mascot.webp" type="image/webp"><img class="mascot" src="braids-mascot.png" alt="" width="860" height="864" aria-hidden="true"></picture>
 
-<header>
-  <a class="brand" href="https://github.com/vyas-devgna/braids">
-    <img src="braids-icon-256.png" alt=""><b>braids</b>
-  </a>
-  <nav id="nav" role="tablist" aria-label="Sections">
-    <span class="pill" aria-hidden="true"></span>
-    <button role="tab" data-s="what"    aria-selected="true">why</button>
-    <button role="tab" data-s="depth"   aria-selected="false">how</button>
-    <button role="tab" data-s="use"     aria-selected="false">skills</button>
-    <button role="tab" data-s="install" aria-selected="false">install</button>
-  </nav>
-</header>
-
-<main>
-  <section class="slide" data-slide="what" data-on>
-    <div class="col">
-      <h1 id="hl">Safer changes. <em>Less ceremony.</em></h1>
-      <p class="sub">A rename and an authentication change should not get the same treatment.
-        Braids keeps simple work simple and slows down when mistakes get expensive.</p>
-      <div class="copyrow" data-copy="claude plugin marketplace add vyas-devgna/braids">
-        <span class="p">$</span><code>claude plugin marketplace add vyas-devgna/braids</code>
-        <i class="ic" data-lucide="copy"></i>
-      </div>
+  <header>
+    <div class="container nav-inner">
+      <a href="/" class="brand">
+        <img src="braids-icon-256.png" alt="Braids Icon" style="filter: hue-rotate(220deg) brightness(0.8);">
+        braids
+      </a>
+      <nav class="nav-links">
+        <a href="#hero" onclick="scrollToId('hero'); return false;">Overview</a>
+        <a href="#how" onclick="scrollToId('how'); return false;">How it works</a>
+        <a href="#skills" onclick="scrollToId('skills'); return false;">Skills</a>
+      </nav>
+      <a href="#install" onclick="scrollToId('install'); return false;" class="btn btn-primary">Install Braids</a>
     </div>
-    <div class="col">
-      <div class="code">
-        <div class="bar"><i></i><i></i><i></i><span>auth.py</span><span class="who">commit: “simplify auth”</span></div>
-<pre><span class="del">- if not token or not expected: return False</span>
-<span class="del">- return secrets.compare_digest(token, expected)</span>
-<span class="add">+ return token == expected</span></pre>
+  </header>
+
+  <div class="scroll-container" id="scroller">
+    
+    <!-- SECTION 1: HERO -->
+    <section class="section" id="hero">
+      <div class="gradient-mesh"></div>
+      <div class="container grid-2">
+        <div>
+          <div class="eyebrow">Financial-grade care for code</div>
+          <h1>Safer changes.<br>Less ceremony.</h1>
+          <p class="lead" style="margin-bottom: 32px;">
+            A rename and an authentication change should not get the same treatment. 
+            Braids keeps simple work simple and slows down when mistakes get expensive.
+          </p>
+          <div style="display: flex; gap: 16px;">
+            <a href="#install" onclick="scrollToId('install'); return false;" class="btn btn-primary">Get Started</a>
+            <a href="https://github.com/vyas-devgna/braids" target="_blank" class="btn btn-secondary">View on GitHub</a>
+          </div>
+        </div>
+        
+        <div>
+          <div class="mockup-panel">
+            <div class="mockup-header">
+              <div class="mockup-dots"><span></span><span></span><span></span></div>
+              auth.py &nbsp;&mdash;&nbsp; commit: "simplify auth"
+            </div>
+            <pre>
+<span class="code-del">- if not token or not expected: return False</span>
+<span class="code-del">- return secrets.compare_digest(token, expected)</span>
+<span class="code-add">+ return token == expected</span></pre>
+            
+            <div class="verdict-box">
+              <div class="verdict-row">
+                <span class="verdict-badge bug">Bug</span>
+                <span>Two falsy values authenticate. <code>None == None</code> is True.</span>
+              </div>
+              <div class="verdict-row">
+                <span class="verdict-badge risk">Risk</span>
+                <span><code>==</code> short-circuits. Response time leaks token prefix.</span>
+              </div>
+              <div class="verdict-row">
+                <span class="verdict-badge ok">Verdict</span>
+                <span style="color: rgba(255,255,255,0.7);">Do not merge. Restore the guard and constant-time compare.</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="verdict">
-        <div class="v bug"><b>bug</b><span>Two falsy values authenticate. <i>None == None</i> is <i>True</i>.</span></div>
-        <div class="v risk"><b>risk</b><span><i>==</i> short-circuits — response time leaks the token prefix.</span></div>
-        <div class="v ok"><b>verdict</b><span><i>Do not merge.</i> Restore the guard and the constant-time compare.</span></div>
+    </section>
+
+    <!-- SECTION 2: HOW IT WORKS -->
+    <section class="section" id="how" style="background-color: var(--canvas-soft);">
+      <div class="container grid-2">
+        <div>
+          <div class="eyebrow">Dynamic thresholding</div>
+          <h2>More risk means more care.</h2>
+          <p class="lead" style="margin-bottom: 32px; font-size: 18px;">
+            Braids automatically routes your request to the right level of engineering depth. Small fixes skip the ceremony; architectural changes demand evidence.
+          </p>
+          
+          <div class="depth-tabs">
+            <button class="depth-tab" data-idx="0">D0</button>
+            <button class="depth-tab" data-idx="1">D1</button>
+            <button class="depth-tab" data-idx="2">D2</button>
+            <button class="depth-tab active" data-idx="3">D3</button>
+            <button class="depth-tab" data-idx="4">D4</button>
+          </div>
+          
+          <div class="depth-content" id="depth-view">
+            <h4>D3 · Consequence</h4>
+            <p class="body" style="color: var(--ink-secondary); margin-bottom: 8px;">Threat and failure analysis, independent challenge, real evidence.</p>
+            <p class="body" style="font-size: 14px;">Security, data integrity, concurrency, measured performance.</p>
+          </div>
+        </div>
+        
+        <div>
+          <div class="mockup-panel" style="background-color: var(--canvas); color: var(--ink); box-shadow: 0 12px 40px rgba(13,37,61,0.08); border: 1px solid var(--hairline);">
+            <div class="mockup-header" style="border-bottom-color: var(--hairline); color: var(--ink-mute);">
+              <div class="mockup-dots"><span style="background:var(--hairline)"></span><span style="background:var(--hairline)"></span><span style="background:var(--hairline)"></span></div>
+              threshold limits
+            </div>
+            <pre style="color: var(--ink-secondary);">
+<span style="color:var(--ink-mute)"># smallest change that works, obvious check only</span>
+<span style="color:var(--primary); font-weight:500;">braids low</span>    <span style="color:var(--ink-mute)">fix the test, don't redesign</span>
+
+<span style="color:var(--ink-mute)"># production shape: failure paths, callers, tests</span>
+<span style="color:var(--primary); font-weight:500;">braids high</span>   <span style="color:var(--ink-mute)">(default)</span>
+
+<span style="color:var(--ink-mute)"># hostile cases: retry, concurrency, upgrade</span>
+<span style="color:var(--primary); font-weight:500;">braids ultra</span>  <span style="color:var(--ink-mute)">migration, rollback, evidence per claim</span></pre>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="slide" data-slide="depth">
-    <div class="col">
-      <p class="eyebrow">Braids chooses the depth</p>
-      <h2>More risk means<br>more care.</h2>
-      <div class="scale" id="scale" role="group" aria-label="Engineering depth">
-        <button data-d="0" aria-pressed="false">D0</button>
-        <button data-d="1" aria-pressed="false">D1</button>
-        <button data-d="2" aria-pressed="false">D2</button>
-        <button data-d="3" aria-pressed="true">D3</button>
-        <button data-d="4" aria-pressed="false">D4</button>
+    <!-- SECTION 3: SKILLS -->
+    <section class="section" id="skills">
+      <div class="gradient-mesh soft"></div>
+      <div class="container">
+        <div style="text-align: center; max-width: 700px; margin: 0 auto 48px auto;">
+          <div class="eyebrow">Seven focused skills</div>
+          <h2>Ask directly, or let Braids step in.</h2>
+        </div>
+        
+        <div class="grid-3">
+          <div class="feature-card">
+            <h3 style="font-family: var(--font-mono); font-size: 16px; color: var(--primary); margin-bottom: 12px;">/braids</h3>
+            <p class="body">Right-size and implement, holding all claims to concrete evidence.</p>
+          </div>
+          <div class="feature-card">
+            <h3 style="font-family: var(--font-mono); font-size: 16px; color: var(--primary); margin-bottom: 12px;">/braids-review</h3>
+            <p class="body">Review a diff or PR: identify exactly what breaks and what is unproven.</p>
+          </div>
+          <div class="feature-card">
+            <h3 style="font-family: var(--font-mono); font-size: 16px; color: var(--primary); margin-bottom: 12px;">/braids-audit</h3>
+            <p class="body">Whole repository audit, ranked strictly by consequence × exposure.</p>
+          </div>
+          <div class="feature-card">
+            <h3 style="font-family: var(--font-mono); font-size: 16px; color: var(--primary); margin-bottom: 12px;">/braids-risk</h3>
+            <p class="body">Adversarial pre-mortem. Assume it shipped and broke entirely.</p>
+          </div>
+          <div class="feature-card">
+            <h3 style="font-family: var(--font-mono); font-size: 16px; color: var(--primary); margin-bottom: 12px;">/braids-claims</h3>
+            <p class="body">Maps every subjective "faster" or "secure" claim to its factual evidence.</p>
+          </div>
+          <div class="feature-card">
+            <h3 style="font-family: var(--font-mono); font-size: 16px; color: var(--primary); margin-bottom: 12px;">/braids-depth</h3>
+            <p class="body">Set the engineering threshold explicitly, or ask why a depth was chosen.</p>
+          </div>
+        </div>
       </div>
-      <div class="dbody" id="dbody" aria-live="polite"></div>
-    </div>
-    <div class="col">
-      <p class="eyebrow">You choose the effort limit</p>
-      <div class="code">
-        <div class="bar"><i></i><i></i><i></i><span>threshold</span></div>
-<pre><span class="cm"># smallest change that works, obvious check only</span>
-<span class="kw">braids low</span>    <span class="pl">fix the test, don't redesign</span>
+    </section>
 
-<span class="cm"># production shape: failure paths, callers, tests</span>
-<span class="kw">braids high</span>   <span class="pl">(default)</span>
-
-<span class="cm"># hostile cases: retry, concurrency, upgrade, scale</span>
-<span class="kw">braids ultra</span>  <span class="pl">migration, rollback, evidence per claim</span></pre>
+    <!-- SECTION 4: INSTALL -->
+    <section class="section" id="install" style="background-color: var(--brand-dark-900); color: var(--on-primary);">
+      <div class="container" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <div class="eyebrow" style="color: #a5a2ff;">Start building safely</div>
+        <h2 style="color: var(--on-primary); margin-bottom: 24px;">Install Braids.</h2>
+        <p class="lead" style="color: rgba(255,255,255,0.7); margin-bottom: 48px;">
+          Runs securely inside your coding agent. No remote service, <br>telemetry, or hidden project state.
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--rounded-lg); padding: 24px; text-align: left; width: 100%; max-width: 600px; margin-bottom: 24px; cursor: pointer; transition: all 0.2s;" onclick="copyText('claude plugin marketplace add vyas-devgna/braids')" onmouseover="this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <div style="font-family: var(--font-mono); font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px;">Claude Code</div>
+          <pre style="color: #fff; margin-bottom: 8px;"><span style="color:var(--primary-soft)">$</span> claude plugin marketplace add vyas-devgna/braids</pre>
+          <pre style="color: #fff;"><span style="color:var(--primary-soft)">$</span> claude plugin install braids@braids</pre>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--rounded-lg); padding: 24px; text-align: left; width: 100%; max-width: 600px; cursor: pointer; transition: all 0.2s;" onclick="copyText('npx github:vyas-devgna/braids <host>')" onmouseover="this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <div style="font-family: var(--font-mono); font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px;">Codex · OpenCode · Cline · Copilot</div>
+          <pre style="color: #fff;"><span style="color:var(--primary-soft)">$</span> npx github:vyas-devgna/braids &lt;host&gt;</pre>
+        </div>
+        
+        <footer style="margin-top: 64px; width: 100%; max-width: 600px; padding: 24px 0 0 0; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4);">
+          <div style="display: flex; gap: 24px; justify-content: center;">
+            <span>MIT License</span>
+            <a href="https://github.com/vyas-devgna/braids" style="color: rgba(255,255,255,0.6);">GitHub</a>
+            <a href="https://github.com/vyas-devgna/braids/blob/main/docs/30_SKILLS_REFERENCE.md" style="color: rgba(255,255,255,0.6);">Skills</a>
+          </div>
+        </footer>
       </div>
-      <div class="verdict">
-        <div class="v risk"><b>the floor</b><span><i>low</i> never silently weakens auth, privacy, or data
-          integrity. Braids names what it skipped and does the smallest <i>safe</i> version.</span></div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="slide" data-slide="use">
-    <div class="col">
-      <p class="eyebrow">seven focused skills</p>
-      <h2>Ask directly, or let<br>Braids step in.</h2>
-      <div class="code">
-        <div class="bar"><i></i><i></i><i></i><span>session</span></div>
-<pre><span class="pl">&gt;</span> <span class="kw">/braids-review</span>
-<span class="cm">  do not merge · 2 findings · residual risk stated</span>
+  </div>
 
-<span class="pl">&gt;</span> <span class="kw">braids ultra</span> <span class="pl">— I'm changing how sessions authorize</span>
-<span class="cm">  D4 · migration + rollback · 6 claims to evidence</span></pre>
-      </div>
-    </div>
-    <div class="col">
-      <div class="grid">
-        <div class="sk"><b>/braids</b><span>Right-size and implement, claims held to evidence.</span></div>
-        <div class="sk"><b>/braids-review</b><span>A diff or PR: what breaks, what is unproven.</span></div>
-        <div class="sk"><b>/braids-audit</b><span>Whole repo, ranked consequence × exposure.</span></div>
-        <div class="sk"><b>/braids-risk</b><span>Pre-mortem. Assume it shipped and broke.</span></div>
-        <div class="sk"><b>/braids-claims</b><span>Every “faster” mapped to its evidence.</span></div>
-        <div class="sk"><b>/braids-depth</b><span>Set the threshold, or ask why.</span></div>
-      </div>
-    </div>
-  </section>
+  <div id="toast" class="copy-toast">Copied to clipboard</div>
 
-  <section class="slide" data-slide="install">
-    <div class="col">
-      <p class="eyebrow">start here</p>
-      <h2>Install Braids.</h2>
-      <p class="sub">Runs inside your coding agent. No remote service, MCP server,
-        telemetry, or hidden project state.</p>
-      <p class="note"><b>Experimental and advisory:</b> Braids warns; it does not block tools.</p>
-    </div>
-    <div class="col">
-      <div class="code">
-        <div class="bar"><i></i><i></i><i></i><span>claude code</span></div>
-<pre><span class="pl">$</span> claude plugin marketplace add vyas-devgna/braids
-<span class="pl">$</span> claude plugin install braids@braids</pre>
-      </div>
-      <div class="code">
-        <div class="bar"><i></i><i></i><i></i><span>codex</span></div>
-<pre><span class="pl">$</span> codex plugin marketplace add https://github.com/vyas-devgna/braids
-<span class="pl">$</span> codex plugin add braids@braids --json</pre>
-      </div>
-      <div class="code">
-        <div class="bar"><i></i><i></i><i></i><span>opencode · cline · windsurf · copilot</span></div>
-<pre><span class="pl">$</span> npx github:vyas-devgna/braids &lt;host&gt;</pre>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <span class="tag">MIT</span>
-  <span class="tag warn">experimental · advisory</span>
-  <span class="sp"></span>
-  <a href="https://github.com/vyas-devgna/braids">github</a>
-  <a href="https://github.com/vyas-devgna/braids/blob/main/docs/30_SKILLS_REFERENCE.md">skills</a>
-  <a href="https://github.com/vyas-devgna/braids/blob/main/docs/29_KNOWN_LIMITATIONS.md">limitations</a>
-</footer>
-
-<div class="toast" id="toast">copied</div>
-
-<script src="https://cdn.jsdelivr.net/npm/lucide@1.38.0/dist/umd/lucide.min.js" defer></script>
-<script type="module">
-import { animate, stagger, createTimeline, utils }
-  from "https://cdn.jsdelivr.net/npm/animejs@4.5.0/+esm";
-
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const $  = (s, r = document) => r.querySelector(s);
-const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-
-const cv = $("#weave"), ctx = cv.getContext("2d");
-const BUNDLES = 3, PER = 2, STRANDS = BUNDLES * PER, HOT = 2;
-const F = { amp: 1, twist: 1, x: .47 };
-let W = 0, H = 0, t = 0, px = 0, py = 0, tx = 0, ty = 0;
-
-const size = () => {
-  const d = Math.min(devicePixelRatio || 1, 2);
-  W = cv.clientWidth; H = cv.clientHeight;
-  cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
-};
-
-function frame() {
-  ctx.clearRect(0, 0, W, H);
-  tx += (px - tx) * .05; ty += (py - ty) * .05;
-  const wide = W > 980;
-  const cx = (wide ? W * F.x : W * .5) + tx * 20;
-  const spread = Math.min(wide ? W * .055 : W * .17, 84) * F.amp;
-  const step = 11, k = .019 * F.twist, segs = [];
-
-  for (let s = 0; s < STRANDS; s++) {
-    const ph = (Math.floor(s / PER) / BUNDLES) * Math.PI * 2 + (s % PER) * .26;
-    for (let y = -70; y < H + 70; y += step) {
-      const a = k * y + ph + t, b = k * (y + step) + ph + t;
-      segs.push({ x1: cx + Math.sin(a) * spread, y1: y + ty * 12,
-                  x2: cx + Math.sin(b) * spread, y2: y + step + ty * 12, d: Math.cos(a), s });
+  <script>
+    // Scroll snapping navigation helper
+    function scrollToId(id) {
+      const el = document.getElementById(id);
+      if(el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
     }
-  }
-  segs.sort((m, n) => m.d - n.d);
-  for (const g of segs) {
-    const near = (g.d + 1) / 2, hot = g.s === HOT;
-    ctx.lineWidth = (hot ? 2.9 : 2.4) * (.4 + near * .8);
-    ctx.globalAlpha = (hot ? .15 : .08) + near * (hot ? .5 : .2);
-    ctx.strokeStyle = hot ? "#5e6ad2" : "#8a8f98";
-    ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.x2, g.y2); ctx.stroke();
-  }
-  ctx.globalAlpha = 1;
-  if (!reduce) t += .0046;
-  requestAnimationFrame(frame);
-}
-addEventListener("resize", size, { passive: true });
-addEventListener("pointermove", e => {
-  px = (e.clientX / innerWidth - .5) * 2; py = (e.clientY / innerHeight - .5) * 2;
-}, { passive: true });
-size(); frame();
 
-const hl = $("#hl");
-if (!reduce && hl) {
-  hl.innerHTML = hl.innerHTML.replace(/(\S+)/g, '<span class="w" style="display:inline-block">$1</span>');
-  animate(".w", { opacity: [0, 1], y: [26, 0], filter: ["blur(9px)", "blur(0px)"],
-                  duration: 900, delay: stagger(46), ease: "out(3)" });
-}
+    // Depth interactive logic
+    const depths = [
+      { h: 'D0 · Local and reversible', p1: 'Do it. No research, no delegation, no ceremony.', p2: 'A rename. A comment. Something a compiler would catch.' },
+      { h: 'D1 · Routine and bounded', p1: 'Targeted context and the checks that matter.', p2: 'One module, callers understood, easy to undo.' },
+      { h: 'D2 · Crosses a boundary', p1: 'Explicit change-surface model, quality scenarios, broader tests.', p2: 'Cross-module, platform-sensitive, or an uncertain integration.' },
+      { h: 'D3 · Consequence', p1: 'Threat and failure analysis, independent challenge, real evidence.', p2: 'Security, data integrity, concurrency, measured performance.' },
+      { h: 'D4 · Hard to recover', p1: 'Staged decision, migration and rollback, strongest evidence.', p2: 'Irreversible, mission-critical, or a format older versions cannot read.' }
+    ];
 
-const SHAPE = {
-  what:    { amp: 1,    twist: 1,    x: .47 },
-  depth:   { amp: 1.55, twist: .72,  x: .5  },
-  use:     { amp: .8,   twist: 1.35, x: .46 },
-  install: { amp: .55,  twist: 1.9,  x: .49 },
-};
-const slides = $$(".slide"), tabs = $$("#nav button"), pill = $(".pill");
-let current = "what", busy = false;
+    const tabs = document.querySelectorAll('.depth-tab');
+    const view = document.getElementById('depth-view');
 
-function movePill(name, instant) {
-  const b = tabs.find(x => x.dataset.s === name); if (!b) return;
-  const props = { left: b.offsetLeft, width: b.offsetWidth, opacity: 1 };
-  if (instant || reduce) utils.set(pill, props);
-  else animate(pill, { ...props, duration: 520, ease: "outElastic(1, .75)" });
-}
+    tabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        tabs.forEach(t => t.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        const idx = parseInt(e.target.getAttribute('data-idx'));
+        const d = depths[idx];
+        
+        view.style.opacity = 0.5;
+        setTimeout(() => {
+          view.innerHTML = `
+            <h4>${d.h}</h4>
+            <p class="body" style="color: var(--ink-secondary); margin-bottom: 8px;">${d.p1}</p>
+            <p class="body" style="font-size: 14px;">${d.p2}</p>
+          `;
+          view.style.opacity = 1;
+        }, 150);
+      });
+    });
+    
+    view.style.transition = 'opacity 0.15s ease';
 
-function go(name, instant) {
-  if (busy || !SHAPE[name]) return;
-  const from = slides.find(s => s.dataset.slide === current);
-  const to   = slides.find(s => s.dataset.slide === name);
-  current = name;
-  document.documentElement.dataset.slide = name;
-  tabs.forEach(b => b.setAttribute("aria-selected", String(b.dataset.s === name)));
-  movePill(name, instant);
-  if (location.hash.slice(1) !== name) history.replaceState(null, "", "#" + name);
-
-  if (instant || reduce || from === to) {
-    slides.forEach(s => s.toggleAttribute("data-on", s === to));
-    Object.assign(F, SHAPE[name]);
-    return;
-  }
-
-  busy = true;
-  animate(F, { ...SHAPE[name], duration: 900, ease: "inOut(3)" });
-  createTimeline({ onComplete: () => { busy = false; } })
-    .add(from.children, {
-      opacity: [1, 0], y: [0, -16], filter: ["blur(0px)", "blur(6px)"],
-      duration: 260, delay: stagger(28), ease: "in(2)",
-      onComplete: () => { from.removeAttribute("data-on"); to.setAttribute("data-on", ""); },
-    })
-    .add(to.children, {
-      opacity: [0, 1], y: [22, 0], filter: ["blur(8px)", "blur(0px)"],
-      duration: 620, delay: stagger(70), ease: "out(3)",
-    }, "+=20")
-    .add($$(".v, .sk, .code", to), {
-      scale: [.985, 1], duration: 520, delay: stagger(46), ease: "out(2)",
-    }, "<<");
-}
-
-$("#nav").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (b) go(b.dataset.s);
-});
-addEventListener("keydown", e => {
-  const i = tabs.findIndex(b => b.dataset.s === current);
-  if (e.key === "ArrowRight") { const b = tabs[(i + 1) % tabs.length]; go(b.dataset.s); b.focus(); }
-  if (e.key === "ArrowLeft")  { const b = tabs[(i - 1 + tabs.length) % tabs.length]; go(b.dataset.s); b.focus(); }
-  const n = parseInt(e.key, 10);
-  if (n >= 1 && n <= tabs.length) go(tabs[n - 1].dataset.s);
-});
-
-let scrollTimeout = null;
-addEventListener("wheel", e => {
-  if (busy || e.target.closest(".code") || e.target.closest(".dbody")) return;
-  const i = tabs.findIndex(b => b.dataset.s === current);
-  if ((e.deltaY > 50 && i === tabs.length - 1) || (e.deltaY < -50 && i === 0)) return;
-  e.preventDefault();
-  if (scrollTimeout) return;
-  
-  if (e.deltaY > 20 && i < tabs.length - 1) { 
-    go(tabs[i + 1].dataset.s); 
-    scrollTimeout = setTimeout(() => scrollTimeout = null, 1000);
-  }
-  else if (e.deltaY < -20 && i > 0) { 
-    go(tabs[i - 1].dataset.s); 
-    scrollTimeout = setTimeout(() => scrollTimeout = null, 1000);
-  }
-}, { passive: false });
-
-let touchStartY = 0;
-addEventListener("touchstart", e => { touchStartY = e.touches[0].clientY; }, { passive: true });
-addEventListener("touchend", e => {
-  if (busy || e.target.closest(".code") || e.target.closest(".dbody")) return;
-  const touchEndY = e.changedTouches[0].clientY;
-  const diff = touchStartY - touchEndY;
-  const i = tabs.findIndex(b => b.dataset.s === current);
-  if (diff > 50 && i < tabs.length - 1) { go(tabs[i + 1].dataset.s); }
-  else if (diff < -50 && i > 0) { go(tabs[i - 1].dataset.s); }
-}, { passive: true });
-
-const DEPTHS = [
-  ["D0 · local and reversible", "Do it. No research, no delegation, no ceremony.",
-   "A rename. A comment. Something a compiler would catch."],
-  ["D1 · routine and bounded", "Targeted context and the checks that matter.",
-   "One module, callers understood, easy to undo."],
-  ["D2 · crosses a boundary", "Explicit change-surface model, quality scenarios, broader tests.",
-   "Cross-module, platform-sensitive, or an uncertain integration."],
-  ["D3 · consequence", "Threat and failure analysis, independent challenge, real evidence.",
-   "Security, data integrity, concurrency, measured performance."],
-  ["D4 · hard to recover", "Staged decision, migration and rollback, strongest evidence, residual risk written down.",
-   "Irreversible, mission-critical, or a format older versions cannot read."],
-];
-const dbody = $("#dbody");
-function setDepth(d, instant) {
-  const [h, p1, p2] = DEPTHS[d];
-  $$("#scale button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.d === d)));
-  dbody.innerHTML = `<h3>${h}</h3><p>${p1}</p><p>${p2}</p>`;
-  if (instant || reduce) return;
-  animate(dbody.children, { opacity: [0, 1], y: [10, 0], duration: 420,
-                            delay: stagger(60), ease: "out(3)" });
-  animate(F, { amp: .7 + d * .34, twist: 1.5 - d * .18, duration: 700, ease: "out(3)" });
-}
-$("#scale").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (b) setDepth(+b.dataset.d);
-});
-setDepth(3, true);
-
-const toast = $("#toast");
-async function copy(text) {
-  try { await navigator.clipboard.writeText(text); }
-  catch {
-    const ta = document.createElement("textarea");
-    ta.value = text; ta.style.cssText = "position:fixed;opacity:0";
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand("copy"); } finally { ta.remove(); }
-  }
-  if (reduce) return;
-  animate(toast, { opacity: [0, 1], y: [14, 0], duration: 260, ease: "out(3)" });
-  animate(toast, { opacity: 0, y: 14, duration: 320, delay: 1100, ease: "in(2)" });
-}
-document.addEventListener("click", e => {
-  const row = e.target.closest("[data-copy]");
-  if (row) { copy(row.dataset.copy); if (!reduce) animate(row, { scale: [1, .985, 1], duration: 320 }); return; }
-  const block = e.target.closest(".code");
-  if (block) { copy($("pre", block).innerText.trim()); if (!reduce) animate(block, { scale: [1, .992, 1], duration: 320 }); }
-});
-
-go(SHAPE[location.hash.slice(1)] ? location.hash.slice(1) : "what", true);
-const icons = () => window.lucide && lucide.createIcons();
-addEventListener("load", () => { icons(); movePill(current, true); });
-addEventListener("resize", () => movePill(current, true), { passive: true });
-icons();
-</script>
+    // Copy toast
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      });
+    }
+  </script>
 </body>
 </html>
