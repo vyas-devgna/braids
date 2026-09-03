@@ -1,6 +1,6 @@
 ---
 name: braids-review
-description: "Engineering review of a diff, branch, or pull request: what breaks, what is unproven, what costs more than it buys. Use for review this change, review my PR, is this ready to merge. For a whole repo with no diff use braids-audit."
+description: "Engineering review of a diff, branch, or pull request, ending in a merge verdict: what breaks, what the change asserts without evidence, what costs more than it buys, and the residual risk of merging. Use for review this change, review my PR, is this ready to merge, is this safe to ship, what did this miss. Adds claim and cost judgement to a correctness-focused review rather than repeating it. For a whole repo with no diff use braids-audit."
 metadata:
   methodology-version: "3.0.0"
 ---

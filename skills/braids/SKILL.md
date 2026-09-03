@@ -1,6 +1,6 @@
 ---
 name: braids
-description: "Use before implementing, reviewing, or approving a code change when engineering depth matters, including proposals that add abstractions, factories, layers, or dependencies. Always use before removing a check, weakening a guarantee, touching auth or permissions, risking data loss, or claiming faster, secure, reliable, compatible, or production-ready. Triggers: architecture, design, refactor, migration, security, auth, permissions, secrets, data integrity, corruption, concurrency, race, retry, fallback, timeout, error handling, edge case, performance, memory, resources, dependency, upgrade, deploy, rollback, production readiness, review, audit, cross-module impact, callers. A one-line edit qualifies when it removes a check or crosses a trust boundary. Skip spelling, formatting, comments, simple explanations, and behaviour-preserving renames. Match behavior, not identifier names."
+description: "Use before implementing, reviewing, or approving a code change, and before stating what one achieved. Always use before removing a check, weakening a guarantee, touching auth or permissions, rewriting or deleting stored data, changing a stored format, anything that cannot be undone or that older versions cannot read, or claiming faster, secure, reliable, compatible, or production-ready. A direct instruction still qualifies; calling it small or quick does not lower it. Triggers: architecture, design, refactor, migration, security, auth, permissions, secrets, data integrity, concurrency, race, retry, fallback, timeout, error handling, edge case, performance, memory, dependency, upgrade, deploy, rollback, review, audit, cross-module impact, callers. A one-line edit qualifies if it removes a check or crosses a trust boundary. Skip spelling, formatting, comments, explanations, and behaviour-preserving renames. Match behavior, not identifier names."
 metadata:
   methodology-version: "3.0.0"
 ---
@@ -46,6 +46,16 @@ For a non-trivial quality concern, compile a concrete scenario:
 `source → stimulus → environment → artifact → expected response → observable criterion`
 
 Do not reason from labels such as “robust,” “clean,” “scalable,” or “production-ready” without converting them into relevant outcomes. Read [quality-risk.md](references/quality-risk.md) for scenario compilation and depth routing.
+
+## Establish cause before choosing a fix
+
+A defect report names a symptom; the cause is a separate finding and carries its own evidence burden. Reproduce the failure before changing anything, because a fix for a defect you cannot reproduce cannot be verified. Locate where the invariant first breaks rather than where it surfaces—those are routinely in different modules, and the loudest frame is rarely the guilty one.
+
+A cause is established when removing it removes the symptom and restoring it brings the symptom back. Anything weaker is correlation. A plausible reading of the code is a hypothesis, not a diagnosis.
+
+Before fixing at the reported site, check whether sibling callers reach the same fault. When they do, one correction at the shared contract is both the smaller change and the complete one; patching only the path named in the report leaves every other caller broken and the next report looking unrelated.
+
+A defect whose cause you cannot explain is **at least D2**: patching an unexplained symptom is a guess that can mask the fault instead of removing it. Never report a defect fixed without the failing case passing and a check that fails against the unfixed code.
 
 ## Route engineering depth
 

@@ -30,6 +30,13 @@ CEILINGS = {
     # the real gate; the total is bounded separately because the user pays the sum
     # on every turn whether or not any skill fires.
     "per_skill_metadata_tokens": 250,
+    # The kernel's description is the activation classifier for the whole set, so it
+    # carries behavioural clauses the six satellites do not need. Measured runs put
+    # activation on high-severity decision cases at 3/8 with the shorter description;
+    # the clauses that fix that do not fit in 250. The binding constraint is the total
+    # paid every turn, which stays well under `metadata_tokens`. See
+    # docs/decisions/0004-kernel-description-allowance.md.
+    "kernel_metadata_tokens": 280,
     "metadata_tokens": 1000,
     "kernel_body_tokens": 5000,
     "kernel_body_lines": 500,
@@ -93,9 +100,10 @@ def check(report: dict) -> list[str]:
         if report[key] > CEILINGS[key]:
             errors.append(f"{key} is {report[key]}, above the docs/24 ceiling of {CEILINGS[key]}")
     for name, tokens in report["skills"].items():
-        if tokens > CEILINGS["per_skill_metadata_tokens"]:
+        key = "kernel_metadata_tokens" if name == "braids" else "per_skill_metadata_tokens"
+        if tokens > CEILINGS[key]:
             errors.append(f"skill {name} advertises {tokens} metadata tokens, "
-                          f"above the {CEILINGS['per_skill_metadata_tokens']} per-skill ceiling")
+                          f"above the {CEILINGS[key]} ceiling")
     for name, tokens in report["references"].items():
         if tokens > CEILINGS["reference_tokens"]:
             errors.append(f"reference {name} is {tokens} tokens, above the {CEILINGS['reference_tokens']} ceiling")
