@@ -2,7 +2,7 @@
 name: braids-audit
 description: "Whole-repository engineering audit with no diff: ranked risk surface, trust boundaries, failure gaps, dependency burden. Use for audit this repo, where is this risky, pre-launch check. For a diff use braids-review."
 metadata:
-  methodology-version: "3.0.0"
+  methodology-version: "3.1.0"
 ---
 
 # Braids audit

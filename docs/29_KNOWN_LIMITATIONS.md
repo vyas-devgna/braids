@@ -74,6 +74,12 @@ State survival across compaction and resume is `not-exercised` on **all eight**,
 
 Everything in `docs/24` that depends on a run — tokens per accepted decision, rework ratio, subagent marginal value, research marginal value, single-agent versus subagent comparison, research versus no-research comparison — is unmeasured. No token-saving or cost-reduction claim is made anywhere in this repository.
 
+## Distribution weight
+
+`assets/` is 17 MB of the repository's 17.4 MB packed size; `skills/`, the thing being installed, is 140 KB. The documented fallback install path `npx github:vyas-devgna/braids <host>` clones the repository, so a user installing a 140 KB skill currently transfers roughly 124× that in brand artwork. The npm package excludes `assets/` through `files`, so `npx braids-skill` does not pay this once the prerelease is published.
+
+Recompressing the artwork **would make this worse, not better**. The assets were added in the initial commit and never modified, so the original blobs are in history; rewriting them adds new blobs and grows the pack. The only changes that reduce clone size are a history rewrite or moving the artwork out of the repository, both of which rewrite published history and are the owner's call, not a maintenance action. Measured, recorded, deliberately not fixed.
+
 ## Open decisions
 
 - **OQ-02** — initial adapter release set only partially resolved; all eight are built, none is releasable.

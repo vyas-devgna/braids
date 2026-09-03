@@ -2,7 +2,7 @@
 name: braids-risk
 description: "Adversarial pre-mortem: weakest assumption, partial failure, retry, concurrency, upgrade, scale, corrupt state, outage, attack path. Use for what could go wrong, red-team this, poke holes in this, what am I missing."
 metadata:
-  methodology-version: "3.0.0"
+  methodology-version: "3.1.0"
 ---
 
 # Braids pre-mortem

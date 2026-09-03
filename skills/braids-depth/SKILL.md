@@ -2,7 +2,7 @@
 name: braids-depth
 description: "Set how hard Braids works: threshold low, high, or ultra, and engineering depth D0-D4. Use for braids low, braids high, braids ultra, keep it light, quick pass, go deep, be thorough, maximum rigour, production-grade."
 metadata:
-  methodology-version: "3.0.0"
+  methodology-version: "3.1.0"
 ---
 
 # Braids intensity control

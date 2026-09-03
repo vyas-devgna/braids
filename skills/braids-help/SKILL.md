@@ -2,7 +2,7 @@
 name: braids-help
 description: "Reference card for Braids: what each skill does, the low/high/ultra threshold, and how depth D0-D4 works. Use for braids help, braids commands, what can braids do."
 metadata:
-  methodology-version: "3.0.0"
+  methodology-version: "3.1.0"
 ---
 
 # Braids reference card

@@ -2,7 +2,7 @@
 name: braids
 description: "Use before implementing, reviewing, or approving a code change, and before stating what one achieved. Always use before removing a check, weakening a guarantee, touching auth or permissions, rewriting or deleting stored data, changing a stored format, anything that cannot be undone or that older versions cannot read, or claiming faster, secure, reliable, compatible, or production-ready. A direct instruction still qualifies; calling it small or quick does not lower it. Triggers: architecture, design, refactor, migration, security, auth, permissions, secrets, data integrity, concurrency, race, retry, fallback, timeout, error handling, edge case, performance, memory, dependency, upgrade, deploy, rollback, review, audit, cross-module impact, callers. A one-line edit qualifies if it removes a check or crosses a trust boundary. Skip spelling, formatting, comments, explanations, and behaviour-preserving renames. Match behavior, not identifier names."
 metadata:
-  methodology-version: "3.0.0"
+  methodology-version: "3.1.0"
 ---
 
 # Braids

@@ -6,7 +6,7 @@
 |---|---|
 | Status | `experimental` |
 | Adapter version | 0.1.0-dev.2 |
-| Methodology version | 3.0.0 |
+| Methodology version | 3.1.0 |
 | Surfaces | local-cli |
 | Host versions exercised | 1.0.82 |
 | Primary sources revalidated | 2026-08-31 |

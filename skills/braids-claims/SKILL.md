@@ -2,7 +2,7 @@
 name: braids-claims
 description: "Map every engineering claim to the evidence that would prove it, and mark what is unproven. Use for is this actually faster, prove it, what evidence do we have, can we say production-ready."
 metadata:
-  methodology-version: "3.0.0"
+  methodology-version: "3.1.0"
 ---
 
 # Braids claim ledger

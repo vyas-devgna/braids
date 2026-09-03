@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "id": "cursor",
   "adapter_version": "0.1.0-dev.2",
-  "methodology_version": "3.0.0",
+  "methodology_version": "3.1.0",
   "status": "experimental",
   "tested_host_versions": [],
   "surfaces": [

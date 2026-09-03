@@ -6,7 +6,7 @@
 |---|---|
 | Status | `experimental` |
 | Adapter version | 0.1.0-dev.2 |
-| Methodology version | 3.0.0 |
+| Methodology version | 3.1.0 |
 | Surfaces | ide, cli |
 | Host versions exercised | none |
 | Primary sources revalidated | 2026-08-31 |
