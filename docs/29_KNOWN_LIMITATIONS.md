@@ -18,7 +18,11 @@ The 99-case corpus, the 60 balanced trigger prompts, the eight fixture families 
 | claude-code 2.1.248 | 3/3 | 1/1 | 2/4 (`K-CLAIM-UNSUPPORTED` read D1 for D3, `K-D4-IRREVERSIBLE` read D3 for D4) |
 | codex 0.150.1 | 3/3 | 1/1 | not judged |
 
-These are smoke tests on four cases, not the release suite, and depth is a judge model's reading rather than an observation. Depth routing is the weaker half: Braids activates reliably but currently **under-rates** severity on two of four cases, which is the direction that matters — it means less engineering than the case deserves. A separate Codex near-miss control also showed `TR-N06` over-triggering 2/3 on a rename of a variable called `securityResult`; the description now says to match on what a change does rather than on identifier names, and that fix is **unverified** because the Codex arm is quota-blocked.
+These are smoke tests on four cases, not the release suite, and depth is a judge model's reading rather than an observation.
+
+**That reading was wrong about which half is weak.** Those four cases came from the trigger corpus, whose prompts ask for judgement ("Review whether this monolith should be split"). Re-measured on 2026-09-03 against two *kernel* cases — imperatives that describe a dangerous operation without naming it — activation was **3/8**, and depth was correct whenever Braids actually loaded. The weak half was activation, not depth routing. The description was rewritten to cover imperative phrasing, stated outcomes as claims, and stored-data rewrites described operationally; activation on the same eight runs went to **7/8**, with the irreversible-migration case activating 4/4 and routing D4 4/4. Records, method and scope limits are in [`evals/results/README.md`](../evals/results/README.md).
+
+One gap stayed open: `K-CLAIM-UNSUPPORTED` still self-reports D1–D2 against an expected D3 even when it activates, although its *behaviour* — marking the performance and memory claims unverified — was correct in every run. It was left unfixed rather than tuned against two cases. A separate Codex near-miss control also showed `TR-N06` over-triggering 2/3 on a rename of a variable called `securityResult`; the description now says to match on what a change does rather than on identifier names, and that fix is **unverified** because the Codex arm is quota-blocked.
 
 Until complete observed runs are graded:
 
