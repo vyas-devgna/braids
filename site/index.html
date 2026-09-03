@@ -7,6 +7,7 @@
 <meta name="description" content="Braids is an AI coding assistant and developer tool that keeps simple code changes simple and gives risky changes the care they deserve. Secure, fast, and no ceremony.">
 <meta name="keywords" content="AI coding, developer tools, secure coding, AI assistant, Braids, GitHub, Claude, coding agent, code review, AI programming">
 <meta name="author" content="Vyas Devgna">
+<meta name="google-site-verification" content="ADD_YOUR_GOOGLE_SEARCH_CONSOLE_ID_HERE" />
 <link rel="canonical" href="https://braids.vyasdevgna.online/">
 
 <!-- Open Graph / Facebook -->
@@ -62,27 +63,16 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 html,body {
-  height:100%;
   background:var(--bg);
   color:var(--ink);
   font-family:var(--sans);
   -webkit-font-smoothing:antialiased;
-  overflow: hidden; /* Hide body scroll, rely on container */
 }
 
 /* Scroll Container */
 .scroll-container {
-  height: 100dvh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   position: relative;
   z-index: 10;
-}
-.scroll-container::-webkit-scrollbar {
-  display: none;
 }
 
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
@@ -121,10 +111,10 @@ nav button.active{color:var(--bg)}
 nav button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 
 /* ── sections ─────────────────────────────────────────── */
-.section{height:100dvh;scroll-snap-align:start;display:grid;
+.section{min-height:100dvh;display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);
   gap:clamp(18px,3.6vw,54px);align-items:center;
-  padding:clamp(13px,2vh,24px) clamp(15px,3vw,42px);
+  padding:clamp(100px,12vh,150px) clamp(15px,3vw,42px);
   max-width:1440px;margin:0 auto;position:relative;}
 .section.full-width { grid-template-columns: 1fr; align-items: center; justify-items: center; text-align: center; }
 

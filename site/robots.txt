@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://braids.vyasdevgna.online/sitemap.xml
