@@ -1,4 +1,6 @@
 import importlib.util
+import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -179,6 +181,95 @@ class ScriptTests(unittest.TestCase):
         summary = eval_runner.summarize([case], [result])
         self.assertIn("depth matched                n/a", summary)
         self.assertIn("expected properties shown    n/a", summary)
+
+
+class InstallerTests(unittest.TestCase):
+    """The installer writes into a directory the user also owns.
+
+    Every case here is a way to destroy work that is not ours to destroy.
+    """
+
+    node = shutil.which("node")
+
+    def run_installer(self, workspace, *args):
+        return subprocess.run(
+            [self.node, str(ROOT / "scripts/install.mjs"), "agents", *args],
+            cwd=workspace, text=True, capture_output=True, timeout=120,
+        )
+
+    def setUp(self):
+        if not self.node:
+            self.skipTest("node is not installed")
+        self.workspace = Path(tempfile.mkdtemp(prefix="braids-install-test-"))
+        self.skills = self.workspace / ".agents/skills"
+        self.addCleanup(shutil.rmtree, self.workspace, ignore_errors=True)
+
+    def write_foreign_skill(self, name):
+        target = self.skills / name
+        target.mkdir(parents=True)
+        (target / "SKILL.md").write_text(
+            f"---\nname: {name}\ndescription: \"A skill the user wrote themselves.\"\n---\n\nirreplaceable\n",
+            encoding="utf-8",
+        )
+        return target / "SKILL.md"
+
+    def test_install_then_uninstall_round_trips(self):
+        self.assertEqual(self.run_installer(self.workspace).returncode, 0)
+        self.assertTrue((self.skills / "braids/SKILL.md").is_file())
+        self.assertEqual(self.run_installer(self.workspace, "--uninstall").returncode, 0)
+        self.assertFalse((self.skills / "braids").exists())
+        self.assertFalse((self.skills / ".braids-install.json").exists())
+
+    def test_uninstall_never_deletes_a_skill_it_did_not_install(self):
+        theirs = self.write_foreign_skill("braids-review")
+        self.run_installer(self.workspace, "--uninstall")
+        self.assertTrue(theirs.is_file(), "uninstall destroyed a user-authored skill")
+        self.assertIn("irreplaceable", theirs.read_text(encoding="utf-8"))
+
+    def test_uninstall_keeps_a_copy_the_user_edited(self):
+        self.run_installer(self.workspace)
+        edited = self.skills / "braids/SKILL.md"
+        edited.write_text(edited.read_text(encoding="utf-8") + "\nlocal edit\n", encoding="utf-8")
+        self.run_installer(self.workspace, "--uninstall")
+        self.assertTrue(edited.is_file(), "uninstall destroyed local edits")
+        self.assertIn("local edit", edited.read_text(encoding="utf-8"))
+
+    def test_install_refuses_to_overwrite_a_foreign_skill_but_installs_the_rest(self):
+        theirs = self.write_foreign_skill("braids-review")
+        result = self.run_installer(self.workspace)
+        self.assertIn("irreplaceable", theirs.read_text(encoding="utf-8"))
+        self.assertIn("refusing", result.stderr)
+        self.assertTrue((self.skills / "braids/SKILL.md").is_file(), "unrelated skills should still install")
+
+    def test_force_overrides_the_refusal(self):
+        theirs = self.write_foreign_skill("braids-review")
+        self.assertEqual(self.run_installer(self.workspace, "--force").returncode, 0)
+        self.assertNotIn("irreplaceable", theirs.read_text(encoding="utf-8"))
+
+    def test_dry_run_writes_nothing(self):
+        result = self.run_installer(self.workspace, "--dry-run")
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("would install", result.stdout)
+        self.assertFalse(self.skills.exists())
+
+    def test_mistyped_flag_is_rejected_rather_than_installing(self):
+        result = self.run_installer(self.workspace, "--uninstal")
+        self.assertEqual(result.returncode, 2)
+        self.assertFalse(self.skills.exists(), "a typo must not fall through to an install")
+
+    def test_unknown_host_does_not_resolve_through_object_prototype(self):
+        result = subprocess.run(
+            [self.node, str(ROOT / "scripts/install.mjs"), "constructor"],
+            cwd=self.workspace, text=True, capture_output=True, timeout=120,
+        )
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("unknown host", result.stderr)
+
+    def test_reinstall_over_our_own_clean_copy_is_allowed(self):
+        self.run_installer(self.workspace)
+        result = self.run_installer(self.workspace)
+        self.assertEqual(result.returncode, 0)
+        self.assertNotIn("refusing", result.stderr)
 
 
 if __name__ == "__main__":
