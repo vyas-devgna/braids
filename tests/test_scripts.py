@@ -40,10 +40,68 @@ class ScriptTests(unittest.TestCase):
             self.assertIn("reference escapes skill root: ../secret.md", skill_validator.validate(root))
 
     def test_capability_probe_does_not_invent_enforcement(self):
-        value = capabilities.profile("test", "1", "local")
-        self.assertEqual(value["hooks"]["availability"], "unknown")
+        """A capability is never an enforcement guarantee, whatever the probe sees."""
+        with tempfile.TemporaryDirectory() as directory:
+            with patch("pathlib.Path.cwd", return_value=Path(directory)):
+                value = capabilities.profile("test", "1", "local")
         self.assertEqual(value["enforcement"], [])
-        self.assertEqual(value["execution"]["write"], "unknown")
+        self.assertEqual(value["hooks"]["availability"], "unknown")
+        self.assertEqual(value["hooks"]["events"], [])
+        for field in ("delegation", "permissions", "skill_loading"):
+            self.assertEqual(value[field], "unknown", f"{field} is not observable from the probe process")
+
+    def test_every_reported_capability_carries_an_observation(self):
+        """A value with no observation behind it is an assertion, which is what Braids forbids."""
+        with tempfile.TemporaryDirectory() as directory:
+            with patch("pathlib.Path.cwd", return_value=Path(directory)):
+                value = capabilities.profile(None, None, None)
+        observations = value["observations"]
+        for field in ("host", "surface", "isolation", "network", "hooks", "persistent_instruction", "mcp"):
+            self.assertIn(field, observations)
+            self.assertTrue(observations[field].strip(), f"{field} reported with an empty observation")
+        for group in ("execution", "code_intelligence"):
+            for key, reported in value[group].items():
+                if reported != "unknown":
+                    self.assertIn(f"{group}.{key}", observations)
+
+    def test_probe_detects_the_host_from_the_environment_not_a_product_name(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with patch("pathlib.Path.cwd", return_value=Path(directory)):
+                with patch.dict("os.environ", {"CODEX_SANDBOX": "seatbelt"}, clear=True):
+                    value = capabilities.profile(None, None, None)
+        self.assertEqual(value["host"], "codex")
+        self.assertEqual(value["isolation"], "sandbox")
+        self.assertIn("CODEX_SANDBOX", value["observations"]["host"])
+
+    def test_probe_reports_unknown_host_rather_than_guessing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with patch("pathlib.Path.cwd", return_value=Path(directory)):
+                with patch.dict("os.environ", {}, clear=True):
+                    value = capabilities.profile(None, None, None)
+        self.assertEqual(value["host"], "unknown")
+        self.assertEqual(value["network"], "unknown")
+
+    def test_probe_names_the_verification_commands_the_project_offers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "go.mod").write_text("module x\n", encoding="utf-8")
+            with patch("pathlib.Path.cwd", return_value=root):
+                value = capabilities.profile(None, None, None)
+        self.assertEqual(value["code_intelligence"]["tests"], "available")
+        self.assertIn("go test ./...", value["observations"]["verification"])
+
+    def test_probe_reads_configured_hooks_exactly(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".claude").mkdir()
+            (root / ".claude/settings.json").write_text(
+                '{"hooks": {"PreToolUse": [], "Stop": []}}', encoding="utf-8")
+            with patch("pathlib.Path.cwd", return_value=root):
+                value = capabilities.profile(None, None, None)
+        self.assertEqual(value["hooks"]["availability"], "available")
+        self.assertEqual(value["hooks"]["events"], ["PreToolUse", "Stop"])
+        # Configured hooks still prove nothing about enforcement coverage.
+        self.assertEqual(value["enforcement"], [])
 
     def test_adapters_are_consistent_with_canonical_metadata(self):
         values = adapters.canonical_values()

@@ -54,6 +54,11 @@
       },
       "additionalProperties": false
     },
+    "observations": {
+      "description": "Optional. For each field the profile reports, what was actually observed to justify it. A value with no observation is an assertion, not evidence.",
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    },
     "enforcement": {
       "type": "array",
       "items": {

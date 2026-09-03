@@ -18,7 +18,7 @@ Before material work, determine from the request and discoverable evidence:
 - maturity, supported environments, scale/exposure, distribution, and hard constraints;
 - actual host capabilities and unavailable or unknown capabilities.
 
-Never infer a capability or enforcement guarantee from a product name. A host version, execution surface, policy, or tool path can change what is available. Keep reviewer/advice modes read-only. If implementation authority is unclear and a write would be material, finish the decision and request authorization before writing.
+Never infer a capability or enforcement guarantee from a product name. A host version, execution surface, policy, or tool path can change what is available; `scripts/inspect_capabilities.py --summary` in this skill reports what is observable here, including the project's real build and test commands. Keep reviewer/advice modes read-only. If implementation authority is unclear and a write would be material, finish the decision and request authorization before writing.
 
 Use [contract.md](references/contract.md) when authority, requirements, constraints, or material assumptions need explicit handling. Use [host-capabilities.md](references/host-capabilities.md) when optional tools, hooks, local/cloud differences, isolation, or degradation affect the work.
 
